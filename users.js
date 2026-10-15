@@ -1,1 +1,1 @@
-window.USERS=[{"code":"ADMIN","role":"admin","iter":150000,"salt":"1ad0bcee8d487ea22c5c56e5d84cb4d9","hash":"78a6c2006eedee480198f2a852934206233d8e1fd99b22ef0acc98239ee4c6c5"}];
+window.USERS=[{"code":"ADMIN","role":"admin","iter":150000,"salt":"a81f74ebd12e1fcda45158c082bf7de5","hash":"d8470d269f2d7ec17298555422db1975d4fb8dd16212b3dea5f16f1c91cc69ad"},{"code":"SOOMIN","role":"store","iter":150000,"salt":"e9089ad42a2b2a9c55434778fcf45d5a","hash":"50aaf36bb552561688bd16d8239a2688de3d746bb0099f4a482962af9ededadf"}];
