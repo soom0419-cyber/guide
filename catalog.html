@@ -82,7 +82,8 @@ nav.months {
 }
 nav.months { align-items: center; justify-content: space-between; }
 #monthChips { min-width: 0; }
-.cat-search-bar { position: sticky; top: var(--top-h, 0px); z-index: 10; display: flex; margin: 0 -32px; padding: 10px 32px; background: var(--bg); border-bottom: 1px solid var(--line); }
+.cat-top { position: sticky; top: var(--top-h, 0px); z-index: 10; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin: 0 -32px 10px; padding: 10px 32px; background: var(--bg); border-bottom: 1px solid var(--line); }
+.filters-rest { display: flex; flex-direction: column; gap: 8px; }
 .map-search { display: flex; align-items: center; gap: 8px; margin-left: auto; }
 .map-search input { width: 240px; max-width: 100%; padding: 6px 10px; font-size: 13px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); }
 .map-search-count { font-family: var(--font-mono); font-size: 12px; color: var(--ink-soft); white-space: nowrap; }
@@ -559,11 +560,11 @@ table.dash tr.row-story-brushed td, table.dash tr.row-story-brushed .id-name { b
 html, body { -webkit-text-size-adjust: 100%; }
 body { overscroll-behavior-y: none; -webkit-tap-highlight-color: transparent; }
 .wrap { padding: 18px 20px 40px; }
-.cat-search-bar { top: 0; margin: 0 -20px; padding: 10px 20px; }
+.cat-top { margin: 0 -20px 10px; padding: 10px 20px; }
 nav.materials { margin: 12px 0 8px; overflow-x: auto; white-space: nowrap; }
 .detail-close { padding: 14px 20px; }
 .detail-inner { padding: 20px 20px 80px; }
-@media (min-width: 700px) { .wrap { padding: 24px 28px 48px; } .cat-search-bar { margin: 0 -28px; padding: 10px 28px; } }
+@media (min-width: 700px) { .wrap { padding: 24px 28px 48px; } .cat-top { margin: 0 -28px 10px; padding: 10px 28px; } }
 </style>
 </head>
 <body>
@@ -571,8 +572,10 @@ nav.materials { margin: 12px 0 8px; overflow-x: auto; white-space: nowrap; }
   <header class="page"><h1>상품 설명집</h1></header>
   <div class="page-view active" id="catalogView">
     <nav class="materials" id="catMaterialTabs"></nav>
-    <div class="cat-search-bar"><div class="map-search"><input type="search" id="catSearch" placeholder="품명(영문·한글)/품번 검색" autocomplete="off"><span class="map-search-count" id="catSearchCount"></span></div></div>
-    <div class="filters" id="catFilters"></div>
+    <div class="filters">
+      <div class="cat-top"><div class="fchips" id="catPlanRow"></div><div class="map-search"><input type="search" id="catSearch" placeholder="품명(영문·한글)/품번 검색" autocomplete="off"><span class="map-search-count" id="catSearchCount"></span></div></div>
+      <div class="filters-rest" id="catFilters"></div>
+    </div>
     <div id="catStories"></div>
   </div>
 </div>
@@ -751,7 +754,8 @@ function renderDetailProduct(itemCode) {
     });
     const total = Object.values(pc).reduce((a, b) => a + b, 0);
     const chip = (kind, val, label, n, on) => `<button class="fchip${on ? ' active' : ''}${n ? '' : ' zero'}" data-k="${kind}" data-v="${attr(val)}">${label}<span class="n">${n}</span></button>`;
-    let html = `<div class="fchips"><span class="flabel">기획명</span>${chip('plan', 'ALL', '전체', total, state.plan === 'ALL')}${PLANS.map(p => chip('plan', p, p, pc[p] || 0, state.plan === p)).join('')}</div>`;
+    const planRow = `<span class="flabel">기획명</span>${chip('plan', 'ALL', '전체', total, state.plan === 'ALL')}${PLANS.map(p => chip('plan', p, p, pc[p] || 0, state.plan === p)).join('')}`;
+    let html = '';
     if (state.plan !== 'ALL') {
       const known = FILTER_ORDER[state.plan] || [];
       const list = known.concat(Object.keys(bc).filter(g => !known.includes(g)));
@@ -768,9 +772,9 @@ function renderDetailProduct(itemCode) {
     if (attrLabels.length) {
       html += `<div class="fchips"><span class="flabel">소재</span>${chip('attr', 'ALL', '전체', attrTotal, state.attr === 'ALL')}${attrLabels.map(l => chip('attr', l, l, ac[l], state.attr === l)).join('')}</div>`;
     }
-    const el = document.getElementById('catFilters');
-    el.innerHTML = html;
-    el.querySelectorAll('button').forEach(b => b.onclick = () => {
+    document.getElementById('catPlanRow').innerHTML = planRow;  // 검색창은 이 행의 오른쪽에 고정 배치(입력 중 다시 그려지지 않도록 별도 요소)
+    document.getElementById('catFilters').innerHTML = html;
+    document.querySelectorAll('#catPlanRow button, #catFilters button').forEach(b => b.onclick = () => {
       if (b.dataset.k === 'plan') { state.plan = b.dataset.v; state.body = 'ALL'; }
       else if (b.dataset.k === 'body') { state.body = b.dataset.v; }
       else { state.attr = b.dataset.v; }
