@@ -669,76 +669,46 @@
   .gcard-extra { display: none; }
 
   .lightbox {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.82);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    padding: 40px 20px;
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(36,31,27,0.55);
+    display: flex; align-items: center; justify-content: center;
+    padding: 16px;
   }
-
   .lightbox[hidden] { display: none; }
-
-  .lightbox-figure {
-    margin: 0;
-    max-width: min(94vw, 1100px);
-    max-height: 90vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
+  #lb-card {
+    width: min(100%, 780px); max-height: calc(100dvh - 32px);
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    display: flex; flex-direction: column; overflow: hidden;
   }
-
-  .lightbox-strip {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    overflow-y: auto;
-    width: min(90vw, 800px);
-    max-width: 100%;
-    max-height: 84vh;
-    padding: 4px;
-    scroll-snap-type: y mandatory;
+  .lb-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 16px 18px 12px; border-bottom: 1px solid var(--border); }
+  .lb-cat { display: block; margin-bottom: 4px; font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: 0.02em; color: var(--accent); }
+  #lightbox-caption { margin: 0; font-family: var(--font-display); font-size: 22px; font-weight: 600; line-height: 1.3; color: var(--text); }
+  #lb-card .lightbox-close {
+    position: static; flex: none; width: 40px; height: 40px; top: auto; right: auto;
+    border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font-size: 16px;
   }
-
-  .lightbox-strip img {
-    width: auto;
-    max-width: 100%;
-    height: auto;
-    max-height: 80vh;
-    object-fit: contain;
-    border-radius: 8px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-    scroll-snap-align: center;
-    flex: none;
+  #lb-card .lightbox-close:hover { border-color: var(--accent); color: var(--accent); background: var(--surface); }
+  .lb-stage { flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center; padding: 14px 18px; background: var(--surface-sunken); }
+  #lightbox-strip { display: flex; align-items: center; justify-content: center; width: 100%; }
+  #lightbox-strip img {
+    display: block; max-width: 100%; width: auto; height: auto;
+    max-height: max(180px, calc(100dvh - 300px)); object-fit: contain;
+    border-radius: 8px; border: 1px solid var(--border); background: var(--surface);
   }
-
-  .lightbox-figure figcaption {
-    color: #fff;
-    font-size: 14px;
-    font-weight: 600;
-    text-align: center;
+  .lb-thumbs { display: flex; gap: 8px; padding: 10px 18px 0; overflow-x: auto; }
+  .lb-thumbs[hidden] { display: none; }
+  .lb-thumbs button { flex: none; padding: 0; width: 64px; height: 64px; border: 2px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--surface); cursor: pointer; }
+  .lb-thumbs button[aria-current="true"] { border-color: var(--accent); }
+  .lb-thumbs img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .lb-nav { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 18px 16px; }
+  .lb-nav button {
+    appearance: none; min-width: 96px; min-height: 44px; padding: 8px 14px;
+    font-family: var(--font-body); font-size: 14px; font-weight: 600; color: var(--text);
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px; cursor: pointer;
   }
-
-  .lightbox-close {
-    position: fixed;
-    top: 20px;
-    right: 24px;
-    appearance: none;
-    border: none;
-    background: rgba(255,255,255,0.12);
-    color: #fff;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    font-size: 18px;
-    cursor: pointer;
-  }
-
-  .lightbox-close:hover { background: rgba(255,255,255,0.22); }
+  .lb-nav button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+  .lb-nav button:disabled { opacity: 0.35; cursor: default; }
+  #lb-count { font-family: var(--font-mono); font-size: 13px; color: var(--text-muted); }
 
   .defect-grid {
     display: grid;
@@ -1563,7 +1533,7 @@
   </div>
 
   <div id="panel-defect" class="tabpanel active">
-<p class="defect-intro">각 불량 항목의 이미지를 클릭하면 확대할 수 있으며, 스크롤하여 확인할 수 있습니다.</p>
+<p class="defect-intro">이미지를 누르면 크게 볼 수 있고, 이전/다음 버튼으로 같은 카테고리의 다른 불량도 넘겨볼 수 있습니다.</p>
 <div class="defect-tools"><div class="defect-search"><input type="search" id="defect-search" placeholder="카테고리 또는 불량 항목 검색 (예: 오염, 본드, 챙)" aria-label="불량 검색" autocomplete="off"></div><nav class="defect-index" aria-label="불량 카테고리 색인"><a href="#cat-1" data-target="cat-1">1. 오염</a><a href="#cat-2" data-target="cat-2">2. 제품 형태</a><a href="#cat-3" data-target="cat-3">3. 부자재</a><a href="#cat-4" data-target="cat-4">4. 구멍</a><a href="#cat-5" data-target="cat-5">5. 가죽</a><a href="#cat-6" data-target="cat-6">6. 사이즈</a><a href="#cat-7" data-target="cat-7">7. 곰팡이</a></nav></div>
 <p class="defect-empty" id="defect-empty" hidden>검색 결과가 없습니다. 다른 단어로 검색해보세요.</p>
 <div class="defect-gallery">
@@ -1648,39 +1618,91 @@
 })();
 </script>
 <div id="lightbox" class="lightbox" hidden>
-  <button type="button" class="lightbox-close" aria-label="닫기">✕</button>
-  <figure class="lightbox-figure">
-    <div id="lightbox-strip" class="lightbox-strip"></div>
-    <figcaption id="lightbox-caption"></figcaption>
-  </figure>
+  <div id="lb-card" role="dialog" aria-modal="true" aria-labelledby="lightbox-caption">
+    <div class="lb-head">
+      <div><span class="lb-cat" id="lb-cat"></span><h3 id="lightbox-caption"></h3></div>
+      <button type="button" class="lightbox-close" aria-label="닫기">✕</button>
+    </div>
+    <div class="lb-stage"><div id="lightbox-strip"></div></div>
+    <div class="lb-thumbs" id="lb-thumbs" hidden></div>
+    <div class="lb-nav">
+      <button type="button" id="lb-prev">‹ 이전</button>
+      <span id="lb-count"></span>
+      <button type="button" id="lb-next">다음 ›</button>
+    </div>
+  </div>
 </div>
 <script>
 (function(){
   var lb = document.getElementById("lightbox");
   var strip = document.getElementById("lightbox-strip");
-  var lbCap = document.getElementById("lightbox-caption");
-  function openLb(srcs, title){
+  var thumbs = document.getElementById("lb-thumbs");
+  var capEl = document.getElementById("lightbox-caption");
+  var catEl = document.getElementById("lb-cat");
+  var cntEl = document.getElementById("lb-count");
+  var prev = document.getElementById("lb-prev");
+  var next = document.getElementById("lb-next");
+  var list = [], idx = 0;
+
+  function srcsOf(card){
+    return Array.prototype.map.call(card.querySelectorAll(".gcard-img img"), function(i){ return i.src; });
+  }
+  function showPhoto(srcs, n, title){
     strip.innerHTML = "";
-    srcs.forEach(function(src){
-      var img = document.createElement("img");
-      img.src = src; img.alt = title;
-      strip.appendChild(img);
+    var img = document.createElement("img");
+    img.src = srcs[n]; img.alt = title;
+    strip.appendChild(img);
+    Array.prototype.forEach.call(thumbs.children, function(b, i){
+      if (i === n) b.setAttribute("aria-current", "true"); else b.removeAttribute("aria-current");
     });
-    lbCap.textContent = title + (srcs.length > 1 ? " (" + srcs.length + "장, 아래로 스크롤)" : "");
+  }
+  function render(){
+    var card = list[idx];
+    var title = card.querySelector(".gcard-img-btn").getAttribute("data-lightbox-title");
+    var h3 = card.closest(".defect-group").querySelector("h3");
+    var en = h3.querySelector(".en");
+    catEl.textContent = h3.firstChild.textContent.trim() + (en ? "  ·  " + en.textContent : "");
+    capEl.textContent = title;
+    var srcs = srcsOf(card);
+    thumbs.innerHTML = "";
+    srcs.forEach(function(s, i){
+      var b = document.createElement("button");
+      b.type = "button"; b.setAttribute("aria-label", title + " 사진 " + (i + 1));
+      var t = document.createElement("img"); t.src = s; t.alt = "";
+      b.appendChild(t);
+      b.addEventListener("click", function(){ showPhoto(srcs, i, title); });
+      thumbs.appendChild(b);
+    });
+    thumbs.hidden = srcs.length < 2;
+    showPhoto(srcs, 0, title);
+    cntEl.textContent = (idx + 1) + " / " + list.length;
+    prev.disabled = idx === 0; next.disabled = idx === list.length - 1;
+  }
+  function openLb(card){
+    var grid = card.closest(".defect-grid");
+    list = Array.prototype.filter.call(grid.querySelectorAll(".gcard"), function(g){
+      return g.querySelector(".gcard-img-btn") && g.offsetParent !== null;
+    });
+    idx = Math.max(0, list.indexOf(card));
+    render();
     lb.hidden = false; document.body.style.overflow = "hidden";
   }
-  function closeLb(){ lb.hidden = true; strip.innerHTML = ""; document.body.style.overflow = ""; }
+  function closeLb(){ lb.hidden = true; strip.innerHTML = ""; thumbs.innerHTML = ""; document.body.style.overflow = ""; }
+  function step(d){ var n = idx + d; if (n >= 0 && n < list.length) { idx = n; render(); } }
+
   document.querySelectorAll(".gcard-img-btn").forEach(function(btn){
-    btn.addEventListener("click", function(){
-      var card = btn.closest(".gcard");
-      var imgs = card.querySelectorAll(".gcard-img img");
-      var srcs = Array.prototype.map.call(imgs, function(i){ return i.src; });
-      openLb(srcs, btn.getAttribute("data-lightbox-title"));
-    });
+    btn.addEventListener("click", function(){ openLb(btn.closest(".gcard")); });
   });
+  prev.addEventListener("click", function(){ step(-1); });
+  next.addEventListener("click", function(){ step(1); });
   lb.addEventListener("click", function(e){ if (e.target === lb) closeLb(); });
   lb.querySelector(".lightbox-close").addEventListener("click", closeLb);
-  document.addEventListener("keydown", function(e){ if (e.key === "Escape" && !lb.hidden) closeLb(); });
+  document.addEventListener("keydown", function(e){
+    if (lb.hidden) return;
+    if (e.key === "Escape") closeLb();
+    else if (e.key === "ArrowLeft") step(-1);
+    else if (e.key === "ArrowRight") step(1);
+  });
 })();
 </script>
   </div>
