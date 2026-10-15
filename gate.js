@@ -54,6 +54,8 @@
     app.hidden = false;
     who.textContent = user.code + (user.role === 'admin' ? ' (관리자)' : '');
     adminBtn.hidden = user.role !== 'admin';
+    var s = document.getElementById('scroller');
+    if (s) s.scrollTop = 0;
     window.scrollTo(0, 0);
   }
 
