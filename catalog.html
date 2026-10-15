@@ -562,6 +562,14 @@ table.dash tr.row-story-brushed td, table.dash tr.row-story-brushed .id-name { b
 :root { --bg: #fff; --surface: #fff; --surface-2: #f4f4f4; --ink: #111; --ink-soft: #666; --line: #e2e2e2; --line-strong: #8a8a8a;
   --accent: #111; --accent-soft: #f0f0f0; --good: #111; --good-bg: #f0f0f0; --warn: #111; --warn-bg: #f0f0f0; --crit: #111; --crit-bg: #eee; }
 
+/* 태블릿 이상: 스토리명(좌) + 스토리 설명(우) 한 줄, 아이템 카드는 그 아래 전체 폭 */
+@media (min-width: 700px) {
+  .story-box { grid-template-columns: minmax(0, 1fr); }
+  .sb-head { display: grid; grid-template-columns: minmax(220px, 360px) minmax(0, 1fr); column-gap: 32px; align-items: start; }
+  .sb-head > .sb-eyebrow, .sb-head > .sb-title, .sb-head > .sb-count { grid-column: 1; }
+  .sb-head > .sb-desc { grid-column: 2; grid-row: 1 / span 3; margin-top: 0; }
+}
+
 html, body { -webkit-text-size-adjust: 100%; }
 body { overscroll-behavior-y: none; -webkit-tap-highlight-color: transparent; }
 .wrap { padding: 18px 20px 40px; }
