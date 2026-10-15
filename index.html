@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#faf5e8">
+<meta name="theme-color" content="#faf7f3">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="매장 가이드">
@@ -14,26 +14,29 @@
 <title>매장 가이드</title>
 <style>:root{color-scheme:light}[hidden]:not([hidden=until-found i]){display:none!important}img{max-width:100%}</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
   :root {
-    --bg: #faf5e8;
-    --surface: #fffdf8;
-    --surface-sunken: #f2e9d4;
-    --border: #e4d8b8;
-    --border-strong: #cdbd90;
-    --text: #201f1c;
-    --text-muted: #524f45;
-    --text-faint: #706c60;
-    --accent: #6b5d47;
-    --accent-soft: #ece5d4;
-    --accent-border: #cfc3a8;
-    --required: #b3432f;
-    --required-soft: #fbeae6;
-    --example: #3c7a52;
-    --example-soft: #e9f3ec;
-    --focus-ring: #6b5d47;
-    --shadow: 0 1px 2px rgba(32,31,28,0.06), 0 8px 24px -12px rgba(32,31,28,0.12);
+    --bg: #faf7f3;
+    --surface: #ffffff;
+    --surface-sunken: #f2ede6;
+    --border: #e6ddd2;
+    --border-strong: #b3a690;
+    --text: #241f1b;
+    --text-muted: #4f473d;
+    --text-faint: #6b6259;
+    --accent: #b5502f;
+    --accent-soft: #f1ded4;
+    --accent-border: #e3b9a5;
+    --required: #b23b3b;
+    --required-soft: #f6e3e1;
+    --example: #4c7a5e;
+    --example-soft: #e7f0e9;
+    --focus-ring: #b5502f;
+    --shadow: none;
+    --font-display: 'Fraunces', 'Noto Serif KR', serif;
+    --font-body: 'IBM Plex Sans KR', 'Pretendard', -apple-system, sans-serif;
+    --font-mono: 'IBM Plex Mono', 'IBM Plex Sans KR', monospace;
   }
 
   * { box-sizing: border-box; }
@@ -1355,11 +1358,77 @@
   .ov-comment { font-size: 13px; font-weight: 700; }
 </style>
 
+<style id="theme-master">
+  body { font-family: var(--font-body); }
+  .example-tag .example-label { font-family: var(--font-body); }
+  @media (min-width: 1025px) { .wrap { max-width: 1240px; padding: 28px 32px 80px; } }
+  @media (max-width: 1024px) { .wrap { padding: 24px 20px 80px; } }
+
+  .top-sticky {
+    position: sticky; top: 0; z-index: 30;
+    margin: 0 0 20px; padding: 10px 0 0;
+    background: var(--bg);
+    box-shadow: 0 0 0 100vmax var(--bg);
+    clip-path: inset(0 -100vmax);
+  }
+  .title-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0; }
+  .title-row h1 { font-family: var(--font-display); font-weight: 600; font-size: 26px; letter-spacing: -0.01em; margin: 0; line-height: 1.25; }
+
+  .sheet-link, .quick-access a.zoho-link, .form-download-btn {
+    display: inline-flex; align-items: center; gap: 6px; text-decoration: none; white-space: nowrap;
+    font-family: var(--font-mono); font-size: 12.5px; font-weight: 500;
+    padding: 5px 10px; border: 1px solid var(--border); border-radius: 6px;
+    background: var(--surface); color: var(--text);
+  }
+  .sheet-link:hover, .quick-access a.zoho-link:hover, .form-download-btn:hover {
+    border-color: var(--accent); color: var(--accent); background: var(--surface);
+  }
+
+  .page-tabs { margin: 4px 0 0; border-bottom: 2px solid var(--border); overflow-x: auto; scrollbar-width: none; }
+  .page-tabs::-webkit-scrollbar { display: none; }
+  .page-tab {
+    font-family: var(--font-display); font-size: 20px; font-weight: 600;
+    padding: 4px 4px 10px; margin: 0 28px -2px 0;
+    border-bottom: 3px solid transparent; white-space: nowrap; flex: none;
+  }
+  .page-tab[aria-selected="true"] { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .page-head { margin-bottom: 22px; }
+  .head-top { justify-content: flex-start; }
+
+  .defect-tools { top: var(--top-h, 0px); }
+  .defect-group { scroll-margin-top: calc(var(--top-h, 0px) + 150px); }
+  .defect-group h3 {
+    display: flex; align-items: baseline; gap: 10px;
+    margin: 0 0 12px; padding: 0 0 8px;
+    font-family: var(--font-display); font-size: 21px; font-weight: 600;
+    color: var(--text); background: none; border-radius: 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .defect-group h3 .en {
+    margin-left: auto; font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+    color: var(--accent); letter-spacing: 0.02em; text-transform: uppercase;
+  }
+  .defect-index a {
+    border-radius: 7px; background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); font-size: 14px; font-weight: 500; padding: 6px 12px;
+  }
+  .defect-index a:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .defect-search input { border: 1px solid var(--border); border-radius: 6px; font-size: 15px; padding: 10px 14px; }
+  .gcard { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
+  .gcard-title { font-weight: 600; }
+
+  .group-head h2 { font-family: var(--font-display); font-size: 18px; font-weight: 600; }
+  .process-col-title { font-family: var(--font-display); font-size: 17px; font-weight: 600; }
+  .receipt-title { font-family: var(--font-display); font-size: 22px; font-weight: 600; color: var(--accent); }
+  .process-body, .receipt-body, .form-mimic, .legend, .annotated-img { box-shadow: none; }
+</style>
+
 <style id="tablet-ui">
   html { -webkit-text-size-adjust: 100%; }
   body { -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none; }
   :root { --bar-h: 54px; }
-  .page-tabs { display: none; }
+  .page-tabs, .top-sticky { display: none; }
   .wrap { padding-bottom: 36px; }
   .defect-index { overflow-x: auto; flex-wrap: nowrap; }
   .defect-index a { flex: none; }
@@ -1430,7 +1499,7 @@
     :root { --bar-h: 60px; }
     .wrap { max-width: 1240px; padding-left: max(28px, env(safe-area-inset-left)); padding-right: max(28px, env(safe-area-inset-right)); }
     .defect-grid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 18px; }
-    .defect-group h3 { font-size: 22px; padding: 12px 18px; }
+    .defect-group h3 { font-size: 22px; }
     .defect-intro { font-size: 15px; }
     .gcard-title { font-size: 18px; }
     .defect-index a { font-size: 16px; min-height: 46px; display: inline-flex; align-items: center; padding: 10px 18px; }
@@ -1485,9 +1554,12 @@
 </div>
 <div class="wrap">
 
-  <div class="page-tabs" role="tablist">
+  <div class="top-sticky" id="topSticky">
+    <header class="page title-row"><h1>불량 처리 가이드</h1></header>
+    <nav class="page-tabs" role="tablist" id="pageTabs">
     <button class="page-tab" id="tab-btn-defect" role="tab" aria-selected="true" aria-controls="panel-defect" onclick="switchTab('defect')">불량 가이드</button>
     <button class="page-tab" id="tab-btn-receipt" role="tab" aria-selected="false" aria-controls="panel-receipt" onclick="switchTab('receipt')">불량 접수 가이드</button>
+  </nav>
   </div>
 
   <div id="panel-defect" class="tabpanel active">
@@ -1495,19 +1567,19 @@
 <div class="defect-tools"><div class="defect-search"><input type="search" id="defect-search" placeholder="카테고리 또는 불량 항목 검색 (예: 오염, 본드, 챙)" aria-label="불량 검색" autocomplete="off"></div><nav class="defect-index" aria-label="불량 카테고리 색인"><a href="#cat-1" data-target="cat-1">1. 오염</a><a href="#cat-2" data-target="cat-2">2. 제품 형태</a><a href="#cat-3" data-target="cat-3">3. 부자재</a><a href="#cat-4" data-target="cat-4">4. 구멍</a><a href="#cat-5" data-target="cat-5">5. 가죽</a><a href="#cat-6" data-target="cat-6">6. 사이즈</a><a href="#cat-7" data-target="cat-7">7. 곰팡이</a></nav></div>
 <p class="defect-empty" id="defect-empty" hidden>검색 결과가 없습니다. 다른 단어로 검색해보세요.</p>
 <div class="defect-gallery">
-<div class="defect-group" id="cat-1"><h3>1. 오염</h3><div class="defect-grid">
+<div class="defect-group" id="cat-1"><h3>1. 오염<span class="en">STAIN</span></h3><div class="defect-grid">
 <div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="본드" aria-label="본드 이미지 확대"><img src="img/i001.jpg" alt="본드"></button></div><div class="gcard-body"><span class="gcard-title">본드</span></div></div>
 <div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="라피아 소재 자국" aria-label="라피아 소재 자국 이미지 확대"><img src="img/i002.jpg" alt="라피아 소재 자국"></button><div class="gcard-extra" hidden><img src="img/i003.jpg" alt="라피아 소재 자국"></div></div><div class="gcard-body"><span class="gcard-title">라피아 소재 자국</span></div></div>
 <div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="펜 자국" aria-label="펜 자국 이미지 확대"><img src="img/i004.jpg" alt="펜 자국"></button></div><div class="gcard-body"><span class="gcard-title">펜 자국</span></div></div>
 <div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="기타" aria-label="기타 이미지 확대"><img src="img/i005.jpg" alt="기타"></button></div><div class="gcard-body"><span class="gcard-title">기타</span></div></div>
 </div></div>
-<div class="defect-group" id="cat-2"><h3>2. 제품 형태</h3><div class="defect-grid">
+<div class="defect-group" id="cat-2"><h3>2. 제품 형태<span class="en">PRODUCT SHAPE</span></h3><div class="defect-grid">
 <div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="챙 형태" aria-label="챙 형태 이미지 확대"><img src="img/i006.jpg" alt="챙 형태"></button><div class="gcard-extra" hidden><img src="img/i007.jpg" alt="챙 형태"><img src="img/i008.jpg" alt="챙 형태"></div></div><div class="gcard-body"><span class="gcard-title">챙 형태</span></div></div>
 <div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="크라운 형태" aria-label="크라운 형태 이미지 확대"><img src="img/i009.jpg" alt="크라운 형태"></button></div><div class="gcard-body"><span class="gcard-title">크라운 형태</span></div></div>
 <div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="바이저 플라스틱 형태" aria-label="바이저 플라스틱 형태 이미지 확대"><img src="img/i010.jpg" alt="바이저 플라스틱 형태"></button><div class="gcard-extra" hidden><img src="img/i011.jpg" alt="바이저 플라스틱 형태"></div></div><div class="gcard-body"><span class="gcard-title">바이저 플라스틱 형태</span></div></div>
 <div class="gcard"><div class="gcard-img"><div class="gcard-img-placeholder"><span class="icon">🖼</span>이미지 예정</div></div><div class="gcard-body"><span class="gcard-title">기타</span></div></div>
 </div></div>
-<div class="defect-group" id="cat-3"><h3>3. 부자재</h3><div class="defect-grid">
+<div class="defect-group" id="cat-3"><h3>3. 부자재<span class="en">RAW MATERIAL</span></h3><div class="defect-grid">
 <div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="리본 불량" aria-label="리본 불량 이미지 확대"><img src="img/i012.jpg" alt="리본 불량"></button></div><div class="gcard-body"><span class="gcard-title">리본 불량</span></div></div>
 <div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="원단 문제" aria-label="원단 문제 이미지 확대"><img src="img/i013.jpg" alt="원단 문제"></button></div><div class="gcard-body"><span class="gcard-title">원단 문제</span></div></div>
 <div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="부자재 누락" aria-label="부자재 누락 이미지 확대"><img src="img/i014.jpg" alt="부자재 누락"></button><div class="gcard-extra" hidden><img src="img/i015.jpg" alt="부자재 누락"></div></div><div class="gcard-body"><span class="gcard-title">부자재 누락</span></div></div>
@@ -1515,22 +1587,22 @@
 <div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="수입택 오표기" aria-label="수입택 오표기 이미지 확대"><img src="img/i017.jpg" alt="수입택 오표기"></button></div><div class="gcard-body"><span class="gcard-title">수입택 오표기</span></div></div>
 <div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="기타" aria-label="기타 이미지 확대"><img src="img/i018.jpg" alt="기타"></button></div><div class="gcard-body"><span class="gcard-title">기타</span></div></div>
 </div></div>
-<div class="defect-group" id="cat-4"><h3>4. 구멍</h3><div class="defect-grid">
+<div class="defect-group" id="cat-4"><h3>4. 구멍<span class="en">HOLE</span></h3><div class="defect-grid">
 <div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="브레이드 박음질" aria-label="브레이드 박음질 이미지 확대"><img src="img/i019.jpg" alt="브레이드 박음질"></button><div class="gcard-extra" hidden><img src="img/i020.jpg" alt="브레이드 박음질"><img src="img/i021.jpg" alt="브레이드 박음질"><img src="img/i022.jpg" alt="브레이드 박음질"></div></div><div class="gcard-body"><span class="gcard-title">브레이드 박음질</span></div></div>
 <div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="봉제/원단" aria-label="봉제/원단 이미지 확대"><img src="img/i023.jpg" alt="봉제/원단"></button></div><div class="gcard-body"><span class="gcard-title">봉제/원단</span></div></div>
 <div class="gcard"><div class="gcard-img"><div class="gcard-img-placeholder"><span class="icon">🖼</span>이미지 예정</div></div><div class="gcard-body"><span class="gcard-title">기타</span></div></div>
 </div></div>
-<div class="defect-group" id="cat-5"><h3>5. 가죽</h3><div class="defect-grid">
+<div class="defect-group" id="cat-5"><h3>5. 가죽<span class="en">LEATHER</span></h3><div class="defect-grid">
 <div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="자국/스크래치" aria-label="자국/스크래치 이미지 확대"><img src="img/i024.jpg" alt="자국/스크래치"></button></div><div class="gcard-body"><span class="gcard-title">자국/스크래치</span></div></div>
 <div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="가죽 단면 페인트" aria-label="가죽 단면 페인트 이미지 확대"><img src="img/i025.jpg" alt="가죽 단면 페인트"></button></div><div class="gcard-body"><span class="gcard-title">가죽 단면 페인트</span></div></div>
 <div class="gcard"><div class="gcard-img"><div class="gcard-img-placeholder"><span class="icon">🖼</span>이미지 예정</div></div><div class="gcard-body"><span class="gcard-title">가죽에 접착제 묻음</span></div></div>
 <div class="gcard"><div class="gcard-img"><div class="gcard-img-placeholder"><span class="icon">🖼</span>이미지 예정</div></div><div class="gcard-body"><span class="gcard-title">기타</span></div></div>
 </div></div>
-<div class="defect-group" id="cat-6"><h3>6. 사이즈</h3><div class="defect-grid">
+<div class="defect-group" id="cat-6"><h3>6. 사이즈<span class="en">OUT OF TOLERANCE</span></h3><div class="defect-grid">
 <div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="챙 길이" aria-label="챙 길이 이미지 확대"><img src="img/i026.jpg" alt="챙 길이"></button></div><div class="gcard-body"><span class="gcard-title">챙 길이</span></div></div>
 <div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="머리 사이즈" aria-label="머리 사이즈 이미지 확대"><img src="img/i027.jpg" alt="머리 사이즈"></button></div><div class="gcard-body"><span class="gcard-title">머리 사이즈</span></div></div>
 </div></div>
-<div class="defect-group" id="cat-7"><h3>7. 곰팡이</h3><div class="defect-grid">
+<div class="defect-group" id="cat-7"><h3>7. 곰팡이<span class="en">MOULD</span></h3><div class="defect-grid">
 <div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="곰팡이" aria-label="곰팡이 이미지 확대"><img src="img/i028.jpg" alt="곰팡이"></button></div><div class="gcard-body"><span class="gcard-title">곰팡이</span></div></div>
 </div></div>
 </div>
@@ -1616,8 +1688,6 @@
   <div id="panel-receipt" class="tabpanel">
 
   <header class="page-head">
-    <p class="eyebrow">HK Quality Issue Portal</p>
-    <h1>불량 접수 가이드</h1>
     <p class="subhead">매장에서 불량을 발견한 순간부터 수선실로 보내기까지, 단계별로 정리했습니다.</p>
   </header>
 
@@ -1699,6 +1769,22 @@ function switchTab(name) {
 </script>
 
 
+
+
+<script>
+(function(){
+  var t = document.getElementById('topSticky');
+  if (!t) return;
+  function f(){
+    var cs = getComputedStyle(t);
+    var h = (cs.display === 'none' || cs.position !== 'sticky') ? 0 : t.offsetHeight;
+    document.documentElement.style.setProperty('--top-h', h + 'px');
+  }
+  f();
+  window.addEventListener('resize', f);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(f);
+})();
+</script>
 
 <div id="catalog-pane"><iframe id="catalog-frame" title="상품 설명집"></iframe></div><nav class="bottom-bar" id="bottom-bar" aria-label="메뉴"><button type="button" class="bb-item" data-tab="catalog"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 21.5A2.5 2.5 0 0 1 6.5 19H20"/><path d="M9 8h7"/></svg><span>상품 설명집</span></button><button type="button" class="bb-item" data-tab="defect" aria-current="page"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 8h.01"/><path d="M3 6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z"/><path d="M3 16l5-5c.93-.89 2.07-.89 3 0l5 5"/><path d="M14 14l1-1c.93-.89 2.07-.89 3 0l3 3"/></svg><span>불량 가이드</span></button><button type="button" class="bb-item" data-tab="receipt"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><path d="M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z"/><path d="M9 14l2 2 4-4"/></svg><span>불량 접수 가이드</span></button></nav>
 <script>
