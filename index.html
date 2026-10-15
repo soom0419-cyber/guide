@@ -6,12 +6,12 @@
 <meta name="theme-color" content="#faf5e8">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="불량 가이드">
+<meta name="apple-mobile-web-app-title" content="매장 가이드">
 <meta name="robots" content="noindex,nofollow">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" href="icons/icon-192.png">
-<title>불량 가이드</title>
+<title>매장 가이드</title>
 <style>:root{color-scheme:light}[hidden]:not([hidden=until-found i]){display:none!important}img{max-width:100%}</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
@@ -1422,8 +1422,8 @@
 
   #catalog-pane { display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 1;
     bottom: calc(var(--bar-h) + env(safe-area-inset-bottom, 0px)); background: #faf7f3; padding-top: env(safe-area-inset-top, 0px); }
-  #catalog-pane.on { display: block; }
-  #catalog-pane iframe { display: block; width: 100%; height: 100%; border: 0; }
+  #catalog-pane.on { display: flex; flex-direction: column; }
+  #catalog-pane iframe { display: block; width: 100%; flex: 1 1 auto; min-height: 0; border: 0; }
   html.catalog-on #scroller { display: none; }
 
   @media (min-width: 700px) {
@@ -1467,7 +1467,7 @@
 <div id="gate">
   <form class="gate-card" id="gate-form" autocomplete="off">
     <p class="gate-eyebrow">HK Quality Issue Portal</p>
-    <h1 class="gate-title">불량 가이드</h1>
+    <h1 class="gate-title">매장 가이드</h1>
     <p class="gate-sub">매장코드와 비밀번호를 입력해주세요.</p>
     <label class="gate-label" for="gate-code">매장코드</label>
     <input class="gate-input" id="gate-code" name="code" type="text" inputmode="text" autocapitalize="characters" autocomplete="username" spellcheck="false" required>
@@ -1723,11 +1723,15 @@ function switchTab(name) {
   }
   var pane = document.getElementById('catalog-pane');
   var frame = document.getElementById('catalog-frame');
+  var appEl = document.getElementById('app');
+  function ensureSrc(){ if (!frame.getAttribute('src') && appEl && !appEl.hidden) frame.setAttribute('src', 'catalog.html'); }
   function catalogOn(on){
     document.documentElement.classList.toggle('catalog-on', on);
     pane.classList.toggle('on', on);
-    if (on && !frame.getAttribute('src')) frame.setAttribute('src', 'catalog.html');
+    if (sessionBar) { if (on) pane.insertBefore(sessionBar, frame); else scroller.insertBefore(sessionBar, scroller.firstChild); }
+    if (on) ensureSrc();
   }
+  if (appEl && window.MutationObserver) new MutationObserver(ensureSrc).observe(appEl, { attributes: true, attributeFilter: ['hidden'] });
   window.switchTab = function(name){
     if (name === 'catalog') { catalogOn(true); mark(name); return; }
     catalogOn(false); orig(name); mark(name); toTop();
@@ -1735,6 +1739,7 @@ function switchTab(name) {
   Array.prototype.forEach.call(items, function(b){
     b.addEventListener('click', function(){ window.switchTab(b.getAttribute('data-tab')); });
   });
+  catalogOn(true); mark('catalog');  // 기본 탭: 상품 설명집
   var lb = document.getElementById('lightbox');
   if (lb && window.MutationObserver) {
     new MutationObserver(function(){ document.body.classList.toggle('lb-open', !lb.hidden); })

@@ -1,7 +1,7 @@
 {
-  "name": "불량 가이드",
-  "short_name": "불량가이드",
-  "description": "매장 불량 유형별 사진 가이드와 접수 절차",
+  "name": "매장 가이드",
+  "short_name": "매장가이드",
+  "description": "매장 상품 설명집, 불량 유형별 사진 가이드와 접수 절차",
   "lang": "ko",
   "start_url": "./",
   "scope": "./",
