@@ -799,8 +799,8 @@ function renderDetailProduct(itemCode) {
     document.getElementById('catPlanRow').innerHTML = planRow;  // 검색창은 이 행의 오른쪽에 고정 배치(입력 중 다시 그려지지 않도록 별도 요소)
     document.getElementById('catFilters').innerHTML = html;
     document.querySelectorAll('#catPlanRow button, #catFilters button').forEach(b => b.onclick = () => {
-      if (b.dataset.k === 'plan') { state.plan = b.dataset.v; state.body = 'ALL'; }
-      else if (b.dataset.k === 'body') { state.body = b.dataset.v; }
+      if (b.dataset.k === 'plan') { state.plan = b.dataset.v; state.body = 'ALL'; state.attr = 'ALL'; }
+      else if (b.dataset.k === 'body') { state.body = b.dataset.v; state.attr = 'ALL'; }
       else { state.attr = b.dataset.v; }
       renderAll();
     });
@@ -825,7 +825,7 @@ function renderDetailProduct(itemCode) {
   }
 
   // ---------------- 스토리 박스 ----------------
-  const SEASON_LABEL = { AW26: 'AW26 COLLECTION', SS27: 'SS27 COLLECTION' };
+  const SEASON_LABEL = { AW26: 'AW26', SS27: 'SS27 COLLECTION' };
   function seasonLabel(s) {
     if (s.season_tab === 'SS27' && s.item_code.startsWith('HYR')) return 'R27 COLLECTION';
     return SEASON_LABEL[s.season_tab] || 'COLLECTION';
@@ -888,7 +888,7 @@ function renderDetailProduct(itemCode) {
     document.getElementById('catStories').innerHTML = boxes.length ? boxes.map(storyBox).join('') : '<div class="empty">해당 조건의 상품이 없습니다.</div>';
   }
 
-  const MATERIAL_LABELS = { COLLECTION: 'AW26 COLLECTION', COLLECTION_SS27: 'SS27 COLLECTION', ICONIC: 'ICONIC' };
+  const MATERIAL_LABELS = { COLLECTION: 'AW26', COLLECTION_SS27: 'SS27 COLLECTION', ICONIC: 'ICONIC' };
   function renderMaterialTabs() {
     const order = ['COLLECTION', 'COLLECTION_SS27', 'ICONIC'];
     const materials = Object.keys(TREE).sort((a, b) => order.indexOf(a) - order.indexOf(b));
