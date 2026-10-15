@@ -1,0 +1,17 @@
+{
+  "name": "불량 가이드",
+  "short_name": "불량가이드",
+  "description": "매장 불량 유형별 사진 가이드와 접수 절차",
+  "lang": "ko",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#faf5e8",
+  "theme_color": "#faf5e8",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

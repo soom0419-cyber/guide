@@ -1,0 +1,1610 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#faf5e8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="불량 가이드">
+<meta name="robots" content="noindex,nofollow">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png">
+<title>불량 가이드</title>
+<style>:root{color-scheme:light}[hidden]:not([hidden=until-found i]){display:none!important}img{max-width:100%}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --bg: #faf5e8;
+    --surface: #fffdf8;
+    --surface-sunken: #f2e9d4;
+    --border: #e4d8b8;
+    --border-strong: #cdbd90;
+    --text: #201f1c;
+    --text-muted: #524f45;
+    --text-faint: #706c60;
+    --accent: #6b5d47;
+    --accent-soft: #ece5d4;
+    --accent-border: #cfc3a8;
+    --required: #b3432f;
+    --required-soft: #fbeae6;
+    --example: #3c7a52;
+    --example-soft: #e9f3ec;
+    --focus-ring: #6b5d47;
+    --shadow: 0 1px 2px rgba(32,31,28,0.06), 0 8px 24px -12px rgba(32,31,28,0.12);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "IBM Plex Sans", -apple-system, "Malgun Gothic", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 40px 20px 96px;
+  }
+
+  header.page-head {
+    margin-bottom: 28px;
+  }
+
+  .eyebrow {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 10px;
+  }
+
+  h1 {
+    font-size: clamp(26px, 4vw, 34px);
+    line-height: 1.25;
+    margin: 0 0 10px;
+    text-wrap: balance;
+    font-weight: 700;
+  }
+
+  .subhead {
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 62ch;
+    margin: 0;
+  }
+
+  .source-line {
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--text-faint);
+    font-family: "IBM Plex Mono", monospace;
+    word-break: break-all;
+  }
+
+  .source-line a { color: var(--text-muted); }
+
+  /* legend */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+    margin: 26px 0 34px;
+    padding: 14px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    flex: none;
+  }
+  .swatch.required { background: var(--required); }
+  .swatch.mapped { background: var(--accent); }
+  .swatch.example { background: var(--example); }
+  .swatch.manual { background: var(--text-faint); }
+
+  /* field rows */
+  .field-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .field {
+    display: grid;
+    grid-template-columns: 40px minmax(0,1fr) minmax(0,1.15fr);
+    gap: 0 22px;
+    align-items: start;
+  }
+
+  .field-index {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--text-faint);
+    padding-top: 14px;
+    text-align: right;
+  }
+
+  /* left: mimic of the real Zoho form input */
+  .form-mimic {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+  }
+
+  .field-label {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text);
+    margin: 0 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .req-mark { color: var(--required); font-weight: 600; }
+
+  .faux-input {
+    border: 1.5px solid var(--border-strong);
+    border-radius: 6px;
+    padding: 9px 12px;
+    font-size: 13.5px;
+    color: var(--text-faint);
+    background: var(--surface-sunken);
+    font-family: "IBM Plex Mono", monospace;
+  }
+
+  .faux-input.select::after {
+    content: "▾";
+    float: right;
+    color: var(--text-faint);
+  }
+
+  .faux-input.textarea {
+    min-height: 54px;
+  }
+
+  .faux-hint {
+    margin: 8px 0 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--accent);
+  }
+
+  .chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .chip {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11.5px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: var(--surface-sunken);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+
+  /* right: guidance card */
+  .guide-card {
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-border);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+
+  .guide-card.manual {
+    background: var(--surface);
+    border-style: dashed;
+    border-color: var(--border-strong);
+  }
+
+  .guide-title {
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    font-weight: 600;
+    margin: 0 0 8px;
+  }
+
+  .guide-card.manual .guide-title { color: var(--text-faint); }
+
+  .guide-body {
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--text);
+    margin: 0;
+  }
+
+  .guide-body b { font-weight: 600; }
+
+  .source-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11.5px;
+    color: var(--text-muted);
+  }
+
+  .source-tag .col {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 2px 7px;
+    border-radius: 5px;
+    color: var(--text);
+  }
+
+  .example-tag {
+    display: block;
+    margin-top: 10px;
+    padding: 7px 10px;
+    background: var(--example-soft);
+    border-radius: 6px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--example);
+  }
+
+  .example-tag .example-label {
+    font-family: "IBM Plex Sans", sans-serif;
+    color: var(--text-muted);
+    margin-right: 6px;
+  }
+
+  /* section divider for grouped steps */
+  .group-head {
+    margin: 40px 0 14px;
+    padding-top: 4px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .group-head:first-of-type { margin-top: 8px; }
+
+  .group-head h2 {
+    font-size: 15px;
+    margin: 0;
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .group-head .group-note {
+    font-size: 12.5px;
+    color: var(--text-faint);
+  }
+
+  /* footer / update note */
+  .update-note {
+    margin-top: 48px;
+    padding: 18px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .update-note b { color: var(--text); }
+
+  .quick-access {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 16px;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 12.5px;
+    color: var(--text-muted);
+  }
+
+  .quick-access a.zoho-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 12.5px;
+  }
+
+  .quick-access .cred {
+    font-family: "IBM Plex Mono", monospace;
+    color: var(--text);
+  }
+
+  .quick-access .cred-label {
+    color: var(--text-faint);
+    margin-right: 4px;
+  }
+
+  .callout-warn {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin: 0 0 30px;
+    padding: 16px 18px;
+    background: var(--required-soft);
+    border: 1.5px solid var(--required);
+    border-radius: 10px;
+  }
+
+  .callout-warn .mark {
+    font-weight: 700;
+    color: var(--required);
+    font-size: 15px;
+    line-height: 1.5;
+    flex: none;
+  }
+
+  .callout-warn p {
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--text);
+  }
+
+  .callout-warn b { color: var(--required); }
+
+  .map-note {
+    margin: 14px 0 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    color: var(--text-faint);
+  }
+
+  .map-note .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--text-faint);
+    flex: none;
+  }
+
+  .credit-map {
+    max-height: 320px;
+    overflow-y: auto;
+    border: 1px solid var(--accent-border);
+    border-radius: 8px;
+    background: var(--surface);
+  }
+
+  .credit-map .grp-label {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 5px 10px;
+  }
+
+  .credit-map .items {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .credit-map .item {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 10px;
+    padding: 6px 10px;
+    font-size: 12px;
+    line-height: 1.4;
+    border-top: 1px solid var(--border);
+  }
+
+  .credit-map .item .kr { color: var(--text); }
+  .credit-map .item .zoho {
+    font-family: "IBM Plex Mono", monospace;
+    color: var(--accent);
+  }
+
+  .head-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .lang-badge {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: var(--required-soft);
+    border: 1.5px solid var(--required);
+    border-radius: 10px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .lang-badge .mark {
+    font-weight: 700;
+    color: var(--required);
+    font-size: 15px;
+    flex: none;
+  }
+
+  .lang-badge b { color: var(--required); }
+
+  /* tablet (iPad portrait/landscape and similar) */
+  @media (max-width: 1024px) {
+    .wrap { padding: 32px 20px 80px; }
+
+    .subhead { white-space: normal !important; max-width: none !important; }
+
+    .defect-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
+  }
+
+  @media (max-width: 900px) {
+    .field {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .field-index { display: none; }
+  }
+
+  @media (max-width: 680px) {
+    .process-split { grid-template-columns: 1fr; gap: 32px 0; }
+    .process-split::before { display: none; }
+    .quick-access .cred { display: none; }
+  }
+
+  @media (max-width: 480px) {
+    .page-tab { margin-right: 14px; font-size: 13px; }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .field { transition: transform 0.15s ease; }
+  }
+
+  /* top-level page tabs */
+  .page-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-tab {
+    appearance: none;
+    border: none;
+    background: none;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-faint);
+    padding: 10px 4px 12px;
+    margin-right: 22px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+  }
+
+  .page-tab:hover { color: var(--text-muted); }
+
+  .page-tab[aria-selected="true"] {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .tabpanel { display: none; }
+  .tabpanel.active { display: block; }
+
+  /* defect guide gallery (tab 2) */
+  .defect-intro {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    line-height: 1.65;
+    max-width: 68ch;
+    margin: 0 0 26px;
+  }
+
+  .defect-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .defect-group h3 {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin: 0 0 16px;
+    padding: 10px 16px;
+    font-size: 20px;
+    font-weight: 800;
+    color: #fff;
+    background: var(--accent);
+    border-radius: 8px;
+  }
+
+
+  .gcard-img-btn {
+    appearance: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: zoom-in;
+    background: none;
+  }
+
+  .gcard-img-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .gcard-img-btn:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: -2px; }
+
+
+  .defect-index {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 22px;
+    padding: 10px 0;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .defect-index a {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-border);
+    border-radius: 999px;
+    padding: 7px 15px;
+    text-decoration: none;
+  }
+
+  .defect-index a:hover { background: var(--accent); color: #fff; }
+
+  .defect-group { scroll-margin-top: 76px; }
+
+
+  .defect-tools {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    margin: 0 0 22px;
+    padding: 10px 0 12px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .defect-tools .defect-index {
+    position: static;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+
+  .defect-search input {
+    width: 100%;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 16px;
+    color: var(--text);
+    background: var(--surface);
+    border: 1.5px solid var(--border-strong);
+    border-radius: 10px;
+    padding: 12px 16px;
+  }
+
+  .defect-search input:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 1px;
+  }
+
+  .defect-empty {
+    margin: 0 0 24px;
+    padding: 28px;
+    text-align: center;
+    font-size: 15px;
+    color: var(--text-faint);
+    border: 1.5px dashed var(--border-strong);
+    border-radius: 10px;
+  }
+
+  .defect-group { scroll-margin-top: 150px; }
+
+  .gcard-extra { display: none; }
+
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.82);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 40px 20px;
+  }
+
+  .lightbox[hidden] { display: none; }
+
+  .lightbox-figure {
+    margin: 0;
+    max-width: min(94vw, 1100px);
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .lightbox-strip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    overflow-y: auto;
+    width: min(90vw, 800px);
+    max-width: 100%;
+    max-height: 84vh;
+    padding: 4px;
+    scroll-snap-type: y mandatory;
+  }
+
+  .lightbox-strip img {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    scroll-snap-align: center;
+    flex: none;
+  }
+
+  .lightbox-figure figcaption {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .lightbox-close {
+    position: fixed;
+    top: 20px;
+    right: 24px;
+    appearance: none;
+    border: none;
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+  }
+
+  .lightbox-close:hover { background: rgba(255,255,255,0.22); }
+
+  .defect-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 14px;
+  }
+
+  .defect-slot {
+    border: 1.5px dashed var(--border-strong);
+    border-radius: 10px;
+    background: var(--surface);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .defect-slot .img-placeholder {
+    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 6px;
+    color: var(--text-faint);
+    background: var(--surface-sunken);
+    font-size: 11px;
+    text-align: center;
+    padding: 8px;
+  }
+
+  .defect-slot .img-placeholder .icon {
+    font-size: 22px;
+    opacity: 0.6;
+  }
+
+  .defect-slot .cap {
+    padding: 9px 10px 11px;
+    border-top: 1px dashed var(--border);
+  }
+
+  .defect-slot .cap .kr {
+    display: block;
+    font-size: 16px;
+    color: var(--text);
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .defect-slot .img-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--n, 1), 1fr);
+    aspect-ratio: 4 / 3;
+  }
+
+  .defect-slot .img-grid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .defect-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .compare-side {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .compare-side.bad { border-right: 1px dashed var(--border); }
+
+  .side-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-align: center;
+    padding: 6px 4px;
+  }
+
+  .compare-side.bad .side-label {
+    color: var(--required);
+    background: var(--required-soft);
+  }
+
+  .compare-side.good .side-label {
+    color: var(--example);
+    background: var(--example-soft);
+  }
+
+  .side-images {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: var(--border);
+  }
+
+  .side-cell {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .side-cell img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .side-cell.placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-sunken);
+    color: var(--text-faint);
+    font-size: 16px;
+  }
+
+  .side-comment {
+    padding: 8px 8px 10px;
+    text-align: center;
+    font-size: 11.5px;
+    color: var(--text-faint);
+    font-style: italic;
+    border-top: 1px dashed var(--border);
+  }
+
+  .defect-slot .cap .zoho {
+    display: block;
+    font-size: 10.5px;
+    color: var(--text-faint);
+    font-family: "IBM Plex Mono", monospace;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  .defect-source {
+    margin-top: 28px;
+    font-size: 12px;
+    color: var(--text-faint);
+    font-family: "IBM Plex Mono", monospace;
+  }
+
+  /* process guide (tab 1) */
+  .process-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    counter-reset: step;
+  }
+
+  .process-step {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 0 20px;
+    position: relative;
+  }
+
+  .process-num {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-border);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+  }
+
+  .process-step:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    left: 17px;
+    top: 36px;
+    bottom: -12px;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .process-body {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+  }
+
+  .process-role {
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 999px;
+    padding: 4px 14px;
+    margin-bottom: 10px;
+  }
+
+  .process-note {
+    margin: 0 0 10px;
+    font-size: 12.5px;
+    color: var(--text-faint);
+    font-style: italic;
+  }
+
+  .path-code {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    background: var(--surface-sunken);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    word-break: break-all;
+  }
+
+  /* 불량 접수 가이드 tab */
+  .receipt-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .receipt-step {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 0 22px;
+    position: relative;
+  }
+
+  .receipt-num {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+    background: var(--accent);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+  }
+
+  .receipt-step:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    left: 19px;
+    top: 40px;
+    bottom: -16px;
+    width: 2px;
+    background: var(--border-strong);
+  }
+
+  .receipt-body {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 26px 26px;
+    box-shadow: var(--shadow);
+    margin-bottom: 32px;
+  }
+
+  .receipt-title {
+    margin: 0 0 16px;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text);
+  }
+
+  .receipt-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: rstep;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .receipt-list li {
+    counter-increment: rstep;
+    position: relative;
+    padding-left: 30px;
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--text);
+  }
+
+  .receipt-list li::before {
+    content: counter(rstep);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 21px;
+    height: 21px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .receipt-list b { color: var(--required); }
+
+  .receipt-list-compact { margin-top: 20px; }
+
+  .annotated-img {
+    position: relative;
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    background: #fff;
+  }
+
+  .annotated-img img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .annotated-img .pin {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--required);
+    color: #fff;
+    font-family: "IBM Plex Mono", monospace;
+    font-weight: 800;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.45);
+    border: 2px solid #fff;
+  }
+
+  .receipt-placeholder {
+    margin: 0;
+    padding: 24px;
+    text-align: center;
+    border: 1.5px dashed var(--border-strong);
+    border-radius: 8px;
+    color: var(--text-faint);
+    font-size: 13.5px;
+  }
+
+  .process-desc-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .process-desc-list li {
+    position: relative;
+    padding-left: 18px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  .process-desc-list li::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 9px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-border);
+  }
+
+  .process-desc-list li:has(b)::before { background: var(--required); }
+
+  .process-desc-list b { color: var(--required); font-weight: 700; }
+
+  .process-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 32px;
+    position: relative;
+  }
+
+  .process-split::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--border-strong);
+  }
+
+  .process-col-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+
+  .process-col-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 8px;
+    padding: 8px 14px;
+    display: inline-block;
+  }
+
+  .form-download-btn {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--accent-border);
+    background: var(--surface);
+    color: var(--accent);
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 7px 13px;
+    cursor: pointer;
+  }
+
+  .form-download-btn:hover { background: var(--accent-soft); }
+  .form-download-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .form-download-btn .ico { font-size: 13px; }
+
+  .process-col .process-list { counter-reset: none; }
+
+  .process-notice {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin: 0 0 22px;
+    padding: 14px 16px;
+    background: var(--required-soft);
+    border: 1.5px solid var(--required);
+    border-radius: 10px;
+  }
+
+  .process-notice .mark {
+    font-weight: 700;
+    color: var(--required);
+    font-size: 15px;
+    line-height: 1.5;
+    flex: none;
+  }
+
+  .process-notice p {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  .process-notice b { color: var(--required); }
+
+  /* mirrored bad/good gallery split */
+  .gallery-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 24px;
+    align-items: start;
+    position: relative;
+  }
+
+  .gallery-split::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--border-strong);
+  }
+
+  .gallery-col { display: flex; flex-direction: column; gap: 0; }
+
+  .col-banner {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+    border-radius: 8px;
+    padding: 14px 10px;
+    margin-bottom: 22px;
+  }
+
+  .bad-banner { background: var(--required); }
+  .good-banner { background: var(--accent); }
+
+  .gallery-col .defect-group { margin-bottom: 26px; }
+
+  .gallery-col .defect-group h3 {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin: 0 0 12px;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .gallery-col .defect-group h3 .count {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-faint);
+  }
+
+  .gallery-col .defect-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+  }
+
+  .gcard {
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+
+  .gcard-img {
+    aspect-ratio: 1 / 1;
+    background: var(--surface-sunken);
+  }
+
+  .gcard-img-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--n, 1), 1fr);
+    width: 100%;
+    height: 100%;
+  }
+
+  .gcard-img-grid img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .gcard-img-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: var(--text-faint);
+    font-size: 11px;
+  }
+
+  .gcard-img-placeholder .icon { font-size: 22px; opacity: 0.6; }
+
+  .gcard-body {
+    display: flex;
+    flex-direction: column;
+    padding: 9px 10px 11px;
+  }
+
+  .gcard-title { font-size: 17px; font-weight: 700; color: var(--text); line-height: 1.35; }
+
+  .gcard.good { position: relative; }
+
+  .good-img {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-faint);
+    font-size: 22px;
+  }
+
+  .good-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .gcard-overlay {
+    position: absolute;
+    left: 50%;
+    bottom: 10px;
+    transform: translateX(-50%);
+    background: #1f3a5f;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 16px;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+    box-shadow: var(--shadow);
+  }
+
+  .ov-kw { font-size: 15px; font-weight: 700; }
+  .ov-comment { font-size: 13px; font-weight: 700; }
+</style>
+
+
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+<div id="gate">
+  <form class="gate-card" id="gate-form" autocomplete="off">
+    <p class="gate-eyebrow">HK Quality Issue Portal</p>
+    <h1 class="gate-title">불량 가이드</h1>
+    <p class="gate-sub">매장코드와 비밀번호를 입력해주세요.</p>
+    <label class="gate-label" for="gate-code">매장코드</label>
+    <input class="gate-input" id="gate-code" name="code" type="text" inputmode="text" autocapitalize="characters" autocomplete="username" spellcheck="false" required>
+    <label class="gate-label" for="gate-pw">비밀번호</label>
+    <input class="gate-input" id="gate-pw" name="pw" type="password" autocomplete="current-password" required>
+    <p class="gate-error" id="gate-error" role="alert" hidden></p>
+    <button class="gate-btn" id="gate-btn" type="submit">로그인</button>
+  </form>
+</div>
+<div id="app" hidden>
+<div class="session-bar">
+  <span id="who"></span>
+  <button type="button" id="admin-btn" hidden>접근 매장 목록</button>
+  <button type="button" id="logout-btn">로그아웃</button>
+</div>
+<div class="wrap">
+
+  <div class="page-tabs" role="tablist">
+    <button class="page-tab" id="tab-btn-defect" role="tab" aria-selected="true" aria-controls="panel-defect" onclick="switchTab('defect')">불량 가이드</button>
+    <button class="page-tab" id="tab-btn-receipt" role="tab" aria-selected="false" aria-controls="panel-receipt" onclick="switchTab('receipt')">불량 접수 가이드</button>
+  </div>
+
+  <div id="panel-defect" class="tabpanel active">
+<p class="defect-intro">각 불량 항목의 이미지를 클릭하면 확대할 수 있으며, 스크롤하여 확인할 수 있습니다.</p>
+<div class="defect-tools"><div class="defect-search"><input type="search" id="defect-search" placeholder="카테고리 또는 불량 항목 검색 (예: 오염, 본드, 챙)" aria-label="불량 검색" autocomplete="off"></div><nav class="defect-index" aria-label="불량 카테고리 색인"><a href="#cat-1" data-target="cat-1">1. 오염</a><a href="#cat-2" data-target="cat-2">2. 제품 형태</a><a href="#cat-3" data-target="cat-3">3. 부자재</a><a href="#cat-4" data-target="cat-4">4. 구멍</a><a href="#cat-5" data-target="cat-5">5. 가죽</a><a href="#cat-6" data-target="cat-6">6. 사이즈</a><a href="#cat-7" data-target="cat-7">7. 곰팡이</a></nav></div>
+<p class="defect-empty" id="defect-empty" hidden>검색 결과가 없습니다. 다른 단어로 검색해보세요.</p>
+<div class="defect-gallery">
+<div class="defect-group" id="cat-1"><h3>1. 오염</h3><div class="defect-grid">
+<div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="본드" aria-label="본드 이미지 확대"><img src="img/i001.jpg" alt="본드"></button></div><div class="gcard-body"><span class="gcard-title">본드</span></div></div>
+<div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="라피아 소재 자국" aria-label="라피아 소재 자국 이미지 확대"><img src="img/i002.jpg" alt="라피아 소재 자국"></button><div class="gcard-extra" hidden><img src="img/i003.jpg" alt="라피아 소재 자국"></div></div><div class="gcard-body"><span class="gcard-title">라피아 소재 자국</span></div></div>
+<div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="펜 자국" aria-label="펜 자국 이미지 확대"><img src="img/i004.jpg" alt="펜 자국"></button></div><div class="gcard-body"><span class="gcard-title">펜 자국</span></div></div>
+<div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="기타" aria-label="기타 이미지 확대"><img src="img/i005.jpg" alt="기타"></button></div><div class="gcard-body"><span class="gcard-title">기타</span></div></div>
+</div></div>
+<div class="defect-group" id="cat-2"><h3>2. 제품 형태</h3><div class="defect-grid">
+<div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="챙 형태" aria-label="챙 형태 이미지 확대"><img src="img/i006.jpg" alt="챙 형태"></button><div class="gcard-extra" hidden><img src="img/i007.jpg" alt="챙 형태"><img src="img/i008.jpg" alt="챙 형태"></div></div><div class="gcard-body"><span class="gcard-title">챙 형태</span></div></div>
+<div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="크라운 형태" aria-label="크라운 형태 이미지 확대"><img src="img/i009.jpg" alt="크라운 형태"></button></div><div class="gcard-body"><span class="gcard-title">크라운 형태</span></div></div>
+<div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="바이저 플라스틱 형태" aria-label="바이저 플라스틱 형태 이미지 확대"><img src="img/i010.jpg" alt="바이저 플라스틱 형태"></button><div class="gcard-extra" hidden><img src="img/i011.jpg" alt="바이저 플라스틱 형태"></div></div><div class="gcard-body"><span class="gcard-title">바이저 플라스틱 형태</span></div></div>
+<div class="gcard"><div class="gcard-img"><div class="gcard-img-placeholder"><span class="icon">🖼</span>이미지 예정</div></div><div class="gcard-body"><span class="gcard-title">기타</span></div></div>
+</div></div>
+<div class="defect-group" id="cat-3"><h3>3. 부자재</h3><div class="defect-grid">
+<div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="리본 불량" aria-label="리본 불량 이미지 확대"><img src="img/i012.jpg" alt="리본 불량"></button></div><div class="gcard-body"><span class="gcard-title">리본 불량</span></div></div>
+<div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="원단 문제" aria-label="원단 문제 이미지 확대"><img src="img/i013.jpg" alt="원단 문제"></button></div><div class="gcard-body"><span class="gcard-title">원단 문제</span></div></div>
+<div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="부자재 누락" aria-label="부자재 누락 이미지 확대"><img src="img/i014.jpg" alt="부자재 누락"></button><div class="gcard-extra" hidden><img src="img/i015.jpg" alt="부자재 누락"></div></div><div class="gcard-body"><span class="gcard-title">부자재 누락</span></div></div>
+<div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="바이저 밴드(보풀, 올트임)" aria-label="바이저 밴드(보풀, 올트임) 이미지 확대"><img src="img/i016.jpg" alt="바이저 밴드(보풀, 올트임)"></button></div><div class="gcard-body"><span class="gcard-title">바이저 밴드(보풀, 올트임)</span></div></div>
+<div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="수입택 오표기" aria-label="수입택 오표기 이미지 확대"><img src="img/i017.jpg" alt="수입택 오표기"></button></div><div class="gcard-body"><span class="gcard-title">수입택 오표기</span></div></div>
+<div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="기타" aria-label="기타 이미지 확대"><img src="img/i018.jpg" alt="기타"></button></div><div class="gcard-body"><span class="gcard-title">기타</span></div></div>
+</div></div>
+<div class="defect-group" id="cat-4"><h3>4. 구멍</h3><div class="defect-grid">
+<div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="브레이드 박음질" aria-label="브레이드 박음질 이미지 확대"><img src="img/i019.jpg" alt="브레이드 박음질"></button><div class="gcard-extra" hidden><img src="img/i020.jpg" alt="브레이드 박음질"><img src="img/i021.jpg" alt="브레이드 박음질"><img src="img/i022.jpg" alt="브레이드 박음질"></div></div><div class="gcard-body"><span class="gcard-title">브레이드 박음질</span></div></div>
+<div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="봉제/원단" aria-label="봉제/원단 이미지 확대"><img src="img/i023.jpg" alt="봉제/원단"></button></div><div class="gcard-body"><span class="gcard-title">봉제/원단</span></div></div>
+<div class="gcard"><div class="gcard-img"><div class="gcard-img-placeholder"><span class="icon">🖼</span>이미지 예정</div></div><div class="gcard-body"><span class="gcard-title">기타</span></div></div>
+</div></div>
+<div class="defect-group" id="cat-5"><h3>5. 가죽</h3><div class="defect-grid">
+<div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="자국/스크래치" aria-label="자국/스크래치 이미지 확대"><img src="img/i024.jpg" alt="자국/스크래치"></button></div><div class="gcard-body"><span class="gcard-title">자국/스크래치</span></div></div>
+<div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="가죽 단면 페인트" aria-label="가죽 단면 페인트 이미지 확대"><img src="img/i025.jpg" alt="가죽 단면 페인트"></button></div><div class="gcard-body"><span class="gcard-title">가죽 단면 페인트</span></div></div>
+<div class="gcard"><div class="gcard-img"><div class="gcard-img-placeholder"><span class="icon">🖼</span>이미지 예정</div></div><div class="gcard-body"><span class="gcard-title">가죽에 접착제 묻음</span></div></div>
+<div class="gcard"><div class="gcard-img"><div class="gcard-img-placeholder"><span class="icon">🖼</span>이미지 예정</div></div><div class="gcard-body"><span class="gcard-title">기타</span></div></div>
+</div></div>
+<div class="defect-group" id="cat-6"><h3>6. 사이즈</h3><div class="defect-grid">
+<div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="챙 길이" aria-label="챙 길이 이미지 확대"><img src="img/i026.jpg" alt="챙 길이"></button></div><div class="gcard-body"><span class="gcard-title">챙 길이</span></div></div>
+<div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="머리 사이즈" aria-label="머리 사이즈 이미지 확대"><img src="img/i027.jpg" alt="머리 사이즈"></button></div><div class="gcard-body"><span class="gcard-title">머리 사이즈</span></div></div>
+</div></div>
+<div class="defect-group" id="cat-7"><h3>7. 곰팡이</h3><div class="defect-grid">
+<div class="gcard"><div class="gcard-img"><button type="button" class="gcard-img-btn" data-lightbox-title="곰팡이" aria-label="곰팡이 이미지 확대"><img src="img/i028.jpg" alt="곰팡이"></button></div><div class="gcard-body"><span class="gcard-title">곰팡이</span></div></div>
+</div></div>
+</div>
+<script>
+(function(){
+  document.querySelectorAll(".defect-index a").forEach(function(a){
+    a.addEventListener("click", function(e){
+      e.preventDefault();
+      var t = document.getElementById(a.getAttribute("data-target"));
+      if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+})();
+</script>
+<script>
+(function(){
+  var input = document.getElementById("defect-search");
+  var empty = document.getElementById("defect-empty");
+  if (!input) return;
+  var groups = Array.prototype.slice.call(document.querySelectorAll(".defect-group"));
+  function norm(s){ return (s || "").toLowerCase().replace(/\s+/g, ""); }
+  function run(){
+    var q = norm(input.value);
+    var anyVisible = false;
+    groups.forEach(function(g){
+      var groupMatch = q && norm(g.querySelector("h3").textContent).indexOf(q) !== -1;
+      var cards = g.querySelectorAll(".gcard");
+      var shown = 0;
+      Array.prototype.forEach.call(cards, function(card){
+        var t = card.querySelector(".gcard-title");
+        var hit = !q || groupMatch || (t && norm(t.textContent).indexOf(q) !== -1);
+        card.hidden = !hit;
+        if (hit) shown++;
+      });
+      g.hidden = shown === 0;
+      if (shown > 0) anyVisible = true;
+      var chip = document.querySelector('.defect-index a[data-target="' + g.id + '"]');
+      if (chip) chip.hidden = shown === 0;
+    });
+    empty.hidden = anyVisible;
+  }
+  input.addEventListener("input", run);
+})();
+</script>
+<div id="lightbox" class="lightbox" hidden>
+  <button type="button" class="lightbox-close" aria-label="닫기">✕</button>
+  <figure class="lightbox-figure">
+    <div id="lightbox-strip" class="lightbox-strip"></div>
+    <figcaption id="lightbox-caption"></figcaption>
+  </figure>
+</div>
+<script>
+(function(){
+  var lb = document.getElementById("lightbox");
+  var strip = document.getElementById("lightbox-strip");
+  var lbCap = document.getElementById("lightbox-caption");
+  function openLb(srcs, title){
+    strip.innerHTML = "";
+    srcs.forEach(function(src){
+      var img = document.createElement("img");
+      img.src = src; img.alt = title;
+      strip.appendChild(img);
+    });
+    lbCap.textContent = title + (srcs.length > 1 ? " (" + srcs.length + "장, 아래로 스크롤)" : "");
+    lb.hidden = false; document.body.style.overflow = "hidden";
+  }
+  function closeLb(){ lb.hidden = true; strip.innerHTML = ""; document.body.style.overflow = ""; }
+  document.querySelectorAll(".gcard-img-btn").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var card = btn.closest(".gcard");
+      var imgs = card.querySelectorAll(".gcard-img img");
+      var srcs = Array.prototype.map.call(imgs, function(i){ return i.src; });
+      openLb(srcs, btn.getAttribute("data-lightbox-title"));
+    });
+  });
+  lb.addEventListener("click", function(e){ if (e.target === lb) closeLb(); });
+  lb.querySelector(".lightbox-close").addEventListener("click", closeLb);
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape" && !lb.hidden) closeLb(); });
+})();
+</script>
+  </div>
+
+  <div id="panel-receipt" class="tabpanel">
+
+  <header class="page-head">
+    <p class="eyebrow">HK Quality Issue Portal</p>
+    <h1>불량 접수 가이드</h1>
+    <p class="subhead">매장에서 불량을 발견한 순간부터 수선실로 보내기까지, 단계별로 정리했습니다.</p>
+  </header>
+
+  <div class="receipt-steps">
+
+    <div class="receipt-step">
+      <div class="receipt-num">1</div>
+      <div class="receipt-body">
+        <h3 class="receipt-title">접수 절차</h3>
+        <ol class="receipt-list">
+          <li><b>매장 입고분 검수</b><br>상품을 받는 즉시 불량 여부, 퀄리티, 구성품 유무 등을 검수합니다.</li>
+          <li><b>불량 내용 공유</b><br>불량 발견 시 카카오톡 오픈채팅방에 공유합니다.<br>불량 사진, 상세 내용, 가격택 사진은 필수로 첨부합니다.</li>
+          <li><b>접수</b><br>전산에 수선 등록을 진행합니다.<br>크레딧불량 매장으로 RT 반출 등록을 합니다.<br>수선증을 작성해 상품에 부착합니다.</li>
+          <li><b>수선실 발송</b><br>행낭을 이용해 실물을 수선실로 발송합니다.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="receipt-step">
+      <div class="receipt-num">2</div>
+      <div class="receipt-body">
+        <h3 class="receipt-title">수선등록 매뉴얼</h3>
+        <div class="annotated-img"><img src="img/i029.webp" alt="수선등록 화면"><span class="pin" style="left:54%;top:4%">1</span><span class="pin" style="left:2%;top:36%">2</span><span class="pin" style="left:17.4%;top:16.3%">3</span><span class="pin" style="left:17.4%;top:24.5%">4</span><span class="pin" style="left:57.6%;top:26.8%">5</span><span class="pin" style="left:17.4%;top:42.4%">6</span><span class="pin" style="left:17.4%;top:69.9%">7</span><span class="pin" style="left:17.4%;top:80%">8</span></div>
+        <ol class="receipt-list receipt-list-compact">
+          <li>상단 메뉴에서 <b>고객관리</b> 탭을 클릭합니다.</li>
+          <li>좌측 메뉴에서 <b>수선등록</b> 버튼을 클릭합니다.</li>
+          <li>접수일자를 선택합니다.</li>
+          <li>고객명에 <b>"크레딧불량"</b>을 입력합니다.</li>
+          <li>접수구분을 <b>"크레딧불량"</b>으로 선택합니다.</li>
+          <li>품번 / 색상 / 사이즈 등 상품정보를 입력합니다.</li>
+          <li>수선코드를 <b>"기타"</b>로 선택합니다.</li>
+          <li>접수내용에 불량 상세 내용을 작성합니다.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="receipt-step">
+      <div class="receipt-num">3</div>
+      <div class="receipt-body">
+        <h3 class="receipt-title">RT 반출 등록</h3>
+        <div class="annotated-img"><img src="img/i030.webp" alt="RT 반출등록 화면"><span class="pin" style="left:27%;top:3%">1</span><span class="pin" style="left:3%;top:13%">2</span><span class="pin" style="left:16.65%;top:59.31%">3</span><span class="pin" style="left:48.9%;top:59.31%">4</span></div>
+        <ol class="receipt-list receipt-list-compact">
+          <li>상단 메뉴에서 <b>점간이동관리</b> 탭을 클릭합니다.</li>
+          <li>좌측 메뉴에서 <b>R/T 반출등록</b> 버튼을 클릭합니다.</li>
+          <li>받는매장을 <b>크레딧불량 매장(H9020)</b>으로 등록합니다.</li>
+          <li>품번 / 색상 / 사이즈 등 상품정보를 입력합니다.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="receipt-step">
+      <div class="receipt-num">4</div>
+      <div class="receipt-body">
+        <h3 class="receipt-title">수기 수선증 작성</h3>
+        <div class="annotated-img"><img src="img/i031.webp" alt="수기 수선증 작성 예시"><span class="pin" style="left:5.76%;top:25.5%">1</span><span class="pin" style="left:5.9%;top:39.9%">2</span></div>
+        <ol class="receipt-list receipt-list-compact">
+          <li>고객명에 <b>"크레딧불량"</b>을 기입합니다.</li>
+          <li>접수내용에는 <b>불량 가이드의 카테고리 번호·항목명</b>을 동일하게 적고, 불량 내용을 상세히 기입합니다. (예: 2. 제품 형태 - 바이저 플라스틱 형태)</li>
+        </ol>
+      </div>
+    </div>
+
+  </div>
+
+  </div>
+
+</div>
+
+<script>
+function switchTab(name) {
+  var panels = { defect: document.getElementById('panel-defect'), receipt: document.getElementById('panel-receipt') };
+  var btns = { defect: document.getElementById('tab-btn-defect'), receipt: document.getElementById('tab-btn-receipt') };
+  Object.keys(panels).forEach(function(key) {
+    var active = key === name;
+    panels[key].classList.toggle('active', active);
+    btns[key].setAttribute('aria-selected', active ? 'true' : 'false');
+  });
+}
+</script>
+
+
+
+</div>
+<div id="admin-modal" class="admin-modal" hidden>
+  <div class="admin-card">
+    <h2>접근 가능한 계정</h2>
+    <ul id="admin-list"></ul>
+    <p class="admin-note">매장 추가·삭제·비밀번호 변경은 Claude에게 요청해주세요.</p>
+    <button type="button" id="admin-close">닫기</button>
+  </div>
+</div>
+<script src="users.js"></script>
+<script src="gate.js"></script>
+</body>
+</html>
