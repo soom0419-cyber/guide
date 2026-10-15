@@ -82,6 +82,10 @@ nav.months {
 }
 nav.months { align-items: center; justify-content: space-between; }
 #monthChips { min-width: 0; }
+.cat-titlerow { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 16px; margin: 24px 0 14px; border-bottom: 1px solid var(--line); }
+.cat-titlerow nav.materials { margin: 0; border-bottom: none; }
+.cat-titlerow .map-search { margin-bottom: 4px; }
+.cat-titlerow .map-search input { width: 300px; }
 .cat-top { position: sticky; top: var(--top-h, 0px); z-index: 10; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin: 0 -32px 10px; padding: 10px 32px; background: var(--bg); border-bottom: 1px solid var(--line); }
 .filters-rest { display: flex; flex-direction: column; gap: 8px; }
 .map-search { display: flex; align-items: center; gap: 8px; margin-left: auto; }
@@ -616,7 +620,7 @@ function rrpDisplay(s) {
   }
   return `₩${fmtNum(parseInt(s.rrp || 0))}`;
 }
-function mmdd(iso) { if (!iso) return ''; const [, m, d] = String(iso).split('-'); return `${m}/${d}`; }
+function mmdd(iso) { const t = String(iso || '').match(/(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/); return t ? `${t[2].padStart(2, '0')}/${t[3].padStart(2, '0')}` : ''; }
 function seasonMonthRank(mo) { const n = parseInt(mo, 10); return n === 12 ? -1 : n; }
 const seasonBadge = s => (s.seasons && s.seasons.includes('R27')) ? `<span class="season-badge">R27</span>` : '';
 let detailState = { story: null, product: null };
