@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#faf7f3">
+<meta name="theme-color" content="#ffffff">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="매장 가이드">
@@ -1501,6 +1501,17 @@
   }
 </style>
 
+<style id="bw-theme">
+  :root {
+    --bg: #fff; --surface: #fff; --surface-sunken: #f4f4f4;
+    --border: #e2e2e2; --border-strong: #8a8a8a;
+    --text: #111; --text-muted: #444; --text-faint: #6b6b6b;
+    --accent: #111; --accent-soft: #f0f0f0; --accent-border: #c9c9c9;
+    --required: #111; --required-soft: #eee; --example: #111; --example-soft: #f0f0f0;
+    --focus-ring: #111;
+  }
+  .ipane { background: #fff; }
+</style>
 <link rel="stylesheet" href="site.css">
 </head>
 <body>
@@ -1803,7 +1814,7 @@ function switchTab(name) {
 })();
 </script>
 
-<div class="ipane" id="catalog-pane" data-src="catalog.html"><iframe title="상품 설명집"></iframe></div><div class="ipane" id="inquiry-pane" data-src="inquiry.html"><iframe title="문의"></iframe></div><nav class="bottom-bar" id="bottom-bar" aria-label="메뉴"><button type="button" class="bb-item" data-tab="catalog"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 21.5A2.5 2.5 0 0 1 6.5 19H20"/><path d="M9 8h7"/></svg><span>상품 설명집</span></button><button type="button" class="bb-item" data-tab="defect" aria-current="page"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 8h.01"/><path d="M3 6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z"/><path d="M3 16l5-5c.93-.89 2.07-.89 3 0l5 5"/><path d="M14 14l1-1c.93-.89 2.07-.89 3 0l3 3"/></svg><span>불량 가이드</span></button><button type="button" class="bb-item" data-tab="receipt"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><path d="M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z"/><path d="M9 14l2 2 4-4"/></svg><span>불량 접수 가이드</span></button><button type="button" class="bb-item" data-tab="inquiry"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><span>문의</span></button></nav>
+<div class="ipane" id="catalog-pane" data-src="catalog.html"><iframe title="상품 설명집"></iframe></div><div class="ipane" id="inquiry-pane" data-src="inquiry.html"><iframe title="문의"></iframe></div><div class="ipane" id="catalog-pane" data-src="catalog.html"><iframe title="상품 설명집"></iframe></div><div class="ipane" id="inquiry-pane" data-src="inquiry.html"><iframe title="문의"></iframe></div><nav class="bottom-bar" id="bottom-bar" aria-label="메뉴"><button type="button" class="bb-item" data-tab="catalog"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 21.5A2.5 2.5 0 0 1 6.5 19H20"/><path d="M9 8h7"/></svg><span>상품 설명집</span></button><button type="button" class="bb-item" data-tab="defect" aria-current="page"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 8h.01"/><path d="M3 6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z"/><path d="M3 16l5-5c.93-.89 2.07-.89 3 0l5 5"/><path d="M14 14l1-1c.93-.89 2.07-.89 3 0l3 3"/></svg><span>불량 가이드</span></button><button type="button" class="bb-item" data-tab="receipt"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><path d="M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z"/><path d="M9 14l2 2 4-4"/></svg><span>불량 접수 가이드</span></button><button type="button" class="bb-item" data-tab="inquiry"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><span>문의</span></button></nav>
 <script>
 (function(){
   var items = document.querySelectorAll('.bb-item');
