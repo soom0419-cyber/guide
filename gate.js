@@ -126,6 +126,26 @@
 
   if (!restore()) codeInput.focus();
 
+  // 글자 크기 조절(가-/가+): 불량·접수 가이드는 .wrap, 상품 설명집·문의는 iframe 문서에 CSS zoom 적용. 기기별로 기억.
+  (function () {
+    var LV = [0.9, 1, 1.15, 1.3, 1.5], K = 'dg_zoom_v1', i = 1;
+    try { var v = parseInt(localStorage.getItem(K), 10); if (v >= 0 && v < LV.length) i = v; } catch (e) {}
+    function applyTo(doc) { if (doc && doc.documentElement) doc.documentElement.style.zoom = LV[i]; }
+    function apply() {
+      var w = document.querySelector('.wrap'); if (w) w.style.zoom = LV[i];
+      Array.prototype.forEach.call(document.querySelectorAll('.ipane iframe'), function (f) { try { applyTo(f.contentDocument); } catch (e) {} });
+      var d = document.getElementById('fs-down'), u = document.getElementById('fs-up');
+      if (d) d.disabled = i === 0;
+      if (u) u.disabled = i === LV.length - 1;
+    }
+    function step(n) { i = Math.max(0, Math.min(LV.length - 1, i + n)); try { localStorage.setItem(K, String(i)); } catch (e) {} apply(); }
+    var d = document.getElementById('fs-down'), u = document.getElementById('fs-up');
+    if (d) d.addEventListener('click', function () { step(-1); });
+    if (u) u.addEventListener('click', function () { step(1); });
+    Array.prototype.forEach.call(document.querySelectorAll('.ipane iframe'), function (f) { f.addEventListener('load', function () { try { applyTo(f.contentDocument); } catch (e) {} }); });
+    apply();
+  })();
+
   if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {
     navigator.serviceWorker.register('sw.js').catch(function () {});
   }

@@ -152,3 +152,6 @@ body { -webkit-tap-highlight-color: transparent; }
     padding-right: max(20px, env(safe-area-inset-right));
   }
 }
+
+.session-bar button:disabled { opacity: 0.35; cursor: default; }
+#fs-down, #fs-up { min-width: 44px; padding: 8px 10px; }
