@@ -135,10 +135,6 @@ body { -webkit-tap-highlight-color: transparent; }
 
 .page-tabs { overflow-x: auto; }
 
-@media (min-width: 1100px) {
-  .wrap { max-width: 1180px; }
-}
-
 /* touch devices (tablets) */
 @media (pointer: coarse) {
   .page-tab { padding: 14px 6px 16px; font-size: 16px; min-height: 48px; white-space: nowrap; }

@@ -1355,6 +1355,90 @@
   .ov-comment { font-size: 13px; font-weight: 700; }
 </style>
 
+<style id="tablet-ui">
+  html { -webkit-text-size-adjust: 100%; }
+  body { -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none; }
+  .page-tabs { display: none; }
+  .wrap { padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px)); }
+  .defect-index { overflow-x: auto; flex-wrap: nowrap; }
+  .defect-index a { flex: none; }
+
+  .bottom-bar {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 1500;
+    display: flex;
+    background: var(--surface);
+    border-top: 1px solid var(--border-strong);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+
+  .bb-item {
+    flex: 1;
+    appearance: none;
+    border: 0;
+    border-top: 3px solid transparent;
+    background: none;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text-faint);
+    min-height: 68px;
+    padding: 8px 4px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    margin-top: -1px;
+  }
+
+  .bb-item[aria-current="page"] {
+    color: var(--accent);
+    border-top-color: var(--accent);
+    font-weight: 700;
+  }
+
+  .bb-item:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: -4px; }
+
+  body.lb-open .bottom-bar { display: none; }
+
+  @media (min-width: 700px) {
+    .wrap { max-width: 1240px; padding-left: max(28px, env(safe-area-inset-left)); padding-right: max(28px, env(safe-area-inset-right)); }
+    .defect-grid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 18px; }
+    .defect-group h3 { font-size: 22px; padding: 12px 18px; }
+    .defect-intro { font-size: 15px; }
+    .gcard-title { font-size: 18px; }
+    .defect-index a { font-size: 16px; min-height: 46px; display: inline-flex; align-items: center; padding: 10px 18px; }
+    .defect-search input { font-size: 17px; min-height: 54px; padding: 14px 18px; }
+    .bb-item { min-height: 76px; font-size: 16px; gap: 5px; }
+    .bb-item svg { width: 30px; height: 30px; }
+    .receipt-title { font-size: 24px; }
+    .receipt-list li { font-size: 17px; line-height: 1.7; }
+    .receipt-list li::before { width: 24px; height: 24px; font-size: 13px; }
+    .annotated-img .pin { width: 36px; height: 36px; font-size: 17px; }
+    .lightbox-close { width: 56px; height: 56px; font-size: 24px; top: calc(16px + env(safe-area-inset-top, 0px)); }
+  }
+
+  @media (min-width: 1000px) and (orientation: landscape) {
+    .receipt-body:has(.annotated-img) {
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+      column-gap: 28px;
+      align-items: start;
+    }
+    .receipt-body:has(.annotated-img) .receipt-title { grid-column: 1 / -1; }
+    .receipt-body:has(.annotated-img) .receipt-list-compact { margin-top: 0; }
+  }
+
+  @media (max-width: 699px) {
+    .defect-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .bb-item { font-size: 13px; }
+    .annotated-img .pin { width: 30px; height: 30px; font-size: 15px; }
+  }
+</style>
 
 <link rel="stylesheet" href="site.css">
 </head>
@@ -1594,6 +1678,29 @@ function switchTab(name) {
 </script>
 
 
+
+<nav class="bottom-bar" id="bottom-bar" aria-label="메뉴"><button type="button" class="bb-item" data-tab="defect" aria-current="page"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 8h.01"/><path d="M3 6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z"/><path d="M3 16l5-5c.93-.89 2.07-.89 3 0l5 5"/><path d="M14 14l1-1c.93-.89 2.07-.89 3 0l3 3"/></svg><span>불량 가이드</span></button><button type="button" class="bb-item" data-tab="receipt"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><path d="M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z"/><path d="M9 14l2 2 4-4"/></svg><span>불량 접수 가이드</span></button></nav>
+<script>
+(function(){
+  var items = document.querySelectorAll('.bb-item');
+  var orig = window.switchTab;
+  function mark(name){
+    Array.prototype.forEach.call(items, function(b){
+      if (b.getAttribute('data-tab') === name) b.setAttribute('aria-current', 'page');
+      else b.removeAttribute('aria-current');
+    });
+  }
+  window.switchTab = function(name){ orig(name); mark(name); window.scrollTo(0, 0); };
+  Array.prototype.forEach.call(items, function(b){
+    b.addEventListener('click', function(){ window.switchTab(b.getAttribute('data-tab')); });
+  });
+  var lb = document.getElementById('lightbox');
+  if (lb && window.MutationObserver) {
+    new MutationObserver(function(){ document.body.classList.toggle('lb-open', !lb.hidden); })
+      .observe(lb, { attributes: true, attributeFilter: ['hidden'] });
+  }
+})();
+</script>
 
 </div>
 <div id="admin-modal" class="admin-modal" hidden>
