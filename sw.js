@@ -1,4 +1,4 @@
-var CACHE = 'defect-guide-v1';
+var CACHE = 'defect-guide-v2';
 
 self.addEventListener('install', function () { self.skipWaiting(); });
 
@@ -15,7 +15,7 @@ self.addEventListener('fetch', function (e) {
   var req = e.request;
   if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
   e.respondWith(
-    fetch(req).then(function (res) {
+    fetch(req.url, { cache: 'no-cache', credentials: 'same-origin' }).then(function (res) {
       if (res && res.ok) {
         var copy = res.clone();
         caches.open(CACHE).then(function (c) { c.put(req, copy); });

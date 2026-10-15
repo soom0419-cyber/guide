@@ -1,4 +1,4 @@
-/* 글자 크기 배율: 스타일시트의 px 글자 크기를 calc(Npx * var(--fs))로 바꿔 두고, --fs 값만 조절한다(카드·이미지 크기는 그대로). 각 문서(본문/iframe)가 직접 읽는다. */
+/* 글자 크기 배율: 스타일시트의 px 글자 크기를 calc(Npx * var(--fs))로 바꿔 두고, --fs 값만 조절한다(카드 최소 너비도 같이 배율 적용). 각 문서(본문/iframe)가 직접 읽는다. */
 (function () {
   var K = 'dg_fs_v1', LV = [0.9, 1, 1.15, 1.3, 1.5];
   function conv(rules) {
@@ -8,6 +8,8 @@
         var m = /^([\d.]+)px$/.exec(r.style.fontSize);
         if (m) r.style.fontSize = 'calc(' + m[1] + 'px * var(--fs, 1))';
       }
+      var gc = r.style && r.style.gridTemplateColumns;
+      if (gc && /minmax\(\s*[\d.]+px/.test(gc)) r.style.gridTemplateColumns = gc.replace(/minmax\(\s*([\d.]+)px/g, 'minmax(calc($1px * var(--fs, 1))');   // 카드 최소 너비도 같이 키움
     });
   }
   Array.prototype.forEach.call(document.styleSheets, function (s) {

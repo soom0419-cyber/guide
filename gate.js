@@ -147,6 +147,9 @@
   })();
 
   if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {
+    // 새 서비스워커가 인계하면(사이트 업데이트 직후) 한 번만 새로고침해서 홈 화면 앱도 최신 화면으로 맞춘다.
+    var hadCtl = !!navigator.serviceWorker.controller, reloaded = false;
+    navigator.serviceWorker.addEventListener('controllerchange', function () { if (hadCtl && !reloaded) { reloaded = true; location.reload(); } });
     navigator.serviceWorker.register('sw.js').catch(function () {});
   }
 })();
