@@ -126,14 +126,14 @@
 
   if (!restore()) codeInput.focus();
 
-  // 글자 크기 조절(가-/가+): 불량·접수 가이드는 .wrap, 상품 설명집·문의는 iframe 문서에 CSS zoom 적용. 기기별로 기억.
+  // 글자 크기 조절(가-/가+): fs.js가 각 문서의 --fs 배율을 바꾼다. 기기별로 기억.
   (function () {
-    var LV = [0.9, 1, 1.15, 1.3, 1.5], K = 'dg_zoom_v1', i = 1;
+    var LV = window.dgFsLevels || [1], K = window.dgFsKey || 'dg_fs_v1', i = 1;
     try { var v = parseInt(localStorage.getItem(K), 10); if (v >= 0 && v < LV.length) i = v; } catch (e) {}
-    function applyTo(doc) { if (doc && doc.documentElement) doc.documentElement.style.zoom = LV[i]; }
+    function sendTo(f) { try { if (f.contentWindow.dgFs) f.contentWindow.dgFs(LV[i]); } catch (e) {} }
     function apply() {
-      var w = document.querySelector('.wrap'); if (w) w.style.zoom = LV[i];
-      Array.prototype.forEach.call(document.querySelectorAll('.ipane iframe'), function (f) { try { applyTo(f.contentDocument); } catch (e) {} });
+      if (window.dgFs) window.dgFs(LV[i]);
+      Array.prototype.forEach.call(document.querySelectorAll('.ipane iframe'), sendTo);
       var d = document.getElementById('fs-down'), u = document.getElementById('fs-up');
       if (d) d.disabled = i === 0;
       if (u) u.disabled = i === LV.length - 1;
@@ -142,7 +142,7 @@
     var d = document.getElementById('fs-down'), u = document.getElementById('fs-up');
     if (d) d.addEventListener('click', function () { step(-1); });
     if (u) u.addEventListener('click', function () { step(1); });
-    Array.prototype.forEach.call(document.querySelectorAll('.ipane iframe'), function (f) { f.addEventListener('load', function () { try { applyTo(f.contentDocument); } catch (e) {} }); });
+    Array.prototype.forEach.call(document.querySelectorAll('.ipane iframe'), function (f) { f.addEventListener('load', function () { sendTo(f); }); });
     apply();
   })();
 
