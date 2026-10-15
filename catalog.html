@@ -825,7 +825,6 @@ function renderDetailProduct(itemCode) {
     const isIconic = first.material === 'ICONIC';
     const info = STORIES[g.story];
     const tags = [...new Set(cards.flatMap(c => c.seasons || []))];
-    const r27n = cards.filter(c => c.seasons && c.seasons.includes('R27')).length;  // 카드는 R27 먼저 정렬돼 있음 — R27 다음에 줄바꿈 후 SS27
     const eyebrow = info && info.eyebrow ? info.eyebrow : (isIconic ? 'ICONIC · ' + g.category : (tags.length > 1 ? tags.join(' · ') + ' COLLECTION' : seasonLabel(first)));
     const points = info && info.bullets && info.bullets.length
       ? `<ul class="story-points">${info.bullets.map(b => `<li>${b}</li>`).join('')}</ul>`
@@ -838,7 +837,7 @@ function renderDetailProduct(itemCode) {
         <div class="sb-count">스타일 ${cards.length}종</div>
         ${points ? `<div class="sb-desc">${points}</div>` : ''}
       </div>
-      <div class="sb-cards">${cards.map((c, i) => (r27n && r27n < cards.length && i === r27n ? '<div class="season-break"></div>' : '') + renderCard(c)).join('')}</div>
+      <div class="sb-cards">${cards.map(c => renderCard(c)).join('')}</div>
     </div>`;
   }
 
