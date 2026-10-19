@@ -566,6 +566,10 @@ table.dash tr.row-story-brushed td, table.dash tr.row-story-brushed .id-name { b
 :root { --bg: #fff; --surface: #fff; --surface-2: #f4f4f4; --ink: #111; --ink-soft: #666; --line: #e2e2e2; --line-strong: #8a8a8a;
   --accent: #111; --accent-soft: #f0f0f0; --good: #111; --good-bg: #f0f0f0; --warn: #111; --warn-bg: #f0f0f0; --crit: #111; --crit-bg: #eee; }
 
+button.fchip.group { background: #f0f0f0; border-color: #8a8a8a; color: #111; }
+button.fchip.group .n { color: #111; }
+button.fchip.group.active { background: #111; border-color: #111; color: #fff; }
+button.fchip.group.active .n { color: #fff; }
 header.cat-head { display: flex; align-items: center; justify-content: space-between; gap: 12px 20px; flex-wrap: wrap; }
 header.cat-head h1 { margin: 0; }
 header.cat-head .map-search { flex: 0 1 380px; min-width: 220px; }
@@ -748,6 +752,10 @@ function renderDetailProduct(itemCode) {
   };
   const bodyGroup = s => BODY_GROUP[s.body] || s.body;
   const attrLabel = s => ATTR_LABEL[s.attr] || s.attr || '';
+  // SS27 소재 그룹: 혼용률(material_main/material_full)에 '라피아'가 들어가면 라피아, 없으면(혼용률이 비어 있어도) 전부 CMT
+  const SS27_GROUPS = ['라피아', 'CMT'];
+  const ssGroupOf = s => /라피아/.test((s.material_full || '') + ' ' + (s.material_main || '')) ? '라피아' : 'CMT';
+  const attrOk = s => state.attr === 'ALL' || (SS27_GROUPS.includes(state.attr) ? (s.season_tab === 'SS27' && ssGroupOf(s) === state.attr) : attrLabel(s) === state.attr);
   const norm = t => String(t || '').toLowerCase().replace(/\s+/g, '');
   const searchOk = s => {
     const q = norm(state.search);
@@ -756,7 +764,7 @@ function renderDetailProduct(itemCode) {
   // 검색어가 있으면(사이트에서 window.CATALOG_GLOBAL_SEARCH 켠 경우) 탭·필터와 상관없이 전체 시즌/기획을 대상으로 검색
   const globalSearch = () => !!window.CATALOG_GLOBAL_SEARCH && !!state.search.trim();
   const matches = s => globalSearch() ? searchOk(s) : (state.plan === 'ALL' || s.plan === state.plan) && (state.body === 'ALL' || bodyGroup(s) === state.body)
-    && (state.attr === 'ALL' || attrLabel(s) === state.attr) && searchOk(s);
+    && attrOk(s) && searchOk(s);
 
   function eachStyle(material, fn) {
     Object.values(TREE[material] || {}).forEach(weeks => Object.values(weeks).forEach(w => w.stories.forEach(g => g.styles.forEach(c => { if (STYLES[c]) fn(STYLES[c]); }))));
@@ -785,16 +793,18 @@ function renderDetailProduct(itemCode) {
       const list = known.concat(Object.keys(bc).filter(g => !known.includes(g)));
       html += `<div class="fchips"><span class="flabel">복종</span>${chip('body', 'ALL', '전체', pc[state.plan] || 0, state.body === 'ALL')}${list.map(g => chip('body', g, g, bc[g] || 0, state.body === g)).join('')}</div>`;
     }
-    const ac = {};
+    const ac = {}, gc = {};
     eachStyle(state.material, s => {
       if (!((state.plan === 'ALL' || s.plan === state.plan) && (state.body === 'ALL' || bodyGroup(s) === state.body))) return;
       const label = attrLabel(s);
       if (label) ac[label] = (ac[label] || 0) + 1;
+      gc[ssGroupOf(s)] = (gc[ssGroupOf(s)] || 0) + 1;
     });
     const attrLabels = Object.keys(ac).sort((a, b) => ac[b] - ac[a]);
     const attrTotal = Object.values(ac).reduce((a, b) => a + b, 0);
     if (attrLabels.length) {
-      html += `<div class="fchips"><span class="flabel">소재</span>${chip('attr', 'ALL', '전체', attrTotal, state.attr === 'ALL')}${attrLabels.map(l => chip('attr', l, l, ac[l], state.attr === l)).join('')}</div>`;
+      const groupChips = state.material === 'COLLECTION_SS27' ? SS27_GROUPS.map(g => `<button class="fchip group${state.attr === g ? ' active' : ''}${gc[g] ? '' : ' zero'}" data-k="attr" data-v="${g}">${g}<span class="n">${gc[g] || 0}</span></button>`).join('') : '';
+      html += `<div class="fchips"><span class="flabel">소재</span>${chip('attr', 'ALL', '전체', attrTotal, state.attr === 'ALL')}${groupChips}${attrLabels.map(l => chip('attr', l, l, ac[l], state.attr === l)).join('')}</div>`;
     }
     document.getElementById('catPlanRow').innerHTML = planRow;  // 검색창은 이 행의 오른쪽에 고정 배치(입력 중 다시 그려지지 않도록 별도 요소)
     document.getElementById('catFilters').innerHTML = html;
@@ -901,7 +911,7 @@ function renderDetailProduct(itemCode) {
     }).join('');
     el.querySelectorAll('button').forEach(b => b.onclick = () => {
       if (globalSearch()) { state.search = ''; document.getElementById('catSearch').value = ''; }
-      state.material = b.dataset.mat; renderAll();
+      state.material = b.dataset.mat; state.plan = 'ALL'; state.body = 'ALL'; state.attr = 'ALL'; renderAll();
     });
   }
 
