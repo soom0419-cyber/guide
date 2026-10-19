@@ -427,10 +427,10 @@ button.fchip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2
 .cg-old-box > summary::after { content: ' ▾'; }
 .cg-old-box[open] > summary::after { content: ' ▴'; }
 .cg-old-box .swatch-row { margin-top: 4px; }
-table.color-table tr.cg-head td, table.colors tr.cg-head td { background: var(--surface-2); font-size: 11px; font-weight: 700; color: var(--ink-soft); letter-spacing: .02em; }
-tr.cg-toggle { cursor: pointer; }
-.cg-arrow::after { content: '▾'; }
-tr.cg-toggle.open .cg-arrow::after { content: '▴'; }
+.cg-tag { display: inline-block; font-size: 9px; font-weight: 700; line-height: 1.5; padding: 0 4px; margin-right: 5px; border-radius: 3px; vertical-align: 1px; letter-spacing: -0.01em; }
+.cg-tag.cg-core { background: var(--ink); color: var(--surface); }
+.cg-tag.cg-new { background: var(--accent-soft); color: var(--accent); border: 1px solid var(--accent); }
+.cg-tag.cg-old { background: var(--surface-2); color: var(--ink-soft); border: 1px solid var(--line); }
 
 
 
@@ -703,11 +703,10 @@ function cgGroups(colors) {
   if (!colors.length || !colors.every(c => c.cgroup)) return null;
   return ['코어', 'NEW 시즌', '구 시즌'].map(l => ({ label: l, colors: colors.filter(c => c.cgroup === l) })).filter(g => g.colors.length);
 }
-// 접힌 '구 시즌' 머리글 행을 누르면 바로 뒤의 .cg-old 행들을 펼치거나 접는다
-function toggleCgOld(head, ev) {
-  if (ev) ev.stopPropagation();
-  const open = head.classList.toggle('open');
-  for (let n = head.nextElementSibling; n && n.classList.contains('cg-old'); n = n.nextElementSibling) n.hidden = !open;
+// 컬러코드 앞에 붙이는 작은 딱지: 코어 / NEW / 구시즌
+function cgTagHtml(g) {
+  const k = g === '코어' ? 'core' : g === 'NEW 시즌' ? 'new' : 'old';
+  return `<span class="cg-tag cg-${k}">${g === 'NEW 시즌' ? 'NEW' : g === '구 시즌' ? '구시즌' : g}</span>`;
 }
 
 function renderDetailProduct(itemCode) {
@@ -739,12 +738,8 @@ function renderDetailProduct(itemCode) {
   const descHtml = (s.desc && s.desc.length)
     ? `<div class="section-label">제품 설명</div><ul class="desc-list">${s.desc.map(d => `<li>${d}</li>`).join('')}</ul>` : '';
 
-  const colorRowOf = (c, cls) => `<tr${cls ? ` class="${cls}" hidden` : ''}><td>${c.color_code}</td><td>${c.color_kr || ''}</td><td>${fmtNum(c.order)}</td></tr>`;
-  const cgs = cgGroups(s.colors);
-  const colorRows = cgs ? cgs.map(g => g.label === '구 시즌'
-    ? `<tr class="cg-head cg-toggle" onclick="toggleCgOld(this, event)"><td colspan="3">${g.label} (${g.colors.length}) <span class="cg-arrow"></span></td></tr>` + g.colors.map(c => colorRowOf(c, 'cg-old')).join('')
-    : `<tr class="cg-head"><td colspan="3">${g.label} (${g.colors.length})</td></tr>` + g.colors.map(c => colorRowOf(c)).join('')).join('')
-    : s.colors.map(c => colorRowOf(c)).join('');
+  const colorRowOf = c => `<tr><td>${c.cgroup ? cgTagHtml(c.cgroup) : ''}${c.color_code}</td><td>${c.color_kr || ''}</td><td>${fmtNum(c.order)}</td></tr>`;
+  const colorRows = s.colors.map(colorRowOf).join('');
   const totalRow = s.colors.length > 1 ? `<tr class="total"><td>TOTAL</td><td></td><td>${fmtNum(s.total.order)}</td></tr>` : '';
 
   const materialHtml = (s.material_full || s.material_main)
