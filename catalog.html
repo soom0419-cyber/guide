@@ -752,9 +752,9 @@ function renderDetailProduct(itemCode) {
   };
   const bodyGroup = s => BODY_GROUP[s.body] || s.body;
   const attrLabel = s => ATTR_LABEL[s.attr] || s.attr || '';
-  // SS27 소재 그룹: 혼용률(material_main/material_full)에 '라피아'가 들어가면 라피아, 없으면(혼용률이 비어 있어도) 전부 CMT
+  // 기준 = 혼용률(material_main/material_full)에 '라피아', 또는 품명에 RAFFIA/PANAMA(파나마 햇 포함)가 들어가면 라피아, 그 외 전부 CMT (혼용률 비어 있어도 품명으로 판정)
   const SS27_GROUPS = ['라피아', 'CMT'];
-  const ssGroupOf = s => /라피아/.test((s.material_full || '') + ' ' + (s.material_main || '')) ? '라피아' : 'CMT';
+  const ssGroupOf = s => (/라피아/.test((s.material_full || '') + ' ' + (s.material_main || '') + ' ' + (s.name_kr || '')) || /RAFFIA|PANAMA/i.test(s.name_sjg || '') || s.attr === 'PANAMA') ? '라피아' : 'CMT';
   const attrOk = s => state.attr === 'ALL' || (SS27_GROUPS.includes(state.attr) ? (s.season_tab === 'SS27' && ssGroupOf(s) === state.attr) : attrLabel(s) === state.attr);
   const norm = t => String(t || '').toLowerCase().replace(/\s+/g, '');
   const searchOk = s => {
