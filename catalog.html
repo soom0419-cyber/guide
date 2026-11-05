@@ -617,6 +617,27 @@ header.cat-head .map-search input { width: 100%; }
   .sb-head > .sb-desc { grid-column: 2; grid-row: 1 / span 3; margin-top: 0; }
 }
 
+/* Airbnb 스타일 레이어(DESIGN.md 참고): 사진 중심 카드, 알약 필터, 흑백 한 톤. 사진은 contain 유지(잘리지 않음) */
+.story-box { background: transparent; border: 0; border-radius: 0; padding: 8px 0 32px; margin-bottom: 8px; border-bottom: 1px solid #ebebeb; }
+.story-box:last-child { border-bottom: 0; }
+.sb-cards { gap: 28px 16px; }
+.simple-card { background: transparent; border: 0; border-radius: 14px; overflow: visible; }
+.simple-card:hover { border-color: transparent; }
+.simple-card:hover .simple-thumb { filter: brightness(.96); }
+.simple-thumb { background: #f7f7f7; border-radius: 14px; }
+.simple-body { padding: 10px 2px 0; }
+.simple-name { font-weight: 500; font-size: 14px; color: #222; }
+.simple-name-kr { color: #6a6a6a; }
+.simple-price { font-size: 15px; font-weight: 600; margin: 4px 0 8px; }
+.swatch-chip { background: #f7f7f7; border-radius: 9999px; padding: 3px 9px 3px 6px; }
+button.fchip { border-radius: 9999px; padding: 6px 14px; border-color: #ddd; background: #fff; }
+button.fchip:hover { border-color: #222; }
+button.fchip.active, button.fchip.group.active { background: #222; border-color: #222; color: #fff; }
+button.fchip.active .n, button.fchip.group.active .n { color: #ddd; }
+button.fchip.group { background: #f7f7f7; border-color: #ddd; color: #222; }
+.cg-tag { font-size: 10.5px; padding: 1px 7px; border-radius: 9999px; line-height: 1.5; }
+.cg-tag.cg-old { font-size: 10px; padding: 1px 6px; }
+
 html, body { -webkit-text-size-adjust: 100%; }
 body { overscroll-behavior-y: none; -webkit-tap-highlight-color: transparent; }
 .wrap { padding: 18px 20px 40px; }
