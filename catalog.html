@@ -29,9 +29,9 @@
   --crit-bg: #f6e3e1;
   --yoy-up: #d03038;
   --yoy-down: #3068e8;
-  --font-display: 'Fraunces', 'Noto Serif KR', serif;
-  --font-body: 'IBM Plex Sans KR', 'Pretendard', -apple-system, sans-serif;
-  --font-mono: 'IBM Plex Mono', 'IBM Plex Sans KR', monospace;
+  --font-display: 'Noto Sans KR', sans-serif;
+  --font-body: 'Noto Sans KR', sans-serif;
+  --font-mono: 'Noto Sans KR', sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -618,18 +618,19 @@ header.cat-head .map-search input { width: 100%; }
 }
 
 /* Airbnb 스타일 레이어(DESIGN.md 참고): 사진 중심 카드, 알약 필터, 흑백 한 톤. 사진은 contain 유지(잘리지 않음) */
-.story-box { background: transparent; border: 0; border-radius: 0; padding: 8px 0 32px; margin-bottom: 8px; border-bottom: 1px solid #ebebeb; }
-.story-box:last-child { border-bottom: 0; }
+.story-box { background: #f5f5f5; border: 0; border-radius: 32px; padding: 26px 26px 30px; margin-bottom: 22px; }
+.simple-thumb { background: #fff; }
+@media (max-width: 700px) { .story-box { border-radius: 24px; padding: 20px 16px 24px; } }
 .sb-cards { gap: 28px 16px; }
 .simple-card { background: transparent; border: 0; border-radius: 14px; overflow: visible; }
 .simple-card:hover { border-color: transparent; }
 .simple-card:hover .simple-thumb { filter: brightness(.96); }
-.simple-thumb { background: #f7f7f7; border-radius: 14px; }
+.simple-thumb { border-radius: 14px; }
 .simple-body { padding: 10px 2px 0; }
 .simple-name { font-weight: 500; font-size: 14px; color: #222; }
 .simple-name-kr { color: #6a6a6a; }
 .simple-price { font-size: 15px; font-weight: 600; margin: 4px 0 8px; }
-.swatch-chip { background: #f7f7f7; border-radius: 9999px; padding: 3px 9px 3px 6px; }
+.swatch-chip { background: #fff; border: 1px solid #e5e5e5; border-radius: 9999px; padding: 3px 9px 3px 6px; }
 button.fchip { border-radius: 9999px; padding: 6px 14px; border-color: #ddd; background: #fff; }
 button.fchip:hover { border-color: #222; }
 button.fchip.active, button.fchip.group.active { background: #222; border-color: #222; color: #fff; }
@@ -803,7 +804,7 @@ function renderDetailProduct(itemCode) {
 // 상품 설명집 탭: 시즌 탭 > 기획명/복종 필터 > 스토리 박스(소개 문구 + 아이템 카드, 출고 순).
 // generate_html.py가 바잉 마스터파일 스크립트에 끼워 넣는다(TREE/STYLES/STORIES와 fmtNum·rrpDisplay·mmdd·korMmdd 등 공용 함수를 사용).
 (function () {
-  const state = { material: null, plan: 'ALL', body: 'ALL', attr: 'ALL', search: '' };
+  const state = { material: null, plan: 'ALL', body: 'ALL', attr: 'ALL', month: 'ALL', grp: 'ALL', search: '' };
   let ready = false;
   const attr = t => String(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 
@@ -828,6 +829,14 @@ function renderDetailProduct(itemCode) {
   const SS27_GROUPS = ['라피아', 'CMT'];
   const ssGroupOf = s => (/라피아/.test((s.material_full || '') + ' ' + (s.material_main || '') + ' ' + (s.name_kr || '')) || /RAFFIA|PANAMA/i.test(s.name_sjg || '') || s.attr === 'PANAMA') ? '라피아' : 'CMT';
   const attrOk = s => state.attr === 'ALL' || (SS27_GROUPS.includes(state.attr) ? (s.season_tab === 'SS27' && ssGroupOf(s) === state.attr) : attrLabel(s) === state.attr);
+  // 출고월(컬렉션) / 코어·NEW(아이코닉) 필터
+  const MONTH_OF = {};
+  Object.entries(TREE).forEach(([mat, months]) => { if (mat !== 'ICONIC') Object.entries(months).forEach(([mo, weeks]) => Object.values(weeks).forEach(w => w.stories.forEach(g => g.styles.forEach(c => { MONTH_OF[c] = mo; })))); });
+  const monthOf = s => MONTH_OF[s.item_code];
+  const monthOk = s => state.month === 'ALL' || String(monthOf(s)) === state.month;
+  const CG_OF = { '코어': '코어', 'NEW': 'NEW 시즌' };
+  const grpOk = s => state.grp === 'ALL' || s.material !== 'ICONIC' || (s.colors.some(c => c.cgroup === CG_OF[state.grp]));
+  const monthRank = mo => { const n = parseInt(mo, 10); return n === 12 ? -1 : n; };
   const norm = t => String(t || '').toLowerCase().replace(/\s+/g, '');
   const searchOk = s => {
     const q = norm(state.search);
@@ -836,7 +845,7 @@ function renderDetailProduct(itemCode) {
   // 검색어가 있으면(사이트에서 window.CATALOG_GLOBAL_SEARCH 켠 경우) 탭·필터와 상관없이 전체 시즌/기획을 대상으로 검색
   const globalSearch = () => !!window.CATALOG_GLOBAL_SEARCH && !!state.search.trim();
   const matches = s => globalSearch() ? searchOk(s) : (state.plan === 'ALL' || s.plan === state.plan) && (state.body === 'ALL' || bodyGroup(s) === state.body)
-    && attrOk(s) && searchOk(s);
+    && attrOk(s) && monthOk(s) && grpOk(s) && searchOk(s);
 
   function eachStyle(material, fn) {
     Object.values(TREE[material] || {}).forEach(weeks => Object.values(weeks).forEach(w => w.stories.forEach(g => g.styles.forEach(c => { if (STYLES[c]) fn(STYLES[c]); }))));
@@ -860,6 +869,18 @@ function renderDetailProduct(itemCode) {
     const chip = (kind, val, label, n, on) => `<button class="fchip${on ? ' active' : ''}${n ? '' : ' zero'}" data-k="${kind}" data-v="${attr(val)}">${label}<span class="n">${n}</span></button>`;
     const planRow = `<span class="flabel">기획명</span>${chip('plan', 'ALL', '전체', total, state.plan === 'ALL')}${PLANS.map(p => chip('plan', p, p, pc[p] || 0, state.plan === p)).join('')}`;
     let html = '';
+    const rest = (s, skip) => (skip === 'month' || state.month === 'ALL' || String(monthOf(s)) === state.month) && (skip === 'grp' || grpOk(s));
+    if (state.material === 'ICONIC') {
+      const gcnt = { '코어': 0, 'NEW': 0 }, gall = [];
+      eachStyle(state.material, s => { if (!((state.plan === 'ALL' || s.plan === state.plan) && (state.body === 'ALL' || bodyGroup(s) === state.body))) return; gall.push(s);
+        ['코어', 'NEW'].forEach(k => { if (s.colors.some(c => c.cgroup === CG_OF[k])) gcnt[k]++; }); });
+      html += `<div class="fchips"><span class="flabel">구분</span>${chip('grp', 'ALL', '전체', gall.length, state.grp === 'ALL')}${['코어', 'NEW'].map(k => chip('grp', k, k, gcnt[k], state.grp === k)).join('')}</div>`;
+    } else {
+      const mc = {}; let mt = 0;
+      eachStyle(state.material, s => { if (!((state.plan === 'ALL' || s.plan === state.plan) && (state.body === 'ALL' || bodyGroup(s) === state.body))) return; mc[monthOf(s)] = (mc[monthOf(s)] || 0) + 1; mt++; });
+      const months = Object.keys(TREE[state.material] || {}).sort((a, b) => monthRank(a) - monthRank(b));
+      html += `<div class="fchips"><span class="flabel">출고월</span>${chip('month', 'ALL', '전체', mt, state.month === 'ALL')}${months.map(m => chip('month', m, m + '월', mc[m] || 0, state.month === m)).join('')}</div>`;
+    }
     if (state.plan !== 'ALL') {
       const known = FILTER_ORDER[state.plan] || [];
       const list = known.concat(Object.keys(bc).filter(g => !known.includes(g)));
@@ -881,7 +902,9 @@ function renderDetailProduct(itemCode) {
     document.getElementById('catPlanRow').innerHTML = planRow;  // 검색창은 이 행의 오른쪽에 고정 배치(입력 중 다시 그려지지 않도록 별도 요소)
     document.getElementById('catFilters').innerHTML = html;
     document.querySelectorAll('#catPlanRow button, #catFilters button').forEach(b => b.onclick = () => {
-      if (b.dataset.k === 'plan') { state.plan = b.dataset.v; state.body = 'ALL'; state.attr = 'ALL'; }
+      if (b.dataset.k === 'month') { state.month = b.dataset.v; }
+      else if (b.dataset.k === 'grp') { state.grp = b.dataset.v; }
+      else if (b.dataset.k === 'plan') { state.plan = b.dataset.v; state.body = 'ALL'; state.attr = 'ALL'; }
       else if (b.dataset.k === 'body') { state.body = b.dataset.v; state.attr = 'ALL'; }
       else { state.attr = b.dataset.v; }
       renderAll();
@@ -890,10 +913,11 @@ function renderDetailProduct(itemCode) {
 
   // ---------------- 카드: 영문명/한글명/이미지/사이즈/가격/컬러(스와치+한글컬러명)만 남김 ----------------
   function renderCard(s) {
-    const hero = s.colors.find(c => c.image);
+    const hero = (state.grp !== 'ALL' && s.colors.find(c => c.image && c.cgroup === CG_OF[state.grp])) || s.colors.find(c => c.image);
     const chipOf = c => `
       <span class="swatch-chip">${c.swatch ? `<span class="swatch-dot" style="background:${c.swatch}"></span>` : ''}${c.color_code}${c.color_kr ? ' · ' + c.color_kr : ''}</span>`;
-    const cgs = cgGroups(s.colors);   // ICONIC: 코어 / NEW 시즌 / 구 시즌(기본 접힘)
+    const cgs = cgGroups(s.colors);   // ICONIC: 코어 / NEW 시즌 / 구 시즌(기본 접힘). 구분 필터를 고르면 그 그룹을 맨 위로
+    if (cgs && state.grp !== 'ALL') cgs.sort((a, b) => (b.label === CG_OF[state.grp]) - (a.label === CG_OF[state.grp]));
     const chips = cgs ? cgs.map(g => g.label === '구 시즌'
       ? `<details class="cg-old-box" onclick="event.stopPropagation()"><summary>${g.label} ${g.colors.length}</summary><div class="swatch-row">${g.colors.map(chipOf).join('')}</div></details>`
       : `<div class="cg-line"><span class="cg-label">${g.label}</span><div class="swatch-row">${g.colors.map(chipOf).join('')}</div></div>`).join('')
@@ -967,7 +991,8 @@ function renderDetailProduct(itemCode) {
         if (!isIconic) byStory[g.story] = box;
       }));
     });
-    boxes.forEach(b => { b.styles = sortStyleCodes(b.styles); });  // 스토리 안 기본 정렬(모자 > 가방 > 액세서리 > 그 외, 클로슈 > 버킷 > 보터, 발주 많은 순)
+    boxes.forEach(b => { b.styles = sortStyleCodes(b.styles); });
+    if (isIconic && state.grp !== 'ALL') boxes.forEach(b => { const n = c => (STYLES[c].colors.filter(x => x.cgroup === CG_OF[state.grp]).length); b.styles.sort((x, y) => n(y) - n(x)); });  // 스토리 안 기본 정렬(모자 > 가방 > 액세서리 > 그 외, 클로슈 > 버킷 > 보터, 발주 많은 순)
     return boxes;
   }
   function renderStories() {
@@ -988,7 +1013,7 @@ function renderDetailProduct(itemCode) {
     }).join('');
     el.querySelectorAll('button').forEach(b => b.onclick = () => {
       if (globalSearch()) { state.search = ''; document.getElementById('catSearch').value = ''; }
-      state.material = b.dataset.mat; state.plan = 'ALL'; state.body = 'ALL'; state.attr = 'ALL'; renderAll();
+      state.material = b.dataset.mat; state.plan = 'ALL'; state.body = 'ALL'; state.attr = 'ALL'; state.month = 'ALL'; state.grp = 'ALL'; renderAll();
     });
   }
 
@@ -1009,13 +1034,13 @@ function renderDetailProduct(itemCode) {
   // MAP에서 스토리/상품을 눌렀을 때: 설명집 탭이 보이는 상태에서 호출 — 스토리는 해당 박스로 스크롤, 상품은 상세 화면 열기
   window.catalogLand = (kind, value) => {
     if (kind === 'product' && STYLES[value]) {
-      state.material = materialOfStyle(STYLES[value]); state.plan = 'ALL'; state.body = 'ALL'; state.attr = 'ALL';
+      state.material = materialOfStyle(STYLES[value]); state.plan = 'ALL'; state.body = 'ALL'; state.attr = 'ALL'; state.month = 'ALL'; state.grp = 'ALL';
       renderAll();
       openDetailProduct(value);
     } else if (kind === 'story') {
       const m = materialOfStory(value);
       if (!m) { window.catalogShow(); return; }
-      state.material = m; state.plan = 'ALL'; state.body = 'ALL'; state.attr = 'ALL';
+      state.material = m; state.plan = 'ALL'; state.body = 'ALL'; state.attr = 'ALL'; state.month = 'ALL'; state.grp = 'ALL';
       renderAll();
       const box = [...document.querySelectorAll('#catStories .story-box')].find(b => b.dataset.box === value);
       if (box) { box.scrollIntoView({ block: 'start' }); box.classList.add('flash'); setTimeout(() => box.classList.remove('flash'), 2200); }
