@@ -868,19 +868,20 @@ function renderDetailProduct(itemCode) {
     const total = Object.values(pc).reduce((a, b) => a + b, 0);
     const chip = (kind, val, label, n, on) => `<button class="fchip${on ? ' active' : ''}${n ? '' : ' zero'}" data-k="${kind}" data-v="${attr(val)}">${label}<span class="n">${n}</span></button>`;
     const planRow = `<span class="flabel">기획명</span>${chip('plan', 'ALL', '전체', total, state.plan === 'ALL')}${PLANS.map(p => chip('plan', p, p, pc[p] || 0, state.plan === p)).join('')}`;
-    let html = '';
+    let html = '', topRow = '';
     const rest = (s, skip) => (skip === 'month' || state.month === 'ALL' || String(monthOf(s)) === state.month) && (skip === 'grp' || grpOk(s));
     if (state.material === 'ICONIC') {
       const gcnt = { '코어': 0, 'NEW': 0 }, gall = [];
       eachStyle(state.material, s => { if (!((state.plan === 'ALL' || s.plan === state.plan) && (state.body === 'ALL' || bodyGroup(s) === state.body))) return; gall.push(s);
         ['코어', 'NEW'].forEach(k => { if (s.colors.some(c => c.cgroup === CG_OF[k])) gcnt[k]++; }); });
-      html += `<div class="fchips"><span class="flabel">구분</span>${chip('grp', 'ALL', '전체', gall.length, state.grp === 'ALL')}${['코어', 'NEW'].map(k => chip('grp', k, k, gcnt[k], state.grp === k)).join('')}</div>`;
+      topRow = `<span class="flabel">구분</span>${chip('grp', 'ALL', '전체', gall.length, state.grp === 'ALL')}${['코어', 'NEW'].map(k => chip('grp', k, k, gcnt[k], state.grp === k)).join('')}`;
     } else {
       const mc = {}; let mt = 0;
       eachStyle(state.material, s => { if (!((state.plan === 'ALL' || s.plan === state.plan) && (state.body === 'ALL' || bodyGroup(s) === state.body))) return; mc[monthOf(s)] = (mc[monthOf(s)] || 0) + 1; mt++; });
       const months = Object.keys(TREE[state.material] || {}).sort((a, b) => monthRank(a) - monthRank(b));
-      html += `<div class="fchips"><span class="flabel">출고월</span>${chip('month', 'ALL', '전체', mt, state.month === 'ALL')}${months.map(m => chip('month', m, m + '월', mc[m] || 0, state.month === m)).join('')}</div>`;
+      topRow = `<span class="flabel">출고월</span>${chip('month', 'ALL', '전체', mt, state.month === 'ALL')}${months.map(m => chip('month', m, m + '월', mc[m] || 0, state.month === m)).join('')}`;
     }
+    html += `<div class="fchips">${planRow}</div>`;  // 출고월(구분) 행이 맨 위(검색창과 같은 줄), 기획명은 그 아래
     if (state.plan !== 'ALL') {
       const known = FILTER_ORDER[state.plan] || [];
       const list = known.concat(Object.keys(bc).filter(g => !known.includes(g)));
@@ -899,7 +900,7 @@ function renderDetailProduct(itemCode) {
       const groupChips = state.material === 'COLLECTION_SS27' ? SS27_GROUPS.map(g => `<button class="fchip group${state.attr === g ? ' active' : ''}${gc[g] ? '' : ' zero'}" data-k="attr" data-v="${g}">${g}<span class="n">${gc[g] || 0}</span></button>`).join('') : '';
       html += `<div class="fchips"><span class="flabel">소재</span>${chip('attr', 'ALL', '전체', attrTotal, state.attr === 'ALL')}${groupChips}${attrLabels.map(l => chip('attr', l, l, ac[l], state.attr === l)).join('')}</div>`;
     }
-    document.getElementById('catPlanRow').innerHTML = planRow;  // 검색창은 이 행의 오른쪽에 고정 배치(입력 중 다시 그려지지 않도록 별도 요소)
+    document.getElementById('catPlanRow').innerHTML = topRow;  // 검색창은 이 행의 오른쪽에 고정 배치(입력 중 다시 그려지지 않도록 별도 요소)
     document.getElementById('catFilters').innerHTML = html;
     document.querySelectorAll('#catPlanRow button, #catFilters button').forEach(b => b.onclick = () => {
       if (b.dataset.k === 'month') { state.month = b.dataset.v; }
