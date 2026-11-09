@@ -759,7 +759,7 @@ function renderDetailProduct(itemCode) {
         || `<div class="cell"></div>`);
 
   const specs = [
-    ['복종', s.body], ['챙길이', s.brim], ['사이즈', s.sizes.join('/')],
+    ['복종', s.body], ['챙길이', s.brim], ['기장', s.length_cm ? s.length_cm + 'cm' : ''], ['핏', s.fit], ['안감', s.lining], ['사이즈', s.sizes.join('/')],
     ['원산지', s.origin], ['더스트백', s.dustbag], ['출고일', mmdd(s.ship_date)],
   ].filter(([, v]) => v);
   const specsHtml = specs.map(([label, val]) => `
@@ -771,9 +771,10 @@ function renderDetailProduct(itemCode) {
   const descHtml = (s.desc && s.desc.length)
     ? `<div class="section-label">제품 설명</div><ul class="desc-list">${s.desc.map(d => `<li>${d}</li>`).join('')}</ul>` : '';
 
-  const colorRowOf = c => `<tr><td>${c.cgroup ? cgTagHtml(c.cgroup) : ''}${c.color_code}</td><td>${c.color_kr || ''}</td><td>${fmtNum(c.order)}</td></tr>`;
+  const showQty = s.material !== 'APPAREL';  // 의류는 발주수량 비공개
+  const colorRowOf = c => `<tr><td>${c.cgroup ? cgTagHtml(c.cgroup) : ''}${c.color_code}</td><td>${c.color_kr || ''}</td>${showQty ? `<td>${fmtNum(c.order)}</td>` : ''}</tr>`;
   const colorRows = s.colors.map(colorRowOf).join('');
-  const totalRow = s.colors.length > 1 ? `<tr class="total"><td>TOTAL</td><td></td><td>${fmtNum(s.total.order)}</td></tr>` : '';
+  const totalRow = showQty && s.colors.length > 1 ? `<tr class="total"><td>TOTAL</td><td></td><td>${fmtNum(s.total.order)}</td></tr>` : '';
 
   const materialHtml = (s.material_full || s.material_main)
     ? `<div class="section-label">혼용율</div><div class="material-box"><div class="m-label">Composition</div>${s.material_full || s.material_main}</div>` : '';
@@ -791,8 +792,8 @@ function renderDetailProduct(itemCode) {
         <div class="spec-grid">${specsHtml}</div>
         ${tagsHtml}
         ${descHtml}
-        <div class="section-label">컬러 · 수량</div>
-        <table class="color-table"><thead><tr><th>컬러</th><th>컬러명</th><th>발주수량</th></tr></thead><tbody>${colorRows}${totalRow}</tbody></table>
+        <div class="section-label">${showQty ? '컬러 · 수량' : '컬러'}</div>
+        <table class="color-table"><thead><tr><th>컬러</th><th>컬러명</th>${showQty ? '<th>발주수량</th>' : ''}</tr></thead><tbody>${colorRows}${totalRow}</tbody></table>
         ${materialHtml}
         ${careHtml}
       </div>`;
@@ -813,8 +814,10 @@ function renderDetailProduct(itemCode) {
   const BODY_GROUP = { '바이저중간챙': '바이저', '바이저큰챙': '바이저', '클로슈작은챙': '클로슈', '클로슈중간챙': '클로슈', '클로슈큰챙': '클로슈',
     '버킷큰챙': '버킷', '페도라작은챙': '페도라', '페도라중간챙': '페도라' };
   const FILTER_ORDER = { '모자': ['바이저', '클로슈', '버킷', '카스켓', '보터햇', '캡', '페도라', '헌팅캡', '베레', '비니'],
-    '가방': ['숄더백', '토트백', '크로스바디', '클러치'], '액세서리': ['스카프', '글로브', '액세서리'] };
+    '가방': ['숄더백', '토트백', '크로스바디', '클러치'], '액세서리': ['스카프', '글로브', '액세서리'],
+    '의류': ['재킷', '코트', '니트', '셔츠', '블라우스', '원피스', '스커트', '팬츠'] };
   const PLANS = ['모자', '가방', '액세서리'];
+  const plansOf = () => state.material === 'APPAREL' ? ['의류'] : PLANS;
   // 소재 필터 라벨(입판재 "속성명" 원본 -> 한글 표기) — MAP과 동일한 매핑
   const ATTR_LABEL = {
     'BRAID (CLASSIC)': '브레이드', 'BRAID (LACE)': '브레이드', 'BRAID (LIGHT)': '라이트 브레이드',
@@ -868,7 +871,7 @@ function renderDetailProduct(itemCode) {
     });
     const total = Object.values(pc).reduce((a, b) => a + b, 0);
     const chip = (kind, val, label, n, on) => `<button class="fchip${on ? ' active' : ''}${n ? '' : ' zero'}" data-k="${kind}" data-v="${attr(val)}">${label}<span class="n">${n}</span></button>`;
-    const planRow = `<span class="flabel">기획명</span>${chip('plan', 'ALL', '전체', total, state.plan === 'ALL')}${PLANS.map(p => chip('plan', p, p, pc[p] || 0, state.plan === p)).join('')}`;
+    const planRow = `<span class="flabel">기획명</span>${chip('plan', 'ALL', '전체', total, state.plan === 'ALL')}${plansOf().map(p => chip('plan', p, p, pc[p] || 0, state.plan === p)).join('')}`;
     let html = '', topRow = '';
     const rest = (s, skip) => (skip === 'month' || state.month === 'ALL' || String(monthOf(s)) === state.month) && (skip === 'grp' || grpOk(s));
     if (state.material === 'ICONIC') {
@@ -974,7 +977,7 @@ function renderDetailProduct(itemCode) {
   }
   // 출고월/주차 구분 없이 전부 나열하되 순서는 출고 순(월 > 주차). 컬렉션은 같은 스토리를 박스 하나로 합치고, 아이코닉은 기획명별로 나눈다.
   function collectStories() {
-    const order = ['COLLECTION', 'COLLECTION_SS27', 'ICONIC'];
+    const order = ['COLLECTION', 'COLLECTION_SS27', 'ICONIC', 'APPAREL'];
     const mats = globalSearch() ? Object.keys(TREE).sort((a, b) => order.indexOf(a) - order.indexOf(b)) : [state.material];
     return mats.flatMap(collectStoriesOf);
   }
@@ -1002,9 +1005,9 @@ function renderDetailProduct(itemCode) {
     document.getElementById('catStories').innerHTML = boxes.length ? boxes.map(storyBox).join('') : '<div class="empty">해당 조건의 상품이 없습니다.</div>';
   }
 
-  const MATERIAL_LABELS = { COLLECTION: 'AW26', COLLECTION_SS27: 'SS27', ICONIC: 'ICONIC' };
+  const MATERIAL_LABELS = { COLLECTION: 'AW26', COLLECTION_SS27: 'SS27', ICONIC: 'ICONIC', APPAREL: '의류' };
   function renderMaterialTabs() {
-    const order = ['COLLECTION', 'COLLECTION_SS27', 'ICONIC'];
+    const order = ['COLLECTION', 'COLLECTION_SS27', 'ICONIC', 'APPAREL'];
     const materials = Object.keys(TREE).sort((a, b) => order.indexOf(a) - order.indexOf(b));
     if (!state.material) state.material = materials[0];
     const el = document.getElementById('catMaterialTabs');
@@ -1028,7 +1031,7 @@ function renderDetailProduct(itemCode) {
   document.getElementById('catSearch').oninput = e => { state.search = e.target.value; renderAll(); };
 
   // ---------------- 바깥에서 호출 ----------------
-  function materialOfStyle(s) { return s.material === 'ICONIC' ? 'ICONIC' : (s.season_tab === 'SS27' ? 'COLLECTION_SS27' : 'COLLECTION'); }
+  function materialOfStyle(s) { return s.material === 'APPAREL' ? 'APPAREL' : s.material === 'ICONIC' ? 'ICONIC' : (s.season_tab === 'SS27' ? 'COLLECTION_SS27' : 'COLLECTION'); }
   function materialOfStory(name) {
     return Object.keys(TREE).find(m => Object.values(TREE[m]).some(weeks => Object.values(weeks).some(w => w.stories.some(g => g.story === name))));
   }
@@ -1051,6 +1054,8 @@ function renderDetailProduct(itemCode) {
 })();
 
 window.catalogShow();
+// 대시보드 등에서 #product=품번 / #story=스토리명 으로 들어오면 해당 상품·스토리로 바로 이동
+(function () { const m = decodeURIComponent(location.hash.slice(1)).match(/^(product|story)=(.+)$/); if (m) window.catalogLand(m[1], m[2]); })();
 </script>
 <script src="fs.js"></script>
 </body>
