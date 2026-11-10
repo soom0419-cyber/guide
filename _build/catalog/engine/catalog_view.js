@@ -1,9 +1,10 @@
 // 상품 설명집 탭: 시즌 탭 > 기획명/복종 필터 > 스토리 박스(소개 문구 + 아이템 카드, 출고 순).
 // generate_html.py가 바잉 마스터파일 스크립트에 끼워 넣는다(TREE/STYLES/STORIES와 fmtNum·rrpDisplay·mmdd·korMmdd 등 공용 함수를 사용).
 (function () {
-  const state = { material: null, plan: 'ALL', body: 'ALL', attr: 'ALL', month: 'ALL', grp: 'ALL', search: '' };
+  const state = { sub: 'products', material: null, plan: 'ALL', body: 'ALL', attr: 'ALL', month: 'ALL', grp: 'ALL', search: '' };
   let ready = false;
   const attr = t => String(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+  const esc = t => String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
   // ---------------- 기획명 / 복종 / 소재 필터 ----------------
   const BODY_GROUP = { '바이저중간챙': '바이저', '바이저큰챙': '바이저', '클로슈작은챙': '클로슈', '클로슈중간챙': '클로슈', '클로슈큰챙': '클로슈',
@@ -213,13 +214,72 @@
     }).join('');
     el.querySelectorAll('button').forEach(b => b.onclick = () => {
       if (globalSearch()) { state.search = ''; document.getElementById('catSearch').value = ''; }
-      state.material = b.dataset.mat; state.plan = 'ALL'; state.body = 'ALL'; state.attr = 'ALL'; state.month = 'ALL'; state.grp = 'ALL'; renderAll();
+      state.material = b.dataset.mat; state.sub = 'products'; state.plan = 'ALL'; state.body = 'ALL'; state.attr = 'ALL'; state.month = 'ALL'; state.grp = 'ALL'; renderAll();
     });
   }
 
+  // ---------------- 사진 확대 보기 ----------------
+  let lbSet = [], lbIdx = 0;
+  const lb = document.createElement('div');
+  lb.className = 'cat-lb'; lb.hidden = true;
+  lb.innerHTML = '<button type="button" class="lb-x" aria-label="닫기">×</button><button type="button" class="lb-nav lb-prev" aria-label="이전 사진">‹</button><img alt=""><button type="button" class="lb-nav lb-next" aria-label="다음 사진">›</button>';
+  document.body.appendChild(lb);
+  const lbImg = lb.querySelector('img');
+  function lbShow(i) {
+    if (!lbSet.length) return;
+    lbIdx = (i + lbSet.length) % lbSet.length;
+    lbImg.src = lbSet[lbIdx].full;
+    lb.querySelectorAll('.lb-nav').forEach(b => b.hidden = lbSet.length < 2);
+    lb.hidden = false; document.body.classList.add('lb-open');
+  }
+  function lbClose() { lb.hidden = true; lbImg.removeAttribute('src'); document.body.classList.remove('lb-open'); }
+  lb.addEventListener('click', e => {
+    if (e.target.closest('.lb-prev')) lbShow(lbIdx - 1);
+    else if (e.target.closest('.lb-next')) lbShow(lbIdx + 1);
+    else lbClose();      // 바깥 · 사진 · × 어디를 눌러도 닫힘(이전/다음 제외)
+  });
+  document.addEventListener('keydown', e => {
+    if (lb.hidden) return;
+    if (e.key === 'Escape') lbClose(); else if (e.key === 'ArrowLeft') lbShow(lbIdx - 1); else if (e.key === 'ArrowRight') lbShow(lbIdx + 1);
+  });
+  document.getElementById('catTheme').addEventListener('click', e => { const b = e.target.closest('[data-lb]'); if (b) lbShow(parseInt(b.dataset.lb, 10)); });
+
+  // ---------------- 시즌 가이드: 시즌 테마 / 상품 / 룩북 (SEASON_GUIDE에 자료가 있는 시즌만) ----------------
+  const GUIDE_KEY = { COLLECTION_SS27: 'SS27' };
+  const SUBS = [['theme', '시즌 테마'], ['products', '상품'], ['look', '룩북']];
+  function guideOf() {
+    const k = GUIDE_KEY[state.material], G = window.SEASON_GUIDE || {};
+    return !globalSearch() && k && G[k] ? Object.assign({ key: k }, G[k]) : null;
+  }
+  function renderSubTabs(g) {
+    const el = document.getElementById('catSubTabs');
+    el.hidden = !g;
+    if (!g) return;
+    let n = 0; eachStyle(state.material, s => { if (matches(s)) n++; });
+    el.innerHTML = SUBS.map(([k, l]) => `<button data-sub="${k}" class="${state.sub === k ? 'active' : ''}">${l}${k === 'products' ? `<span class="count">${n}종</span>` : ''}</button>`).join('');
+    el.querySelectorAll('button').forEach(b => b.onclick = () => { state.sub = b.dataset.sub; renderAll(); window.scrollTo(0, 0); });
+  }
+  function renderGuidePages(g) {
+    const th = document.getElementById('catTheme'), lk = document.getElementById('catLook');
+    th.hidden = !g || state.sub !== 'theme'; lk.hidden = !g || state.sub !== 'look';
+    if (!g) return;
+    const T = g.theme || {}, L = (g.look && g.look.images) || [];
+    const hero = T.image ? { thumb: T.image, full: T.imageFull || T.image } : null;
+    lbSet = [hero].concat(T.refs || []).filter(Boolean);
+    const off = hero ? 1 : 0;
+    th.innerHTML = `<article class="theme${hero ? ' has-img' : ''}"><div class="theme-media">${hero ? `<button type="button" class="theme-hero" data-lb="0" aria-label="사진 크게 보기"><img src="${attr(hero.thumb)}" alt="${attr(T.title)}"></button>` : ''}` +
+      `${(T.refs || []).length ? `<div class="theme-refs">${T.refs.map((r, i) => `<button type="button" class="theme-ref" data-lb="${i + off}" aria-label="참고 사진 ${i + 1} 크게 보기"><img src="${attr(r.thumb)}" alt="" loading="lazy"></button>`).join('')}</div>` : ''}</div>` +
+      `<div class="theme-text"><h2 class="theme-title">${esc(T.title)}</h2><p class="theme-lead">${esc(T.lead)}</p>${(T.paragraphs || []).map(p => `<p>${esc(p)}</p>`).join('')}</div></article>`;
+    lk.innerHTML = L.length ? `<div class="look-grid">${L.map(src => `<figure class="look-item"><img src="${attr(src)}" alt="" loading="lazy"></figure>`).join('')}</div>` : '<div class="empty">룩북은 준비 중입니다.</div>';
+  }
+
   function renderAll() {
-    ready = true; renderMaterialTabs(); renderFilters(); renderStories();
-    const fl = document.querySelector('.filters'); if (fl && window.CATALOG_GLOBAL_SEARCH) fl.hidden = globalSearch();
+    ready = true; renderMaterialTabs();
+    const g = guideOf(), onProducts = !g || state.sub === 'products';
+    renderSubTabs(g); renderGuidePages(g);
+    renderFilters(); renderStories();
+    document.getElementById('catStories').hidden = !onProducts;
+    const fl = document.querySelector('.filters'); if (fl && window.CATALOG_GLOBAL_SEARCH) fl.hidden = globalSearch() || !onProducts;
     const cnt = document.getElementById('catSearchCount');
     if (cnt) cnt.textContent = state.search.trim() ? `${collectStories().reduce((a, b) => a + b.styles.length, 0)}종` : '';
   }
@@ -234,13 +294,13 @@
   // MAP에서 스토리/상품을 눌렀을 때: 설명집 탭이 보이는 상태에서 호출 — 스토리는 해당 박스로 스크롤, 상품은 상세 화면 열기
   window.catalogLand = (kind, value) => {
     if (kind === 'product' && STYLES[value]) {
-      state.material = materialOfStyle(STYLES[value]); state.plan = 'ALL'; state.body = 'ALL'; state.attr = 'ALL'; state.month = 'ALL'; state.grp = 'ALL';
+      state.material = materialOfStyle(STYLES[value]); state.sub = 'products'; state.plan = 'ALL'; state.body = 'ALL'; state.attr = 'ALL'; state.month = 'ALL'; state.grp = 'ALL';
       renderAll();
       openDetailProduct(value);
     } else if (kind === 'story') {
       const m = materialOfStory(value);
       if (!m) { window.catalogShow(); return; }
-      state.material = m; state.plan = 'ALL'; state.body = 'ALL'; state.attr = 'ALL'; state.month = 'ALL'; state.grp = 'ALL';
+      state.material = m; state.sub = 'products'; state.plan = 'ALL'; state.body = 'ALL'; state.attr = 'ALL'; state.month = 'ALL'; state.grp = 'ALL';
       renderAll();
       const box = [...document.querySelectorAll('#catStories .story-box')].find(b => b.dataset.box === value);
       if (box) { box.scrollIntoView({ block: 'start' }); box.classList.add('flash'); setTimeout(() => box.classList.remove('flash'), 2200); }

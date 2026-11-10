@@ -52,3 +52,29 @@ button.fchip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2
 table.colors td:first-child, table.color-table td:first-child { white-space: nowrap; }
 .cg-tag { white-space: nowrap; }
 .cg-tag.cg-old { font-size: 7.5px; padding: 0 3px; margin-right: 4px; letter-spacing: -0.03em; }
+
+/* 시즌 테마 / 룩북 하위 탭 (시즌 구분 탭과 같은 양식, 한 단계 작게) */
+nav.materials.subtabs { margin: -4px 0 16px; }
+nav.materials.subtabs button { font-size: 16px; padding: 6px 4px 10px; margin-right: 20px; }
+.theme { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; max-width: 1200px; margin: 20px 0 56px; }
+.theme-media { display: grid; gap: 10px; min-width: 0; }
+@media (min-width: 700px) { .theme.has-img { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 44px; align-items: start; } }
+.theme-hero { display: block; width: 100%; padding: 0; border: 0; background: #f4f4f4; border-radius: 18px; overflow: hidden; cursor: zoom-in; }
+.theme-hero img { display: block; width: 100%; height: auto; }
+.theme-refs { display: grid; grid-template-columns: repeat(auto-fit, minmax(46px, 1fr)); gap: 8px; }
+.theme-ref { padding: 0; border: 0; background: #f4f4f4; border-radius: 10px; overflow: hidden; cursor: zoom-in; aspect-ratio: 1 / 1; }
+.theme-ref img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.theme-ref:hover img, .theme-hero:hover img { filter: brightness(.95); }
+.theme-text { min-width: 0; }
+.theme-title { margin: 0 0 10px; font-size: 34px; font-weight: 700; letter-spacing: .02em; line-height: 1.2; }
+.theme-lead { margin: 0 0 26px; font-size: 17px; font-weight: 500; line-height: 1.6; color: var(--ink); }
+.theme-text p:not(.theme-lead) { margin: 0 0 22px; font-size: 16px; line-height: 1.95; color: #333; word-break: keep-all; }
+.cat-lb { position: fixed; inset: 0; z-index: 3000; background: rgba(0,0,0,.92); display: flex; align-items: center; justify-content: center; padding: calc(16px + env(safe-area-inset-top, 0px)) 56px calc(16px + env(safe-area-inset-bottom, 0px)); }
+.cat-lb img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 4px; }
+.cat-lb .lb-x { position: absolute; top: calc(10px + env(safe-area-inset-top, 0px)); right: 12px; width: 48px; height: 48px; border: 0; border-radius: 50%; background: rgba(255,255,255,.16); color: #fff; font-size: 30px; line-height: 1; cursor: pointer; }
+.cat-lb .lb-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 44px; height: 64px; border: 0; background: transparent; color: #fff; font-size: 44px; cursor: pointer; }
+.cat-lb .lb-prev { left: 4px; } .cat-lb .lb-next { right: 4px; }
+body.lb-open { overflow: hidden; }
+.look-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; margin: 18px 0 40px; }
+.look-item { margin: 0; }
+.look-item img { display: block; width: 100%; border-radius: 14px; }

@@ -13,6 +13,7 @@ rd = lambda n: open(os.path.join(HERE, "engine", n), encoding="utf-8").read()
 flat = json.load(open(os.path.join(BASE, "flat_styles.json"), encoding="utf-8"))
 tree = json.load(open(os.path.join(BASE, "tree.json"), encoding="utf-8"))
 stories = json.load(open(os.path.join(BASE, "stories.json"), encoding="utf-8"))
+guide = json.load(open(os.path.join(HERE, "season_guide.json"), encoding="utf-8"))   # 시즌 테마·룩북(시즌별)
 
 IMG_DIR = os.path.join(OUT, "catalog-img")
 shutil.rmtree(IMG_DIR, ignore_errors=True)
@@ -191,11 +192,14 @@ html = """<!doctype html>
   <header class="page cat-head"><h1>상품 설명집</h1><div class="map-search"><input type="search" id="catSearch" placeholder="전체 검색: 품명(영문·한글)/품번" autocomplete="off"><span class="map-search-count" id="catSearchCount"></span></div></header>
   <div class="page-view active" id="catalogView">
     <nav class="materials" id="catMaterialTabs"></nav>
+    <nav class="materials subtabs" id="catSubTabs" hidden></nav>
     <div class="filters">
       <div class="cat-top"><div class="fchips" id="catPlanRow"></div></div>
       <div class="filters-rest" id="catFilters"></div>
     </div>
     <div id="catStories"></div>
+    <div id="catTheme" hidden></div>
+    <div id="catLook" hidden></div>
   </div>
 </div>
 <div class="detail-overlay" id="detail-overlay">
@@ -207,6 +211,7 @@ html = """<!doctype html>
 </div>
 <script>
 window.CATALOG_GLOBAL_SEARCH = true;
+window.SEASON_GUIDE = __GUIDE__;
 const TREE = __TREE__;
 const STYLES = __STYLES__;
 const STORIES = __STORIES__;
@@ -223,7 +228,7 @@ window.catalogShow();
 """
 dumps = lambda o: json.dumps(o, ensure_ascii=False, separators=(",", ":"))
 html = (html.replace("__CSS__", css).replace("__TREE__", dumps(tree)).replace("__STYLES__", dumps(styles))
-        .replace("__STORIES__", dumps(stories)).replace("__HELPERS__", js_helpers)
+        .replace("__STORIES__", dumps(stories)).replace("__GUIDE__", dumps(guide)).replace("__HELPERS__", js_helpers)
         .replace("__DETAIL_JS__", rd("catalog_detail.js")).replace("__VIEW_JS__", rd("catalog_view.js")))
 assert "data:image" not in html
 open(os.path.join(OUT, "catalog.html"), "w", encoding="utf-8").write(html)
