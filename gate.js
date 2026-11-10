@@ -125,7 +125,29 @@
       if (!ok) { window.USERS = list; cur = null; leave(); showError('비밀번호가 변경되어 로그아웃되었습니다. 새 비밀번호로 다시 로그인해주세요.'); }
     }).catch(function () {});
   }
-  document.addEventListener('visibilitychange', function () { if (!document.hidden) checkStillValid(); });
+  // 상품 설명집(등) 화면이 열려 있는 동안 데이터가 새로 올라오면, 앱으로 돌아올 때 그 화면만 자동으로 다시 불러온다.
+  var seen = {};
+  function stampOf(src) {
+    return fetch(src, { method: 'HEAD', cache: 'no-store' }).then(function (r) {
+      return r.ok ? (r.headers.get('etag') || r.headers.get('last-modified') || '') : '';
+    }).catch(function () { return ''; });
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.ipane'), function (p) {
+    var f = p.querySelector('iframe'), src = p.getAttribute('data-src');
+    if (f && src) f.addEventListener('load', function () { stampOf(src).then(function (t) { if (t) seen[src] = t; }); });
+  });
+  function refreshPanes() {
+    if (app.hidden) return;
+    Array.prototype.forEach.call(document.querySelectorAll('.ipane'), function (p) {
+      var f = p.querySelector('iframe'), src = p.getAttribute('data-src');
+      if (!f || !src || !f.getAttribute('src') || !seen[src]) return;
+      stampOf(src).then(function (t) {
+        if (t && t !== seen[src]) { seen[src] = t; try { f.contentWindow.location.reload(); } catch (e) { f.setAttribute('src', src); } }
+      });
+    });
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.bb-item'), function (b) { b.addEventListener('click', refreshPanes); });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) { checkStillValid(); refreshPanes(); } });
   setInterval(checkStillValid, 10 * 60 * 1000);
 
   adminBtn.addEventListener('click', function () {
