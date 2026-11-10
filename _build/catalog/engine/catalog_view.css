@@ -82,4 +82,4 @@ body.lb-open { overflow: hidden; }
 .look-item { margin: 0; }
 .look-item img { display: block; width: 100%; border-radius: 14px; }
 
-.cursor-berry { position: fixed; left: 0; top: 0; width: 22px; height: auto; pointer-events: none; z-index: 3500; opacity: 0; transition: opacity .15s; will-change: transform; }
+.cursor-berry { position: fixed; left: 0; top: 0; width: 29px; height: auto; pointer-events: none; z-index: 3500; opacity: 0; transition: opacity .15s; will-change: transform; }

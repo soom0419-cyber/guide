@@ -464,7 +464,7 @@ body.lb-open { overflow: hidden; }
 .look-item { margin: 0; }
 .look-item img { display: block; width: 100%; border-radius: 14px; }
 
-.cursor-berry { position: fixed; left: 0; top: 0; width: 22px; height: auto; pointer-events: none; z-index: 3500; opacity: 0; transition: opacity .15s; will-change: transform; }
+.cursor-berry { position: fixed; left: 0; top: 0; width: 29px; height: auto; pointer-events: none; z-index: 3500; opacity: 0; transition: opacity .15s; will-change: transform; }
 
 
 __CAL_CSS__
@@ -1057,14 +1057,14 @@ function renderDetailProduct(itemCode) {
     });
   }
 
-  // ---------------- SS27 탭 전용: 마우스 커서 오른쪽 아래에 딸기 장식 (마우스가 있는 화면만, 터치 기기는 해당 없음) ----------------
+  // ---------------- SS27 탭 전용: 마우스 커서 오른쪽 아래에 딸기·나비 장식 (마우스가 있는 화면만, 터치 기기는 해당 없음) ----------------
   const berry = (() => {
     if (!window.matchMedia || !matchMedia('(hover: hover) and (pointer: fine)').matches) return null;
     const el = document.createElement('img');
-    el.src = 'guide-img/strawberry.png'; el.alt = ''; el.className = 'cursor-berry'; el.hidden = true;
+    el.src = 'guide-img/berry-butterfly.png'; el.alt = ''; el.className = 'cursor-berry'; el.hidden = true;
     document.body.appendChild(el);
     let x = 0, y = 0, raf = 0, on = false;
-    const draw = () => { raf = 0; el.style.transform = `translate(${x + 14}px, ${y + 16}px)`; };
+    const draw = () => { raf = 0; el.style.transform = `translate(${x + 8}px, ${y + 15}px)`; };
     document.addEventListener('mousemove', e => { x = e.clientX; y = e.clientY; if (!raf) raf = requestAnimationFrame(draw); if (on) el.style.opacity = 1; }, { passive: true });
     document.documentElement.addEventListener('mouseleave', () => { el.style.opacity = 0; });
     return { set(v) { on = v; el.hidden = !v; el.style.opacity = 0; } };
