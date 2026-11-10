@@ -1009,7 +1009,7 @@ function renderDetailProduct(itemCode) {
   function renderMaterialTabs() {
     const order = ['COLLECTION', 'COLLECTION_SS27', 'ICONIC', 'APPAREL'];
     const materials = Object.keys(TREE).sort((a, b) => order.indexOf(a) - order.indexOf(b));
-    if (!state.material) state.material = materials[0];
+    if (!state.material) state.material = TREE.COLLECTION_SS27 ? 'COLLECTION_SS27' : materials[0];
     const el = document.getElementById('catMaterialTabs');
     el.innerHTML = materials.map(m => {
       let n = 0;
