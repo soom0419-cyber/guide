@@ -49,7 +49,9 @@
     errBox.hidden = false;
   }
 
+  var cur = null;
   function enter(user) {
+    cur = user;
     gate.hidden = true;
     app.hidden = false;
     who.textContent = user.role === 'store' && user.name ? user.code + ' · ' + user.name : user.code + (user.role === 'admin' ? ' (관리자)' : user.role === 'hq' ? ' (본사)' : '');
@@ -111,6 +113,20 @@
   });
 
   logoutBtn.addEventListener('click', leave);
+
+  // 비밀번호(계정 목록)가 바뀌면, 이미 열려 있는 화면도 곧바로 로그아웃한다.
+  function checkStillValid() {
+    if (!cur || app.hidden) return;
+    fetch('users.js', { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
+      var m = t.match(/window\.USERS\s*=\s*(\[[\s\S]*\]);?/);
+      if (!m) return;
+      var list = JSON.parse(m[1]), ok = false;
+      for (var i = 0; i < list.length; i++) if (list[i].code === cur.code && list[i].hash === cur.hash) ok = true;
+      if (!ok) { window.USERS = list; cur = null; leave(); showError('비밀번호가 변경되어 로그아웃되었습니다. 새 비밀번호로 다시 로그인해주세요.'); }
+    }).catch(function () {});
+  }
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) checkStillValid(); });
+  setInterval(checkStillValid, 10 * 60 * 1000);
 
   adminBtn.addEventListener('click', function () {
     list.innerHTML = '';
