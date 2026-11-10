@@ -66,7 +66,7 @@
       if (state.plan === 'ALL' || s.plan === state.plan) bc[bodyGroup(s)] = (bc[bodyGroup(s)] || 0) + 1;
     });
     const total = Object.values(pc).reduce((a, b) => a + b, 0);
-    const chip = (kind, val, label, n, on) => `<button class="fchip${on ? ' active' : ''}${n ? '' : ' zero'}" data-k="${kind}" data-v="${attr(val)}">${label}<span class="n">${n}</span></button>`;
+    const chip = (kind, val, label, n, on) => `<button class="fchip${on ? ' active' : ''}${n ? '' : ' zero'}" data-k="${kind}" data-v="${attr(val)}">${label}</button>`;
     const planRow = `<span class="flabel">기획명</span>${chip('plan', 'ALL', '전체', total, state.plan === 'ALL')}${plansOf().map(p => chip('plan', p, p, pc[p] || 0, state.plan === p)).join('')}`;
     let html = '', topRow = '';
     const rest = (s, skip) => (skip === 'month' || state.month === 'ALL' || String(monthOf(s)) === state.month) && (skip === 'grp' || grpOk(s));
@@ -97,7 +97,7 @@
     const attrLabels = Object.keys(ac).sort((a, b) => ac[b] - ac[a]);
     const attrTotal = Object.values(ac).reduce((a, b) => a + b, 0);
     if (attrLabels.length) {
-      const groupChips = state.material === 'COLLECTION_SS27' ? SS27_GROUPS.map(g => `<button class="fchip group${state.attr === g ? ' active' : ''}${gc[g] ? '' : ' zero'}" data-k="attr" data-v="${g}">${g}<span class="n">${gc[g] || 0}</span></button>`).join('') : '';
+      const groupChips = state.material === 'COLLECTION_SS27' ? SS27_GROUPS.map(g => `<button class="fchip group${state.attr === g ? ' active' : ''}${gc[g] ? '' : ' zero'}" data-k="attr" data-v="${g}">${g}</button>`).join('') : '';
       html += `<div class="fchips"><span class="flabel">소재</span>${chip('attr', 'ALL', '전체', attrTotal, state.attr === 'ALL')}${groupChips}${attrLabels.map(l => chip('attr', l, l, ac[l], state.attr === l)).join('')}</div>`;
     }
     document.getElementById('catPlanRow').innerHTML = topRow;  // 검색창은 이 행의 오른쪽에 고정 배치(입력 중 다시 그려지지 않도록 별도 요소)
@@ -157,7 +157,6 @@
       <div class="sb-head">
         <div class="sb-eyebrow">${eyebrow}</div>
         <div class="sb-title">${g.story}</div>
-        <div class="sb-count">스타일 ${cards.length}종</div>
         ${points ? `<div class="sb-desc">${points}</div>` : ''}
       </div>
       <div class="sb-cards">${cards.map(c => renderCard(c)).join('')}</div>
@@ -210,7 +209,7 @@
     el.innerHTML = materials.map(m => {
       let n = 0;
       eachStyle(m, s => { if (matches(s)) n++; });
-      return `<button data-mat="${m}" class="${m === state.material && !globalSearch() ? 'active' : ''}">${MATERIAL_LABELS[m] || m}<span class="count">${n}종</span></button>`;
+      return `<button data-mat="${m}" class="${m === state.material && !globalSearch() ? 'active' : ''}">${MATERIAL_LABELS[m] || m}</button>`;
     }).join('');
     el.querySelectorAll('button').forEach(b => b.onclick = () => {
       if (globalSearch()) { state.search = ''; document.getElementById('catSearch').value = ''; }
@@ -256,7 +255,7 @@
     el.hidden = !g;
     if (!g) return;
     let n = 0; eachStyle(state.material, s => { if (matches(s)) n++; });
-    el.innerHTML = SUBS.map(([k, l]) => `<button data-sub="${k}" class="${state.sub === k ? 'active' : ''}">${l}${k === 'products' ? `<span class="count">${n}종</span>` : ''}</button>`).join('');
+    el.innerHTML = SUBS.map(([k, l]) => `<button data-sub="${k}" class="${state.sub === k ? 'active' : ''}">${l}</button>`).join('');
     el.querySelectorAll('button').forEach(b => b.onclick = () => { state.sub = b.dataset.sub; renderAll(); window.scrollTo(0, 0); });
   }
   function renderGuidePages(g) {
@@ -281,7 +280,7 @@
     document.getElementById('catStories').hidden = !onProducts;
     const fl = document.querySelector('.filters'); if (fl && window.CATALOG_GLOBAL_SEARCH) fl.hidden = globalSearch() || !onProducts;
     const cnt = document.getElementById('catSearchCount');
-    if (cnt) cnt.textContent = state.search.trim() ? `${collectStories().reduce((a, b) => a + b.styles.length, 0)}종` : '';
+    if (cnt) cnt.textContent = '';
   }
   document.getElementById('catSearch').oninput = e => { state.search = e.target.value; renderAll(); };
 

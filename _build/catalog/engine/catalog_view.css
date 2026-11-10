@@ -54,8 +54,11 @@ table.colors td:first-child, table.color-table td:first-child { white-space: now
 .cg-tag.cg-old { font-size: 7.5px; padding: 0 3px; margin-right: 4px; letter-spacing: -0.03em; }
 
 /* 시즌 테마 / 룩북 하위 탭 (시즌 구분 탭과 같은 양식, 한 단계 작게) */
-nav.materials.subtabs { margin: -4px 0 16px; }
-nav.materials.subtabs button { font-size: 16px; padding: 6px 4px 10px; margin-right: 20px; }
+nav.materials.subtabs { display: inline-flex; gap: 2px; margin: 2px 0 16px; padding: 3px; border: 1px solid #e2e2e2; border-radius: 12px; background: #f4f4f4; max-width: 100%; }
+nav.materials.subtabs[hidden] { display: none; }
+nav.materials.subtabs button { flex: 0 1 auto; margin: 0; padding: 8px 20px; font-size: 15px; font-weight: 500; color: #666; background: transparent; border: 1px solid transparent; border-radius: 9px; white-space: nowrap; }
+nav.materials.subtabs button.active { color: #111; background: #fff; border-color: #8a8a8a; font-weight: 600; }
+@media (max-width: 420px) { nav.materials.subtabs { display: flex; } nav.materials.subtabs button { flex: 1 1 0; padding: 8px 6px; } }
 .theme { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; max-width: 1200px; margin: 20px 0 56px; }
 .theme-media { display: grid; gap: 10px; min-width: 0; }
 @media (min-width: 700px) { .theme.has-img { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 44px; align-items: start; } }
