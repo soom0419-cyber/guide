@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>품번 · 컬러코드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+:root{color-scheme:light;
+  --bg:#faf7f3;--surface:#fff;--surface-2:#f2ede6;--ink:#241f1b;--ink-soft:#6b6259;--line:#e6ddd2;--line-strong:#b3a690;
+  --accent:#b5502f;--accent-soft:#f1ded4;--font:'Noto Sans KR',system-ui,sans-serif;--mono:ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 var(--font)}
+.wrap{max-width:1080px;margin:0 auto;padding:20px 16px calc(96px + env(safe-area-inset-bottom,0px))}
+h1{font-size:22px;margin:0 0 2px;font-weight:700}
+.lead{margin:0 0 14px;color:var(--ink-soft);font-size:13.5px}
+nav.chips{position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;margin:0 0 6px;display:flex;gap:8px;overflow-x:auto;border-bottom:1px solid var(--line)}
+nav.chips a{flex:none;text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line-strong);border-radius:9999px;padding:5px 14px;font-size:13.5px;font-weight:500}
+nav.chips a:hover{background:var(--accent-soft);border-color:var(--accent)}
+section{padding-top:22px;scroll-margin-top:52px}
+h2{font-size:18px;margin:0 0 4px;font-weight:700}
+h2 small{font-weight:400;font-size:13px;color:var(--ink-soft);margin-left:6px}
+.sub{margin:0 0 12px;color:var(--ink-soft);font-size:13px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px}
+
+/* 품번 15자리 */
+.strip{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:6px;margin-bottom:12px}
+.seg{background:var(--surface);border:1px solid var(--line-strong);border-radius:10px;padding:8px 4px 7px;text-align:center;cursor:pointer;font:inherit;color:inherit}
+.seg:hover{border-color:var(--accent)}
+.seg[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.seg .pos{display:block;font-size:10.5px;opacity:.65}
+.seg .cd{display:block;font:700 20px/1.25 var(--mono);letter-spacing:.02em}
+.seg .lb{display:block;font-size:12px;font-weight:500}
+.exline{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin:0 0 12px;font-size:13px;color:var(--ink-soft)}
+.exline b{font:700 15px var(--mono);color:var(--ink);letter-spacing:.06em}
+.segd{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.segd .card{padding:10px 12px}
+.segd .card.on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.segd h3{margin:0 0 6px;font-size:13.5px;font-weight:700}
+.segd h3 span{color:var(--ink-soft);font-weight:400;font-size:12px;margin-left:4px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:13.5px}
+.kv dt{font:600 13px var(--mono);color:var(--accent);min-width:2.2em;white-space:nowrap}
+.kv dd{margin:0}
+.jump{display:inline-block;text-decoration:none;color:var(--accent);font-weight:600;font-size:13.5px;border:1px solid var(--accent);border-radius:9999px;padding:4px 14px}
+.jump:hover{background:var(--accent-soft)}
+.pill i{font-style:normal;font-size:11px;color:#b23b3b;margin-left:auto;flex:none}
+.note{font-size:12px;color:var(--ink-soft);margin:6px 0 0}
+
+/* 해독기 */
+.dec{margin-top:14px}
+.dec label{font-weight:600;font-size:14px}
+.dec input{display:block;width:100%;max-width:420px;margin:6px 0 10px;padding:9px 12px;border:1px solid var(--line-strong);border-radius:8px;font:600 17px var(--mono);letter-spacing:.08em;text-transform:uppercase;background:#fff;color:var(--ink)}
+.dec input:focus-visible,.find:focus-visible,.seg:focus-visible,nav.chips a:focus-visible,.tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.dres{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.dres div{background:var(--surface-2);border-radius:8px;padding:7px 10px}
+.dres .k{font-size:11.5px;color:var(--ink-soft)}
+.dres .v{font-weight:600;font-size:14px}
+.dres .c{font:600 12px var(--mono);color:var(--accent);margin-right:5px}
+.dres .bad{color:#b23b3b}
+
+/* 복종코드 */
+.find{width:100%;max-width:340px;padding:8px 12px;border:1px solid var(--line-strong);border-radius:8px;font:inherit;background:#fff;color:var(--ink);margin:0 0 12px}
+.grp{margin:0 0 16px}
+.grp h3{margin:0 0 8px;font-size:14px}
+.grp h3 span{font-weight:400;color:var(--ink-soft);font-size:12.5px;margin-left:6px}
+.pills{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:6px}
+.pill{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:5px 10px 5px 6px;font-size:13.5px}
+.pill b{flex:none;min-width:34px;text-align:center;background:var(--surface-2);border-radius:5px;padding:1px 4px;font:700 13px var(--mono)}
+
+/* 사이즈 */
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media(max-width:560px){.trio .card{padding:10px 8px}.trio h3{font-size:13px}.trio table{font-size:12px}.trio td:first-child{font-size:11.5px}}
+.trio h3{margin:0 0 8px;font-size:14px}
+.trio table{width:100%;border-collapse:collapse;font-size:13.5px}
+.trio td{padding:6px 4px;border-top:1px solid var(--line)}
+.trio tr:first-child td{border-top:0}
+.trio td:first-child{font:700 13px var(--mono);width:3.4em}
+.trio td:last-child{text-align:right;font-weight:600}
+.bar{display:flex;height:10px;border-radius:5px;overflow:hidden;margin:10px 0 0}
+.bar i{flex:1}
+.bar i:nth-child(1){background:#e3cdbb}.bar i:nth-child(2){background:#cfa488}.bar i:nth-child(3){background:#b5502f}
+
+/* 컬러 */
+.tabs{display:flex;gap:6px;margin:0 0 10px;flex-wrap:wrap}
+.tabs button{border:1px solid var(--line-strong);background:var(--surface);border-radius:9999px;padding:4px 14px;font:500 13.5px var(--font);color:var(--ink);cursor:pointer}
+.tabs button[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+.colors{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}
+.cc{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.sw{flex:none;width:44px;height:44px;border-radius:8px;border:1px solid rgba(0,0,0,.14)}
+.cc .cd{font:700 15px var(--mono)}
+.cc .kr{font-weight:600;font-size:13.5px;line-height:1.3}
+.cc .en{font-size:11px;color:var(--ink-soft);letter-spacing:.02em;line-height:1.3}
+.ssb{font:600 10px var(--font);background:var(--accent-soft);color:var(--accent);border-radius:9999px;padding:0 6px;margin-left:6px;vertical-align:2px}
+.rule{background:var(--accent-soft);border-radius:8px;padding:8px 12px;font-size:13.5px;margin:0 0 12px}
+.rule b{font-family:var(--mono)}
+.empty{color:var(--ink-soft);padding:12px 0}
+@media(max-width:700px){
+  .strip{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .seg .cd{font-size:17px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>품번 · 컬러코드</h1>
+<p class="lead">헬렌카민스키 품번을 읽는 법과 복종·컬러 코드표입니다. 시즌과 상관없이 쓰는 고정 자료입니다.</p>
+<nav class="chips" aria-label="목차">
+  <a href="#pn">품번 체계</a><a href="#bj">복종 코드</a><a href="#sz">사이즈 · 챙 기준</a><a href="#cl">컬러코드</a>
+</nav>
+
+<section id="pn">
+  <h2>품번 체계<small>총 15자리</small></h2>
+  <p class="sub">칸을 누르면 아래에서 해당 자리의 코드표가 강조됩니다.</p>
+  <div class="exline">예시 <b>HXWH-A111310-BK-OS</b><span>헬렌카민스키 · 2026년 · A/W · 모자 · A1 클로슈작은챙 · 1131 아이코닉 · Main · BLACK · 57.5cm</span></div>
+  <div class="strip" id="strip"></div>
+  <div class="segd" id="segd"></div>
+
+  <div class="card dec">
+    <label for="decIn">품번 해독기</label>
+    <input id="decIn" value="HXWH-A111310-BK-OS" maxlength="24" autocomplete="off" spellcheck="false" inputmode="latin">
+    <div class="dres" id="decOut"></div>
+    <p class="note">하이픈(-)은 넣어도, 빼도 됩니다. 앞 11자리(품번)만 넣어도 읽고, 컬러(12~13자리)와 사이즈(14~15자리)가 있으면 함께 풀어줍니다.</p>
+  </div>
+</section>
+
+<section id="bj">
+  <h2>복종 코드<small>5~6번째 자리 · 2자리</small></h2>
+  <input class="find" id="bjFind" type="search" placeholder="코드나 복종명으로 검색 (예: 캡, K1, 비니)" aria-label="복종 코드 검색">
+  <div id="bjOut"></div>
+</section>
+
+<section id="sz">
+  <h2>사이즈 · 챙 기준</h2>
+  <p class="sub">모자 둘레는 눈살점에서 뒤통수 돌출점을 지나도록 측정한 값이며, 오차는 ±0.5cm입니다.</p>
+  <div class="trio">
+    <div class="card"><h3>모자 사이즈<span class="note"> 헬렌카민스키</span></h3>
+      <table><tr><td>OS</td><td>57.5cm</td></tr><tr><td>ME</td><td>57.5cm</td></tr><tr><td>LA</td><td>59.5cm</td></tr></table></div>
+    <div class="card"><h3>모자 챙 기준</h3>
+      <table><tr><td>작은챙</td><td>7cm 이하</td></tr><tr><td>중간챙</td><td>7.5 ~ 10.5cm</td></tr><tr><td>큰챙</td><td>11cm 이상</td></tr></table>
+      <div class="bar" aria-hidden="true"><i></i><i></i><i></i></div></div>
+    <div class="card"><h3>더스트백 구분</h3>
+      <table><tr><td>S</td><td>바이저 / 캡</td></tr><tr><td>M</td><td>중간챙</td></tr><tr><td>L</td><td>큰챙</td></tr></table></div>
+  </div>
+</section>
+
+<section id="cl">
+  <h2>컬러코드</h2>
+  <div class="tabs" id="clTabs" role="group" aria-label="컬러 구분">
+    <button type="button" data-g="all" aria-pressed="true">전체</button>
+    <button type="button" data-g="base" aria-pressed="false">기본 컬러</button>
+    <button type="button" data-g="carry" aria-pressed="false">캐리오버 컬러</button>
+  </div>
+  <input class="find" id="clFind" type="search" placeholder="코드·컬러명 검색 (예: BK, 블랙, navy)" aria-label="컬러코드 검색">
+  <div class="rule" id="clRule" hidden>캐리오버는 <b>숫자 = 모자 컬러, 뒤 글자 = 띠 컬러</b>입니다. &nbsp;<b>1</b> NATURAL · <b>2</b> NOUGAT · <b>3</b> CHARCOAL · <b>4</b> CHALK</div>
+  <div class="colors" id="clOut"></div>
+</section>
+</div>
+
+<script>
+(function(){
+'use strict';
+var $=function(s){return document.querySelector(s)};
+function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+
+/* ---------- 데이터 ---------- */
+var SEG=[
+ {k:'brand',pos:'1',lb:'브랜드',cd:'H',rows:[['H','헬렌카민스키'],['L','KR License']]},
+ {k:'year',pos:'2',lb:'년도',cd:'X',rows:[['U','23년도'],['V','24년도'],['W','25년도'],['X','26년도'],['Y','27년도']]},
+ {k:'season',pos:'3',lb:'시즌',cd:'W',rows:[['S','S/S'],['W','A/W'],['R','Resort'],['Z','연간']]},
+ {k:'cat',pos:'4',lb:'카테고리',cd:'H',rows:[['H','모자'],['B','가방'],['A','액세서리'],['R','의류'],['F','신발'],['6','기프트 박스']]},
+ {k:'bj',pos:'5~6',lb:'복종코드',cd:'A1',rows:null,link:['#bj','복종 코드표 바로가기']},
+ {k:'num',pos:'7~10',lb:'품번',cd:'1131',rows:[['뒷자리 1','아이코닉'],['뒷자리 5','컬렉션']]},
+ {k:'ro',pos:'11',lb:'리오더',cd:'0',rows:[['0','Main'],['1','Reorder 1차'],['2','Reorder 2차'],['3','Reorder 3차']]},
+ {k:'col',pos:'12~13',lb:'컬러',cd:'BK',rows:null,link:['#cl','컬러코드표 바로가기']},
+ {k:'size',pos:'14~15',lb:'사이즈',cd:'OS',rows:[['OS','57.5cm'],['XS',''],['SS',''],['ME','57.5cm'],['LA','59.5cm'],['XL','']]}
+];
+var BJ=[
+ ['A1','클로슈작은챙'],['AC','액세서리'],['B1','클로슈중간챙'],['C1','클로슈큰챙'],['E1','바이저중간챙'],['F1','바이저큰챙'],
+ ['G1','베레'],['H1','비니'],['I1','버킷'],['JT','져지탑'],['K1','캡'],
+ ['M1','카스켓'],['N1','페도라작은챙'],['O1','페도라중간챙'],['P1','페도라큰챙'],['Q1','보터햇'],
+ ['R1','숄더백'],['S1','토트백'],['T1','클러치'],['V1','크로스바디'],['X1','파우치'],['Y1','헤어밴드외'],['1','기타'],['91','슬라이드'],['92','샌들']];
+var BJX=[['A2','XY 클로슈작은챙'],['G2','XY 베레'],['H2','XY 비니'],['I2','XY 버킷'],['K2','XY 캡'],['L2','XY 헌팅캡'],['M2','XY 카스켓'],['N2','XY 페도라작은챙']];
+var BJL=[['PC','판쵸'],['VT','베스트'],['PD','패딩자켓'],['JK','아우터자켓'],['CD','가디건'],['CT','울코트'],['WT','우븐탑'],['WD','우븐드레스'],['WP','우븐팬츠'],['WS','우븐스커트'],['NT','니트탑'],['ND','니트드레스'],['NP','니트팬츠'],['NS','니트스커트'],['JS','점프수트'],['SH','셔츠'],['AC','액세서리']];
+
+/* 컬러: [코드, 영문, 국문, 견본(근사색)] */
+var BASE=[
+ ['BK','BLACK','블랙','#1c1c1c'],['WH','WHITE','화이트','#fafafa'],['IV','IVORY','아이보리','#f5efe0'],['CR','CREAM','크림','#f1e8d2'],
+ ['NT','NATURAL','내추럴','#e6dcc8'],['NU','NOUGAT','누가','#c8a77f'],['OM','OATMEAL','오트밀','#d9ccb4'],['BE','BEIGE','베이지','#d8c3a5'],
+ ['LE','LIGHT BEIGE','라이트 베이지','#e8dcc6'],['MB','MELANGE BEIGE','멜란지 베이지','#cdbfa6'],['CA','CAMEL','카멜','#c19a6b'],['OK','OAK','오크','#b08a5a'],
+ ['BR','BROWN','브라운','#6b4a34'],['CC','CHOCOLATE','초콜릿','#4a2e22'],['KB','KHAKI BROWN','카키 브라운','#8a7a50'],
+ ['GY','GRAY','그레이','#8a8a8a'],['LG','LIGHT GREY','라이트 그레이','#c9c9c9'],['MG','MELANGE GREY','멜란지 그레이','#a5a5a5'],['DG','DARK GREY','다크 그레이','#4a4a4a'],['CH','CHARCOAL','챠콜','#3a3a3c'],
+ ['NV','NAVY','네이비','#1f2a4a'],['BL','BLUE','블루','#4f6fa8'],['LB','LIGHT BLUE','라이트 블루','#a9c4e0'],
+ ['PK','PINK','핑크','#e8a6b4'],['LP','LIGHT PINK','라이트 핑크','#f3cfd6'],['RO','ROSE','로즈','#c98b94'],['BN','BURGUNDY','버건디','#6d1f2f'],
+ ['PU','PURPLE','퍼플','#6b4a8c'],['LA','LAVENDER','라벤더','#b9a5d6'],
+ ['EY','EM/NATURAL LOGO','이클립스 멜란지/내추럴 로고','#bdb6aa'],['MU','MULTI','멀티','conic-gradient(#c8553d,#e0b040,#5b9a6b,#4f6fa8,#8a5aa0,#c8553d)']];
+var HAT={'1':'#e6dcc8','2':'#c8a77f','3':'#3a3a3c','4':'#f2f0ea'};
+var BAND={K:'#1c1c1c',S:'#d9c7a0',N:'#c8a77f',W:'#fafafa',X:'#1c1c1c',Y:'#e6dcc8'};
+var CARRY=[
+ ['1K','NATURAL/BLACK','내추럴/블랙','1',BAND.K],
+ ['1N','NATURAL/NOUGAT STRIPE','내추럴/누가 스트라이프','1',BAND.N],
+ ['1S','NATURAL/SAND OR SHELL','내추럴/샌드','1',BAND.S],
+ ['1W','NATURAL/WHITE','내추럴/화이트','1',BAND.W],
+ ['1X','NATURAL/BLACK LOGO','내추럴/블랙 로고','1',BAND.X],
+ ['2K','NOUGAT/BLACK','누가/블랙','2',BAND.K],
+ ['2S','NOUGAT/SAND','누가/샌드','2',BAND.S],
+ ['2Y','NOUGAT/NATURAL LOGO','누가/내추럴 로고','2',BAND.Y],
+ ['3K','CHARCOAL/BLACK','챠콜/블랙','3',BAND.K],
+ ['3X','CHARCOAL/BLACK LOGO','챠콜/블랙 로고','3',BAND.X],
+ ['4K','CHALK/MIDNIGHT','초크/미드나잇','4','#1f2a4a'],
+ ['2A','NOUGAT/AQUA','누가/아쿠아','2','#7fc8c8','SS27'],
+ ['2C','NOUGAT/CREAM','누가/크림','2','#f1e8d2','SS27']];
+var SS=[['AQ','AQUA','아쿠아','#7fc8c8'],['DR','DARK RED','다크레드','#7a1620'],['RD','RED','레드','#c0282d'],['GD','GOLD','골드','#c9a54a'],['DE','DUCK EGG','덕에그','#b9d3cf'],['SG','SAGE','세이지','#a3b18a']];
+var COLORS=[],CMAP={};
+BASE.forEach(function(c){COLORS.push({g:'base',code:c[0],en:c[1],kr:c[2],bg:c[3]})});
+SS.forEach(function(c){COLORS.push({g:'base',code:c[0],en:c[1],kr:c[2],bg:c[3],ss:1})});
+CARRY.forEach(function(c){COLORS.push({g:'carry',code:c[0],en:c[1],kr:c[2],bg:'linear-gradient(135deg,'+HAT[c[3]]+' 0 50%,'+c[4]+' 50% 100%)',ss:c[5]?1:0})});
+COLORS.forEach(function(c){CMAP[c.code]=c});
+var SZ={OS:'57.5cm',XS:'',SS:'',ME:'57.5cm',LA:'59.5cm',XL:''};
+
+/* ---------- 품번 15자리 ---------- */
+var strip=$('#strip'),segd=$('#segd');
+SEG.forEach(function(s,i){
+  var b=document.createElement('button');b.type='button';b.className='seg';b.setAttribute('aria-pressed','false');b.dataset.i=i;
+  b.innerHTML='<span class="pos">'+s.pos+'</span><span class="cd">'+esc(s.cd)+'</span><span class="lb">'+s.lb+'</span>';
+  strip.appendChild(b);
+  var d=document.createElement('div');d.className='card';d.id='seg-'+i;
+  var body=s.rows?'<dl class="kv">'+s.rows.map(function(r){return '<dt>'+esc(r[0])+'</dt><dd>'+esc(r[1]||'')+'</dd>'}).join('')+'</dl>':'<a class="jump" href="'+s.link[0]+'">'+s.link[1]+' ↓</a>';
+  d.innerHTML='<h3>'+s.lb+'<span>'+s.pos+'번째</span></h3>'+body;
+  segd.appendChild(d);
+});
+strip.addEventListener('click',function(e){
+  var b=e.target.closest('.seg');if(!b)return;
+  var on=b.getAttribute('aria-pressed')==='true';
+  strip.querySelectorAll('.seg').forEach(function(x){x.setAttribute('aria-pressed','false')});
+  segd.querySelectorAll('.card').forEach(function(x){x.classList.remove('on')});
+  if(!on){b.setAttribute('aria-pressed','true');var c=$('#seg-'+b.dataset.i);c.classList.add('on');c.scrollIntoView({block:'nearest',behavior:'smooth'})}
+});
+
+/* ---------- 해독기 ---------- */
+function look(seg,key){var r=SEG.filter(function(s){return s.k===seg})[0].rows;for(var i=0;i<r.length;i++)if(r[i][0]===key)return r[i][1];return null}
+function decode(raw){
+  var s=raw.toUpperCase().replace(/[^A-Z0-9]/g,'');
+  if(s.length<11)return '<div class="bad">품번 앞 11자리 이상을 입력해 주세요.</div>';
+  var out=[],lic=s[0]==='L';
+  function add(k,code,txt){out.push('<div><div class="k">'+k+'</div><div class="v"><span class="c">'+esc(code)+'</span>'+(txt==null?'<span class="bad">표에 없음</span>':esc(txt))+'</div></div>')}
+  add('브랜드',s[0],look('brand',s[0]));
+  add('년도',s[1],look('year',s[1]));
+  add('시즌',s[2],look('season',s[2]));
+  add('카테고리',s[3],look('cat',s[3]));
+  var key=s.substr(4,2),bj=null,list=lic?BJL:BJ.concat(BJX);
+  for(var i=0;i<list.length;i++)if(list[i][0]===key)bj=list[i][1]+(!lic&&key[1]==='2'?' (사용중단)':'');
+  add(lic?'복종코드 (License)':'복종코드',key,bj);
+  var num=s.substr(6,4);
+  add('품번',num,look('num','뒷자리 '+num[3]));
+  var ro=s[10];add('리오더',ro,ro==='0'?'Main':(/[1-3]/.test(ro)?'Reorder '+ro+'차':null));
+  if(s.length>=13){var c=CMAP[s.substr(11,2)];add('컬러',s.substr(11,2),c?c.kr+' ('+c.en+')':null)}
+  if(s.length>=15){var z=s.substr(13,2);add('사이즈',z,z in SZ?(SZ[z]||'둘레 미표기'):null)}
+  return out.join('');
+}
+function runDec(){$('#decOut').innerHTML=decode($('#decIn').value)}
+$('#decIn').addEventListener('input',runDec);runDec();
+
+/* ---------- 복종 코드 ---------- */
+function pills(a,q,x){return a.filter(function(r){return !q||(r[0]+' '+r[1]).toLowerCase().indexOf(q)>=0}).map(function(r){return '<div class="pill"><b>'+esc(r[0])+'</b>'+esc(r[1])+(x?'<i>사용중단</i>':'')+'</div>'}).join('')}
+function renderBj(){
+  var q=$('#bjFind').value.trim().toLowerCase(),a=pills(BJ,q),b=pills(BJL,q),x=pills(BJX,q,true);
+  $('#bjOut').innerHTML=(a?'<div class="grp"><h3>헬렌카민스키<span>모자 · 가방 · 기타</span></h3><div class="pills">'+a+'</div></div>':'')+
+    (b?'<div class="grp"><h3>License<span>브랜드 L · 의류</span></h3><div class="pills">'+b+'</div></div>':'')+
+    (x?'<div class="grp"><h3>XY<span>사용중단</span></h3><div class="pills">'+x+'</div></div>':'')||'<p class="empty">검색 결과가 없습니다.</p>';
+}
+$('#bjFind').addEventListener('input',renderBj);renderBj();
+
+/* ---------- 컬러코드 ---------- */
+var grp='all';
+function renderCl(){
+  var q=$('#clFind').value.trim().toLowerCase();
+  var a=COLORS.filter(function(c){return (grp==='all'||c.g===grp)&&(!q||(c.code+' '+c.en+' '+c.kr).toLowerCase().indexOf(q)>=0)});
+  $('#clOut').innerHTML=a.map(function(c){return '<div class="cc"><span class="sw" style="background:'+c.bg+'"></span><div><div class="cd">'+esc(c.code)+(c.ss?'<span class="ssb">SS27</span>':'')+'</div><div class="kr">'+esc(c.kr)+'</div><div class="en">'+esc(c.en)+'</div></div></div>'}).join('')||'<p class="empty">검색 결과가 없습니다.</p>';
+  $('#clRule').hidden=grp==='base';
+}
+$('#clTabs').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;grp=b.dataset.g;this.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',String(x===b))});renderCl()});
+$('#clFind').addEventListener('input',renderCl);renderCl();
+})();
+</script>
+</body>
+</html>
