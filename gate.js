@@ -52,7 +52,7 @@
   function enter(user) {
     gate.hidden = true;
     app.hidden = false;
-    who.textContent = user.code + (user.role === 'admin' ? ' (관리자)' : '');
+    who.textContent = user.role === 'store' && user.name ? user.code + ' · ' + user.name : user.code + (user.role === 'admin' ? ' (관리자)' : user.role === 'hq' ? ' (본사)' : '');
     adminBtn.hidden = user.role !== 'admin';
     var s = document.getElementById('scroller');
     if (s) s.scrollTop = 0;
@@ -88,13 +88,13 @@
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     errBox.hidden = true;
-    var code = codeInput.value.trim().toUpperCase();
+    var code = codeInput.value.replace(/\s+/g, '').toUpperCase();
     var pw = pwInput.value;
     var user = find(code);
     btn.disabled = true;
     var done = function (ok) {
       btn.disabled = false;
-      if (!ok) { showError('매장코드 또는 비밀번호가 맞지 않습니다.'); pwInput.value = ''; }
+      if (!ok) { showError('아이디 또는 비밀번호가 맞지 않습니다. 매장은 매장코드, 본사는 이름을 입력했는지 확인해주세요.'); pwInput.value = ''; }
     };
     if (!user) { setTimeout(function () { done(false); }, 600); return; }
     derive(code, pw, user.salt, user.iter).then(function (h) {
@@ -114,14 +114,25 @@
 
   adminBtn.addEventListener('click', function () {
     list.innerHTML = '';
+    var n = { store: 0, hq: 0, admin: 0 };
+    users().forEach(function (u) { n[u.role] = (n[u.role] || 0) + 1; });
+    var sum = document.createElement('li');
+    sum.textContent = '매장 ' + n.store + ' · 본사 ' + n.hq + ' · 관리자 ' + n.admin;
+    sum.style.fontWeight = '700';
+    list.appendChild(sum);
     users().forEach(function (u) {
       var li = document.createElement('li');
-      li.textContent = u.code + (u.role === 'admin' ? '  · 관리자' : '');
+      li.textContent = u.code + (u.name ? ' · ' + u.name : '') + ' · ' + (u.role === 'admin' ? '관리자' : u.role === 'hq' ? '본사' : '매장');
       list.appendChild(li);
     });
     modal.hidden = false;
   });
   closeBtn.addEventListener('click', function () { modal.hidden = true; });
+  var helpBtn = document.getElementById('gate-help'), helpTip = document.getElementById('gate-helptip');
+  helpBtn.addEventListener('click', function () {
+    helpTip.hidden = !helpTip.hidden;
+    helpBtn.setAttribute('aria-expanded', String(!helpTip.hidden));
+  });
   modal.addEventListener('click', function (e) { if (e.target === modal) modal.hidden = true; });
 
   if (!restore()) codeInput.focus();

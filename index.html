@@ -1550,19 +1550,19 @@
   <form class="gate-card" id="gate-form" autocomplete="off">
     <p class="gate-eyebrow">HK Store Guide</p>
     <h1 class="gate-title">매장 가이드</h1>
-    <p class="gate-sub">매장코드와 비밀번호를 입력해주세요.</p>
-    <label class="gate-label" for="gate-code">매장코드</label>
+    <p class="gate-sub">매장코드(본사는 이름)와 비밀번호를 입력해주세요.</p>
+    <div class="gate-labelrow"><label class="gate-label" for="gate-code">매장코드</label><button type="button" class="gate-help" id="gate-help" aria-label="입력 안내" aria-expanded="false" aria-controls="gate-helptip">?</button></div><p class="gate-helptip" id="gate-helptip" hidden>매장은 매장코드, 본사는 이름을 입력하세요.</p>
     <input class="gate-input" id="gate-code" name="code" type="text" inputmode="text" autocapitalize="characters" autocomplete="username" spellcheck="false" required>
     <label class="gate-label" for="gate-pw">비밀번호</label>
     <input class="gate-input" id="gate-pw" name="pw" type="password" autocomplete="current-password" required>
-    <p class="gate-error" id="gate-error" role="alert" hidden></p>
+    <p class="gate-note">비밀번호는 전산 공지에 등록되어 있으며 매 시즌 업데이트됩니다. 비밀번호를 찾을 수 없으면 정수민 선임에게 문의해주세요.</p><p class="gate-error" id="gate-error" role="alert" hidden></p>
     <button class="gate-btn" id="gate-btn" type="submit">로그인</button>
   </form>
 </div>
 <div id="app" hidden>
 <div class="session-bar">
   <span id="who"></span>
-  <button type="button" id="admin-btn" hidden>접근 매장 목록</button>
+  <button type="button" id="admin-btn" hidden>접근 계정 목록</button>
   <button type="button" id="logout-btn">로그아웃</button>
   <button type="button" id="fs-down" aria-label="글자 작게">가−</button>
   <button type="button" id="fs-up" aria-label="글자 크게">가+</button>

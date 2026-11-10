@@ -34,6 +34,12 @@ body { -webkit-tap-highlight-color: transparent; }
 .gate-title { margin: 0 0 8px; font-family: var(--font-display); font-size: 30px; font-weight: 600; color: var(--text); }
 .gate-sub { margin: 0 0 24px; font-size: 15px; color: var(--text-muted); }
 
+.gate-labelrow { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; }
+.gate-labelrow .gate-label { margin: 0; }
+.gate-help { width: 22px; height: 22px; padding: 0; border-radius: 50%; border: 1px solid var(--border, #c9c9c9); background: #fff; color: var(--text-muted); font: 700 13px/1 inherit; cursor: pointer; }
+.gate-help[aria-expanded="true"] { background: var(--text); color: #fff; border-color: var(--text); }
+.gate-helptip { margin: -2px 0 12px; padding: 8px 12px; border-radius: 8px; background: var(--accent-soft, #f0f0f0); font-size: 14px; color: var(--text); }
+.gate-note { margin: -6px 0 16px; font-size: 13px; line-height: 1.5; color: var(--text-muted); }
 .gate-label { display: block; margin: 0 0 6px; font-size: 14px; font-weight: 600; color: var(--text); }
 
 .gate-input {
