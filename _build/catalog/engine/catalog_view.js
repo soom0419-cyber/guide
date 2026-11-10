@@ -217,6 +217,19 @@
     });
   }
 
+  // ---------------- SS27 탭 전용: 마우스 커서 오른쪽 아래에 딸기 장식 (마우스가 있는 화면만, 터치 기기는 해당 없음) ----------------
+  const berry = (() => {
+    if (!window.matchMedia || !matchMedia('(hover: hover) and (pointer: fine)').matches) return null;
+    const el = document.createElement('img');
+    el.src = 'guide-img/strawberry.png'; el.alt = ''; el.className = 'cursor-berry'; el.hidden = true;
+    document.body.appendChild(el);
+    let x = 0, y = 0, raf = 0, on = false;
+    const draw = () => { raf = 0; el.style.transform = `translate(${x + 14}px, ${y + 16}px)`; };
+    document.addEventListener('mousemove', e => { x = e.clientX; y = e.clientY; if (!raf) raf = requestAnimationFrame(draw); if (on) el.style.opacity = 1; }, { passive: true });
+    document.documentElement.addEventListener('mouseleave', () => { el.style.opacity = 0; });
+    return { set(v) { on = v; el.hidden = !v; el.style.opacity = 0; } };
+  })();
+
   // ---------------- 사진 확대 보기 ----------------
   let lbSet = [], lbIdx = 0;
   const lb = document.createElement('div');
@@ -274,6 +287,7 @@
 
   function renderAll() {
     ready = true; renderMaterialTabs();
+    if (berry) berry.set(state.material === 'COLLECTION_SS27');
     const g = guideOf(), onProducts = !g || state.sub === 'products';
     renderSubTabs(g); renderGuidePages(g);
     renderFilters(); renderStories();
