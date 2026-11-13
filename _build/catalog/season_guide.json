@@ -53,5 +53,60 @@
     "look": {
       "images": []
     }
+  },
+  "AW26": {
+    "theme": {
+      "title": "THE IN BETWEEN",
+      "lead": "더 인 비트윈",
+      "image": "guide-img/aw26/theme-main.jpg",
+      "imageFull": "guide-img/aw26/theme-main-full.jpg",
+      "refs": [
+        {
+          "thumb": "guide-img/aw26/theme-ref1.jpg",
+          "full": "guide-img/aw26/theme-ref1-full.jpg",
+          "w": 4368,
+          "h": 5824
+        },
+        {
+          "thumb": "guide-img/aw26/theme-ref2.jpg",
+          "full": "guide-img/aw26/theme-ref2-full.jpg",
+          "w": 2752,
+          "h": 4128
+        },
+        {
+          "thumb": "guide-img/aw26/theme-ref3.jpg",
+          "full": "guide-img/aw26/theme-ref3-full.jpg",
+          "w": 2752,
+          "h": 4128
+        },
+        {
+          "thumb": "guide-img/aw26/theme-ref4.jpg",
+          "full": "guide-img/aw26/theme-ref4-full.jpg",
+          "w": 2752,
+          "h": 4128
+        },
+        {
+          "thumb": "guide-img/aw26/theme-ref5.jpg",
+          "full": "guide-img/aw26/theme-ref5-full.jpg",
+          "w": 2752,
+          "h": 4128
+        },
+        {
+          "thumb": "guide-img/aw26/theme-ref6.jpg",
+          "full": "guide-img/aw26/theme-ref6-full.jpg",
+          "w": 2752,
+          "h": 4128
+        }
+      ],
+      "paragraphs": [
+        "브루탈리즘 건축에서 영감을 받은 구조적인 실루엣과 부드러운 레이어링이 어우러진 도시적 감성을 담은 컬렉션입니다.",
+        "AW26 컬렉션은 챠콜, 그레이 톤에 로즈, 블루, 퍼플 컬러로 포인트를 더해 절제된 무드 속 생동감을 표현합니다.",
+        "스웨이드, 부클, 울 펠트 등 다양한 텍스처를 통해 도시의 복합적인 에너지와 감각적인 매력을 담아냈습니다.",
+        "균형과 대비가 만들어낸 새로운 우아함, 감각을 가진 이들을 위한 시티 드레싱을 제안합니다."
+      ]
+    },
+    "look": {
+      "images": []
+    }
   }
 }

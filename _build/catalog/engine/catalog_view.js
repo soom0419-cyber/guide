@@ -257,7 +257,7 @@
   document.getElementById('catTheme').addEventListener('click', e => { const b = e.target.closest('[data-lb]'); if (b) lbShow(parseInt(b.dataset.lb, 10)); });
 
   // ---------------- 시즌 가이드: 시즌 테마 / 상품 / 룩북 (SEASON_GUIDE에 자료가 있는 시즌만) ----------------
-  const GUIDE_KEY = { COLLECTION_SS27: 'SS27' };
+  const GUIDE_KEY = { COLLECTION: 'AW26', COLLECTION_SS27: 'SS27' };
   const SUBS = [['theme', '시즌 테마'], ['products', '상품'], ['look', '룩북']];
   function guideOf() {
     const k = GUIDE_KEY[state.material], G = window.SEASON_GUIDE || {};

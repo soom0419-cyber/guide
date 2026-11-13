@@ -83,3 +83,7 @@ body.lb-open { overflow: hidden; }
 .look-item img { display: block; width: 100%; border-radius: 14px; }
 
 .cursor-berry { position: fixed; left: 0; top: 0; width: 58px; height: auto; pointer-events: none; z-index: 3500; opacity: 0; transition: opacity .15s; will-change: transform; }
+
+.cat-top .map-search { margin-left: auto; flex: 0 1 320px; min-width: 200px; }
+.cat-top .map-search input { width: 100%; }
+@media (max-width: 700px) { .cat-top .map-search { flex: 1 1 100%; } }
