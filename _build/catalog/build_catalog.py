@@ -58,6 +58,22 @@ def ext_gallery(v):
         n_big += 1
     return "catalog-img/" + name
 
+# 상세 화면 사진: 컬러마다 1장 — 파일명이 _1로 끝나는 사진(없으면 가장 앞 번호 1장). hq_image_map.json의 파일 순서 = gallery 순서
+hq_map = json.load(open(os.path.join(BASE, "hq_image_map.json"), encoding="utf-8"))
+def pick_gallery(s, c):
+    g = c.get("gallery") or []
+    if len(g) <= 1:
+        return g
+    cc = c["color_code"]
+    fn = hq_map.get(f"{s['item_code']}|{cc}") or hq_map.get("ICONIC_" + str(s.get("name_sjg", "")).replace(" ", "_") + "|" + cc)
+    idx = 0
+    if fn and len(fn) == len(g):
+        for i, f in enumerate(fn):
+            if re.search(r"_1\.jpe?g$", f, re.I):
+                idx = i
+                break
+    return [g[idx]]
+
 KEEP = ["item_code", "display_code", "material", "season_tab", "seasons", "story", "plan", "body", "attr", "name_sjg", "name_kr",
         "rrp", "price_increase", "brim", "dustbag", "origin", "desc", "material_main", "material_full", "care", "tags",
         "ship_date", "sizes", "has_hq_gallery", "transition_note", "image", "length_cm", "fit", "lining"]
@@ -70,7 +86,7 @@ for code, s in flat.items():
         o["image"] = ext_img(o.get("image"))
         o["total"] = {"order": (s.get("total") or {}).get("order", 0)}
         o["colors"] = [{"color_code": c["color_code"], "color_kr": c.get("color_kr") or "", "image": ext_img(c.get("image")),
-                        "swatch": c.get("swatch"), "cgroup": c.get("cgroup"), "gallery": [ext_gallery(g) for g in (c.get("gallery") or [])] or None,
+                        "swatch": c.get("swatch"), "cgroup": c.get("cgroup"), "gallery": [ext_gallery(g) for g in pick_gallery(s, c)] or None,
                         "order": c.get("order", 0)} for c in s["colors"]]
         cache[k] = o
     styles[code] = cache[k]
