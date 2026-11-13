@@ -87,3 +87,6 @@ body.lb-open { overflow: hidden; }
 .cat-top .map-search { margin-left: auto; flex: 0 1 320px; min-width: 200px; }
 .cat-top .map-search input { width: 100%; }
 @media (max-width: 700px) { .cat-top .map-search { flex: 1 1 100%; } }
+
+.gallery-list-item img, .product-gallery .cell img { cursor: zoom-in; }
+.cat-lb .lb-cap { position: absolute; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); padding: 6px 14px; border-radius: 9999px; background: rgba(0,0,0,.6); color: #fff; font-size: 14px; font-weight: 500; white-space: pre; }

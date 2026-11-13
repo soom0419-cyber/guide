@@ -234,18 +234,21 @@
   let lbSet = [], lbIdx = 0;
   const lb = document.createElement('div');
   lb.className = 'cat-lb'; lb.hidden = true;
-  lb.innerHTML = '<button type="button" class="lb-x" aria-label="닫기">×</button><button type="button" class="lb-nav lb-prev" aria-label="이전 사진">‹</button><img alt=""><button type="button" class="lb-nav lb-next" aria-label="다음 사진">›</button>';
+  lb.innerHTML = '<button type="button" class="lb-x" aria-label="닫기">×</button><button type="button" class="lb-nav lb-prev" aria-label="이전 사진">‹</button><img alt=""><button type="button" class="lb-nav lb-next" aria-label="다음 사진">›</button><div class="lb-cap" hidden></div>';
   document.body.appendChild(lb);
-  const lbImg = lb.querySelector('img');
+  const lbImg = lb.querySelector('img'), lbCap = lb.querySelector('.lb-cap');
   function lbShow(i) {
     if (!lbSet.length) return;
     lbIdx = (i + lbSet.length) % lbSet.length;
     lbImg.src = lbSet[lbIdx].full;
+    const cap = [lbSet[lbIdx].label, lbSet.length > 1 ? `${lbIdx + 1} / ${lbSet.length}` : ''].filter(Boolean).join('   ');
+    lbCap.textContent = cap; lbCap.hidden = !cap;
     lb.querySelectorAll('.lb-nav').forEach(b => b.hidden = lbSet.length < 2);
     lb.hidden = false; document.body.classList.add('lb-open');
   }
   function lbClose() { lb.hidden = true; lbImg.removeAttribute('src'); document.body.classList.remove('lb-open'); }
   lb.addEventListener('click', e => {
+    if (lb._swiped) return;
     if (e.target.closest('.lb-prev')) lbShow(lbIdx - 1);
     else if (e.target.closest('.lb-next')) lbShow(lbIdx + 1);
     else lbClose();      // 바깥 · 사진 · × 어디를 눌러도 닫힘(이전/다음 제외)
@@ -253,6 +256,26 @@
   document.addEventListener('keydown', e => {
     if (lb.hidden) return;
     if (e.key === 'Escape') lbClose(); else if (e.key === 'ArrowLeft') lbShow(lbIdx - 1); else if (e.key === 'ArrowRight') lbShow(lbIdx + 1);
+  });
+  // 상품 상세 사진: 누르면 확대, 좌우로 다른 컬러 사진으로 넘어감(화살표·방향키·스와이프)
+  document.getElementById('dview-product').addEventListener('click', e => {
+    const img = e.target.closest('.gallery-list-item img, .product-gallery .cell img');
+    if (!img) return;
+    const st = detailState && detailState.product ? STYLES[detailState.product] : null;
+    const all = [...document.querySelectorAll('#dview-product .gallery-list-item img, #dview-product .product-gallery .cell img')];
+    lbSet = all.map(im => {
+      const code = (im.parentElement.querySelector('.tag') || {}).textContent || '';
+      const c = st && st.colors.find(x => x.color_code === code);
+      return { full: im.currentSrc || im.src, label: code ? code + (c && c.color_kr ? ' · ' + c.color_kr : '') : '' };
+    });
+    lbShow(all.indexOf(img));
+  });
+  let lbTouchX = null;
+  lb.addEventListener('touchstart', e => { lbTouchX = e.touches.length === 1 ? e.touches[0].clientX : null; }, { passive: true });
+  lb.addEventListener('touchend', e => {
+    if (lbTouchX == null) return;
+    const dx = e.changedTouches[0].clientX - lbTouchX; lbTouchX = null;
+    if (Math.abs(dx) > 50 && lbSet.length > 1) { lbShow(lbIdx + (dx < 0 ? 1 : -1)); lb._swiped = true; setTimeout(() => { lb._swiped = false; }, 350); }
   });
   document.getElementById('catTheme').addEventListener('click', e => { const b = e.target.closest('[data-lb]'); if (b) lbShow(parseInt(b.dataset.lb, 10)); });
 
