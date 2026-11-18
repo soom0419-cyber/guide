@@ -148,7 +148,7 @@
     const isIconic = first.material === 'ICONIC';
     const info = STORIES[g.story];
     const tags = [...new Set(cards.flatMap(c => c.seasons || []))];
-    const eyebrow = info && info.eyebrow ? info.eyebrow : (isIconic ? 'ICONIC · ' + g.category : (tags.length > 1 ? tags.join(' · ') + ' COLLECTION' : seasonLabel(first)));
+    const eyebrow = info && info.eyebrow ? info.eyebrow : (isIconic ? 'ICONIC · ' + [...new Set(cards.map(c => c.plan))].join(' · ') : (tags.length > 1 ? tags.join(' · ') + ' COLLECTION' : seasonLabel(first)));
     const points = info && info.bullets && info.bullets.length
       ? `<ul class="story-points">${info.bullets.map(b => `<li>${b}</li>`).join('')}</ul>`
       : (isIconic ? '<div class="story-plain">시즌에 관계없이 상시 판매되는 아이코닉 상품입니다.</div>' : '');
