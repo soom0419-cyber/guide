@@ -1,7 +1,7 @@
 // 상품 설명집 탭: 시즌 탭 > 기획명/복종 필터 > 스토리 박스(소개 문구 + 아이템 카드, 출고 순).
 // generate_html.py가 바잉 마스터파일 스크립트에 끼워 넣는다(TREE/STYLES/STORIES와 fmtNum·rrpDisplay·mmdd·korMmdd 등 공용 함수를 사용).
 (function () {
-  const state = { sub: 'products', material: null, plan: 'ALL', body: 'ALL', attr: 'ALL', month: 'ALL', grp: 'ALL', search: '' };
+  const state = { sub: 'products', material: null, ch: 'ALL', plan: 'ALL', body: 'ALL', attr: 'ALL', month: 'ALL', grp: 'ALL', search: '' };
   let ready = false;
   const attr = t => String(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
   const esc = t => String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -11,9 +11,10 @@
     '버킷큰챙': '버킷', '페도라작은챙': '페도라', '페도라중간챙': '페도라' };
   const FILTER_ORDER = { '모자': ['바이저', '클로슈', '버킷', '카스켓', '보터햇', '캡', '페도라', '헌팅캡', '베레', '비니'],
     '가방': ['숄더백', '토트백', '크로스바디', '클러치'], '액세서리': ['스카프', '글로브', '액세서리'],
-    '의류': ['재킷', '코트', '니트', '셔츠', '블라우스', '원피스', '스커트', '팬츠'] };
+    '의류': ['아우터자켓', '재킷', '가디건', '판초', '베스트', '우븐드레스', '니트드레스', '니트탑', '우븐탑', '져지탑', '셔츠', '우븐팬츠', '우븐스커트', '니트팬츠'] };
   const PLANS = ['모자', '가방', '액세서리'];
-  const plansOf = () => state.material === 'APPAREL' ? ['의류'] : PLANS;
+  const hasApparel = m => { let f = false; eachStyle(m, s => { if (s.plan === '의류') f = true; }); return f; };
+  const plansOf = () => state.material === 'APPAREL' ? ['의류'] : PLANS.concat(hasApparel(state.material) ? ['의류'] : []);
   // 소재 필터 라벨(입판재 "속성명" 원본 -> 한글 표기) — MAP과 동일한 매핑
   const ATTR_LABEL = {
     'BRAID (CLASSIC)': '브레이드', 'BRAID (LACE)': '브레이드', 'BRAID (LIGHT)': '라이트 브레이드',
@@ -22,18 +23,23 @@
     'FABRIC (KNIT)': '니트', 'FABRIC (LINEN)': '린넨', 'FABRIC (NYLON)': '나일론', 'FABRIC (WOOL)': '울',
     'FINE WOOL FELT': '울펠트', 'FUR': '퍼', 'LEATHER': '레더', 'PANAMA': '파나마', 'WOOL FELT': '울펠트',
     'CROCHET&FABRIC': '크로셰&패브릭',
+    // SS27 의류 소재 구분
+    'COTTON': '코튼', 'LINEN': '린넨', 'LINEN BLEND': '린넨 혼방', 'SILK': '실크', 'SILK BLEND': '실크 혼방', 'WOOL': '울', 'WOOL BLEND': '울 혼방',
+    'RECYCLED NYLON': '리싸이클 나일론', 'RECYCLED POLYESTER': '리싸이클 폴리에스터', 'SEQUIN': '시퀸', 'VISCOSE': '비스코스',
   };
   const bodyGroup = s => BODY_GROUP[s.body] || s.body;
   const attrLabel = s => ATTR_LABEL[s.attr] || s.attr || '';
   // 기준 = 혼용률(material_main/material_full)에 '라피아', 또는 품명에 RAFFIA/PANAMA(파나마 햇 포함)가 들어가면 라피아, 그 외 전부 CMT (혼용률 비어 있어도 품명으로 판정)
   const SS27_GROUPS = ['라피아', 'CMT'];
-  const ssGroupOf = s => (/라피아/.test((s.material_full || '') + ' ' + (s.material_main || '') + ' ' + (s.name_kr || '')) || /RAFFIA|PANAMA/i.test(s.name_sjg || '') || s.attr === 'PANAMA') ? '라피아' : 'CMT';
+  const ssGroupOf = s => s.plan === '의류' ? null : (/라피아/.test((s.material_full || '') + ' ' + (s.material_main || '') + ' ' + (s.name_kr || '')) || /RAFFIA|PANAMA/i.test(s.name_sjg || '') || s.attr === 'PANAMA') ? '라피아' : 'CMT';
   const attrOk = s => state.attr === 'ALL' || (SS27_GROUPS.includes(state.attr) ? (s.season_tab === 'SS27' && ssGroupOf(s) === state.attr) : attrLabel(s) === state.attr);
   // 출고월(컬렉션) / 코어·NEW(아이코닉) 필터
   const MONTH_OF = {};
   Object.entries(TREE).forEach(([mat, months]) => { if (mat !== 'ICONIC') Object.entries(months).forEach(([mo, weeks]) => Object.values(weeks).forEach(w => w.stories.forEach(g => g.styles.forEach(c => { MONTH_OF[c] = mo; })))); });
   const monthOf = s => MONTH_OF[s.item_code];
   const monthOk = s => state.month === 'ALL' || String(monthOf(s)) === state.month;
+  const CHANNELS = ['오프라인 단독', '온라인 단독', '아울렛 전용'];
+  const chOk = s => state.ch === 'ALL' || s.channel === state.ch;
   const CG_OF = { '코어': '코어', 'NEW': 'NEW 시즌' };
   const grpOk = s => state.grp === 'ALL' || s.material !== 'ICONIC' || (s.colors.some(c => c.cgroup === CG_OF[state.grp]));
   const monthRank = mo => { const n = parseInt(mo, 10); return n === 12 ? -1 : n; };
@@ -45,7 +51,7 @@
   // 검색어가 있으면(사이트에서 window.CATALOG_GLOBAL_SEARCH 켠 경우) 탭·필터와 상관없이 전체 시즌/기획을 대상으로 검색
   const globalSearch = () => !!window.CATALOG_GLOBAL_SEARCH && !!state.search.trim();
   const matches = s => globalSearch() ? searchOk(s) : (state.plan === 'ALL' || s.plan === state.plan) && (state.body === 'ALL' || bodyGroup(s) === state.body)
-    && attrOk(s) && monthOk(s) && grpOk(s) && searchOk(s);
+    && attrOk(s) && monthOk(s) && grpOk(s) && chOk(s) && searchOk(s);
 
   function eachStyle(material, fn) {
     Object.values(TREE[material] || {}).forEach(weeks => Object.values(weeks).forEach(w => w.stories.forEach(g => g.styles.forEach(c => { if (STYLES[c]) fn(STYLES[c]); }))));
@@ -78,7 +84,7 @@
     } else {
       const mc = {}; let mt = 0;
       eachStyle(state.material, s => { if (!((state.plan === 'ALL' || s.plan === state.plan) && (state.body === 'ALL' || bodyGroup(s) === state.body))) return; mc[monthOf(s)] = (mc[monthOf(s)] || 0) + 1; mt++; });
-      const months = Object.keys(TREE[state.material] || {}).sort((a, b) => monthRank(a) - monthRank(b));
+      const months = Object.keys(TREE[state.material] || {}).filter(m => m !== '99').sort((a, b) => monthRank(a) - monthRank(b));
       topRow = `<span class="flabel">출고월</span>${chip('month', 'ALL', '전체', mt, state.month === 'ALL')}${months.map(m => chip('month', m, m + '월', mc[m] || 0, state.month === m)).join('')}`;
     }
     html += `<div class="fchips">${planRow}</div>`;  // 출고월(구분) 행이 맨 위(검색창과 같은 줄), 기획명은 그 아래
@@ -97,14 +103,19 @@
     const attrLabels = Object.keys(ac).sort((a, b) => ac[b] - ac[a]);
     const attrTotal = Object.values(ac).reduce((a, b) => a + b, 0);
     if (attrLabels.length) {
-      const groupChips = state.material === 'COLLECTION_SS27' ? SS27_GROUPS.map(g => `<button class="fchip group${state.attr === g ? ' active' : ''}${gc[g] ? '' : ' zero'}" data-k="attr" data-v="${g}">${g}</button>`).join('') : '';
+      const groupChips = state.material === 'COLLECTION_SS27' && (gc['라피아'] || gc['CMT']) ? SS27_GROUPS.map(g => `<button class="fchip group${state.attr === g ? ' active' : ''}${gc[g] ? '' : ' zero'}" data-k="attr" data-v="${g}">${g}</button>`).join('') : '';
       html += `<div class="fchips"><span class="flabel">소재</span>${chip('attr', 'ALL', '전체', attrTotal, state.attr === 'ALL')}${groupChips}${attrLabels.map(l => chip('attr', l, l, ac[l], state.attr === l)).join('')}</div>`;
+    }
+    if (state.material === 'COLLECTION_SS27') {   // 채널: 오프라인 단독 / 온라인 단독 / 아울렛 전용(해당 상품이 없는 칩은 흐리게)
+      const cc = {}; eachStyle(state.material, s => { if (s.channel) cc[s.channel] = (cc[s.channel] || 0) + 1; });
+      html += `<div class="fchips"><span class="flabel">채널</span>${chip('ch', 'ALL', '전체', 1, state.ch === 'ALL')}${CHANNELS.map(c => chip('ch', c, c, cc[c] || 0, state.ch === c)).join('')}</div>`;
     }
     document.getElementById('catPlanRow').innerHTML = topRow;  // 검색창은 이 행의 오른쪽에 고정 배치(입력 중 다시 그려지지 않도록 별도 요소)
     document.getElementById('catFilters').innerHTML = html;
     document.querySelectorAll('#catPlanRow button, #catFilters button').forEach(b => b.onclick = () => {
       if (b.dataset.k === 'month') { state.month = b.dataset.v; }
       else if (b.dataset.k === 'grp') { state.grp = b.dataset.v; }
+      else if (b.dataset.k === 'ch') { state.ch = b.dataset.v; }
       else if (b.dataset.k === 'plan') { state.plan = b.dataset.v; state.body = 'ALL'; state.attr = 'ALL'; }
       else if (b.dataset.k === 'body') { state.body = b.dataset.v; state.attr = 'ALL'; }
       else { state.attr = b.dataset.v; }
@@ -125,11 +136,12 @@
       : `<div class="swatch-row">${s.colors.map(chipOf).join('')}</div>`;
     return `
     <div class="simple-card" onclick="openDetailProduct('${s.item_code}')">
-      <div class="simple-thumb">${hero ? `<img src="${hero.image}" alt="${attr(s.name_sjg)}">` : '<div class="noimg"></div>'}</div>
+      <div class="simple-thumb${s.plan === '의류' ? ' apparel' : ''}">${(s.plan === '의류' ? s.image : (hero && hero.image)) ? `<img src="${s.plan === '의류' ? s.image : hero.image}" alt="${attr(s.name_sjg)}">` : '<div class="noimg"></div>'}${s.plan === '의류' && s.channel ? `<span class="ch-chip">${s.channel}</span>` : ''}${rmBadge(s.item_code)}</div>
       <div class="simple-body">
         <div class="simple-name">${s.name_sjg}${s.seasons && s.seasons.includes('R27') ? ' <span class="season-badge">R27</span>' : ''}</div>
         <div class="simple-name-kr">${s.name_kr}</div>
         <div class="simple-size">사이즈 ${s.sizes.join('/')}</div>
+        ${s.plan === '의류' ? `<div class="simple-ship">출고 ${s.ship_date ? mmdd(s.ship_date) : '-'}</div>` : ''}
         <div class="simple-price">${rrpDisplay(s)}</div>
         ${chips}
       </div>
@@ -193,6 +205,7 @@
     });
     boxes.forEach(b => { b.styles = sortStyleCodes(b.styles); });
     if (isIconic && state.grp !== 'ALL') boxes.forEach(b => { const n = c => (STYLES[c].colors.filter(x => x.cgroup === CG_OF[state.grp]).length); b.styles.sort((x, y) => n(y) - n(x)); });  // 스토리 안 기본 정렬(모자 > 가방 > 액세서리 > 그 외, 클로슈 > 버킷 > 보터, 발주 많은 순)
+    if (!isIconic) { const isAp = b => b.styles.length && STYLES[b.styles[0]].plan === '의류'; return boxes.filter(b => !isAp(b)).concat(boxes.filter(isAp)); }
     return boxes;
   }
   function renderStories() {
@@ -213,9 +226,72 @@
     }).join('');
     el.querySelectorAll('button').forEach(b => b.onclick = () => {
       if (globalSearch()) { state.search = ''; document.getElementById('catSearch').value = ''; }
-      state.material = b.dataset.mat; state.sub = 'products'; state.plan = 'ALL'; state.body = 'ALL'; state.attr = 'ALL'; state.month = 'ALL'; state.grp = 'ALL'; renderAll();
+      state.material = b.dataset.mat; state.sub = 'products'; state.plan = 'ALL'; state.body = 'ALL'; state.attr = 'ALL'; state.month = 'ALL'; state.grp = 'ALL'; state.ch = 'ALL'; renderAll();
     });
   }
+
+
+  // ---------------- 내부 리마크: admin = 전체 / 김수용 = 의류 리마크만 (그 외·로그인 없음 = 안 보임). 화면에서만 제어하는 수준(로그인 게이트와 동일) ----------------
+  const REMARK_SCOPES = { '김수용': ['apparel'] };
+  const RM_CLS = { '확인 필요': 'chk', '업데이트 필요': 'upd', '오류 수정': 'err' };
+  const RM = { list: [], by: {}, all: false, type: 'ALL', scope: 'ALL' };
+  function rmViewer() {
+    try {
+      const t = JSON.parse(localStorage.getItem('dg_auth_v1') || 'null');
+      if (!t || !(t.exp > Date.now())) return null;
+      const users = window.USERS || (window.parent && window.parent.USERS) || [];
+      const u = users.find(x => x.code === t.code && x.hash === t.h);
+      if (!u) return null;
+      return u.role === 'admin' ? 'ALL' : (REMARK_SCOPES[u.code] || null);
+    } catch (e) { return null; }
+  }
+  const rmItems = x => (x.items || []).map(c => STYLES[c]).filter(Boolean);
+  const rmBadge = code => {
+    const n = (RM.by[code] || []).filter(x => x.badge !== false).length;
+    return n ? `<span class="rm-badge" title="내부 리마크 ${n}건">!</span>` : '';
+  };
+  window.catRemarkHtml = code => {
+    const a = RM.by[code] || [];
+    if (!a.length) return '';
+    return `<div class="rm-box"><div class="rm-title">내부 리마크 <small>${RM.all ? 'admin' : '의류 담당'}만 보임</small></div>${a.map(x => `<div class="rm-row ${RM_CLS[x.type]}"><span class="rm-pill">${x.type}</span><span>${esc(x.text)}</span></div>`).join('')}</div>`;
+  };
+  const rmPanel = document.createElement('div');
+  rmPanel.className = 'rm-panel'; rmPanel.hidden = true;
+  document.body.appendChild(rmPanel);
+  function rmRender() {
+    const list = RM.list.filter(x => (RM.type === 'ALL' || x.type === RM.type) && (RM.scope === 'ALL' || x.scope === RM.scope));
+    const chip = (k, v, l) => `<button type="button" class="fchip${RM[k] === v ? ' active' : ''}" data-rk="${k}" data-rv="${v}">${l}</button>`;
+    const cnt = t => RM.list.filter(x => x.type === t).length;
+    const row = x => {
+      const items = rmItems(x);
+      const links = items.length ? `<div class="rm-links">${items.slice(0, 8).map(s => `<button type="button" class="rm-link" data-open="${s.item_code}">${esc(s.name_sjg)}</button>`).join('')}${items.length > 8 ? `<span class="rm-more">외 ${items.length - 8}개</span>` : ''}</div>` : '';
+      return `<div class="rm-row ${RM_CLS[x.type]}"><span class="rm-pill">${x.type}</span><div class="rm-body"><div>${esc(x.text)}${x.scope === 'general' ? ' <small>(전체)</small>' : ''}</div>${links}</div></div>`;
+    };
+    rmPanel.innerHTML = `<div class="rm-sheet"><div class="rm-head"><b>내부 리마크 ${RM.list.length}건</b><button type="button" class="rm-x" aria-label="닫기">×</button></div>
+      <div class="fchips">${chip('type', 'ALL', '전체')}${['확인 필요', '업데이트 필요', '오류 수정'].map(t => chip('type', t, `${t} ${cnt(t)}`)).join('')}</div>
+      ${RM.all ? `<div class="fchips">${chip('scope', 'ALL', '전체')}${chip('scope', 'apparel', '의류')}${chip('scope', 'general', '그 외')}</div>` : ''}
+      <div class="rm-list">${list.map(row).join('') || '<div class="empty">해당 리마크가 없습니다.</div>'}</div></div>`;
+  }
+  rmPanel.addEventListener('click', e => {
+    const k = e.target.closest('[data-rk]'), o = e.target.closest('[data-open]');
+    if (k) { RM[k.dataset.rk] = k.dataset.rv; rmRender(); }
+    else if (o) { rmPanel.hidden = true; openDetailProduct(o.dataset.open); }
+    else if (e.target.closest('.rm-x') || e.target === rmPanel) rmPanel.hidden = true;
+  });
+  function rmLoad() {
+    const sc = rmViewer();
+    if (!sc) return;
+    fetch('remarks.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : []).then(list => {
+      RM.all = sc === 'ALL';
+      RM.list = list.filter(x => RM.all || sc.includes(x.scope));
+      RM.by = {};
+      RM.list.forEach(x => (x.items || []).forEach(c => { (RM.by[c] = RM.by[c] || []).push(x); }));
+      const b = document.getElementById('catRemarkBtn');
+      if (b) { b.hidden = !RM.list.length; b.innerHTML = `리마크 <b>${RM.list.length}</b>건`; b.onclick = () => { rmRender(); rmPanel.hidden = false; }; }
+      if (ready) renderAll();
+    }).catch(() => {});
+  }
+  rmLoad();
 
   // ---------------- SS27 탭 전용: 마우스 커서 오른쪽 아래에 딸기·나비 장식 (마우스가 있는 화면만, 터치 기기는 해당 없음) ----------------
   const berry = (() => {
@@ -330,13 +406,13 @@
   // MAP에서 스토리/상품을 눌렀을 때: 설명집 탭이 보이는 상태에서 호출 — 스토리는 해당 박스로 스크롤, 상품은 상세 화면 열기
   window.catalogLand = (kind, value) => {
     if (kind === 'product' && STYLES[value]) {
-      state.material = materialOfStyle(STYLES[value]); state.sub = 'products'; state.plan = 'ALL'; state.body = 'ALL'; state.attr = 'ALL'; state.month = 'ALL'; state.grp = 'ALL';
+      state.material = materialOfStyle(STYLES[value]); state.sub = 'products'; state.plan = 'ALL'; state.body = 'ALL'; state.attr = 'ALL'; state.month = 'ALL'; state.grp = 'ALL'; state.ch = 'ALL';
       renderAll();
       openDetailProduct(value);
     } else if (kind === 'story') {
       const m = materialOfStory(value);
       if (!m) { window.catalogShow(); return; }
-      state.material = m; state.sub = 'products'; state.plan = 'ALL'; state.body = 'ALL'; state.attr = 'ALL'; state.month = 'ALL'; state.grp = 'ALL';
+      state.material = m; state.sub = 'products'; state.plan = 'ALL'; state.body = 'ALL'; state.attr = 'ALL'; state.month = 'ALL'; state.grp = 'ALL'; state.ch = 'ALL';
       renderAll();
       const box = [...document.querySelectorAll('#catStories .story-box')].find(b => b.dataset.box === value);
       if (box) { box.scrollIntoView({ block: 'start' }); box.classList.add('flash'); setTimeout(() => box.classList.remove('flash'), 2200); }

@@ -98,6 +98,25 @@ ap_styles, ap_tree, ap_stories = build_apparel.build(os.environ.get("APPAREL_DAT
 if ap_styles:
     styles.update(ap_styles); tree["APPAREL"] = ap_tree; stories.update(ap_stories)
 
+# ---- SS27 의류(SS27 의류 상품설명.xlsx + SS27 의류 이미지): 사이트 SS27 탭 안에 그룹(ROMA, SOFIA …) 박스로 포함 ----
+import build_apparel_ss27
+ss_styles, ss_tree, ss_stories, ss_facts = build_apparel_ss27.build(IMG_DIR)
+if ss_styles:
+    styles.update(ss_styles)
+    _t = tree.setdefault("COLLECTION_SS27", {})
+    for _mo, _wk, _g, _code, _d in ss_tree:
+        _w = _t.setdefault(_mo, {}).setdefault(_wk, {"thursday": _d or "2027-12-31", "stories": []})
+        _box = next((x for x in _w["stories"] if x["story"] == _g), None)
+        if not _box:
+            _box = {"story": _g, "total_order": 0, "styles": []}
+            _w["stories"].append(_box)
+        _box["styles"].append(_code)
+    stories.update(ss_stories)
+
+# ---- 내부 리마크(remarks.json): 자동 점검 + remarks_manual.json. 화면 노출은 admin 전체 / 김수용 의류만(catalog_view.js) ----
+import build_remarks
+build_remarks.write(os.path.join(OUT, "remarks.json"), build_remarks.build(styles, ss_facts if ss_styles else {}))
+
 n_img = len(os.listdir(IMG_DIR))
 size = sum(os.path.getsize(os.path.join(IMG_DIR, f)) for f in os.listdir(IMG_DIR))
 
@@ -184,8 +203,13 @@ function styleOrderKey(s, qty) {
   return [sr, pr, pr === 0 ? styleBodyRank(s.body || '') : 0, -qty];
 }
 const cmpOrderKey = (a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2] || a[3] - b[3];
+const APPAREL_CAT = { '아우터자켓': 0, '재킷': 0, '가디건': 0, '판초': 0, '베스트': 0, '우븐드레스': 1, '니트드레스': 1, '우븐탑': 2, '니트탑': 2, '져지탑': 2, '셔츠': 2, '우븐팬츠': 3, '우븐스커트': 3, '니트팬츠': 3 };
 function sortStyleCodes(codes) {
   if (codes.some(c => STYLES[c] && STYLES[c].material === 'ICONIC')) return codes;
+  if (codes.length && codes.every(c => STYLES[c] && STYLES[c].plan === '의류')) {   // 의류: 아울렛·온라인 단독은 그룹 맨 끝, 그다음 아우터 > 원피스 > 상의 > 하의 > 악세사리, 같은 분류는 품번순
+    const k = c => [STYLES[c].channel ? 1 : 0, APPAREL_CAT[STYLES[c].body] !== undefined ? APPAREL_CAT[STYLES[c].body] : 4, c];
+    return codes.slice().sort((x, y) => { const a = k(x), b = k(y); return a[0] - b[0] || a[1] - b[1] || (a[2] < b[2] ? -1 : a[2] > b[2] ? 1 : 0); });
+  }
   const key = c => styleOrderKey(STYLES[c] || {}, (STYLES[c] && STYLES[c].total && STYLES[c].total.order) || 0);
   return codes.slice().sort((x, y) => cmpOrderKey(key(x), key(y)));
 }
@@ -202,10 +226,11 @@ html = """<!doctype html>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap">
 <style>:root{color-scheme:light}[hidden]:not([hidden=until-found i]){display:none!important}img{max-width:100%}</style>
 <style>__CSS__</style>
+<script src="users.js"></script>
 </head>
 <body>
 <div class="wrap">
-  <header class="page cat-head"><h1>상품 설명집</h1></header>
+  <header class="page cat-head"><h1>상품 설명집</h1><button type="button" id="catRemarkBtn" class="rm-btn" hidden></button></header>
   <div class="page-view active" id="catalogView">
     <nav class="materials" id="catMaterialTabs"></nav>
     <nav class="materials subtabs" id="catSubTabs" hidden></nav>

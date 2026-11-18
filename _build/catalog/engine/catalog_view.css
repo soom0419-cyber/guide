@@ -90,3 +90,40 @@ body.lb-open { overflow: hidden; }
 
 .gallery-list-item img, .product-gallery .cell img { cursor: zoom-in; }
 .cat-lb .lb-cap { position: absolute; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); padding: 6px 14px; border-radius: 9999px; background: rgba(0,0,0,.6); color: #fff; font-size: 14px; font-weight: 500; white-space: pre; }
+
+/* SS27 의류: 카드 3:4 세로 틀, 채널 칩, 출고 줄, 상세 사진은 원래 비율 */
+.simple-thumb { position: relative; }
+.simple-thumb.apparel { aspect-ratio: 3 / 4; background: #fff; }
+.ch-chip { position: absolute; left: 8px; top: 8px; z-index: 2; background: #111; color: #fff; font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 9999px; line-height: 1.5; }
+.ch-chip.static { position: static; display: inline-block; font-size: 12px; padding: 3px 11px; }
+.ch-line { margin: 6px 0 4px; }
+.simple-ship { font-size: 12px; color: var(--ink-soft); margin: 0 0 2px; }
+.gallery-list.apparel .gallery-list-item { aspect-ratio: auto; }
+.gallery-list.apparel .gallery-list-item img { height: auto; }
+.photo-note { font-size: 12.5px; color: var(--ink-soft); margin: 2px 2px 0; }
+
+/* 내부 리마크(admin·의류 담당만) */
+.rm-btn { border: 1px solid #b8860b; background: #fff4cc; color: #6b4a00; border-radius: 9999px; padding: 6px 14px; font: 600 13px var(--font-body); cursor: pointer; }
+.rm-btn b { font-weight: 700; }
+.rm-badge { position: absolute; right: 8px; top: 8px; z-index: 2; width: 22px; height: 22px; border-radius: 50%; background: #f5c542; color: #3d2c00; font: 800 13px/22px var(--font-body); text-align: center; box-shadow: 0 0 0 2px #fff; }
+.rm-box { border: 1px solid #e2cf8d; background: #fffaf0; border-radius: 10px; padding: 10px 12px; margin: 0 0 14px; }
+.rm-title { font: 700 13px var(--font-body); margin: 0 0 6px; }
+.rm-title small { font-weight: 400; color: var(--ink-soft); margin-left: 6px; }
+.rm-row { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; line-height: 1.5; padding: 4px 0; }
+.rm-pill { flex: none; font: 700 11px var(--font-body); padding: 1px 8px; border-radius: 9999px; margin-top: 2px; white-space: nowrap; }
+.rm-row.chk .rm-pill { background: #fff0b3; color: #6b4a00; }
+.rm-row.upd .rm-pill { background: #dbe8ff; color: #1d3f9c; }
+.rm-row.err .rm-pill { background: #fcd9d9; color: #9b1c1c; }
+.rm-panel { position: fixed; inset: 0; z-index: 2500; background: rgba(0,0,0,.45); display: flex; align-items: flex-start; justify-content: center; padding: 24px 12px; overflow-y: auto; }
+.rm-panel[hidden] { display: none; }
+.rm-sheet { background: #fff; border-radius: 14px; width: min(860px, 100%); padding: 16px 18px 20px; }
+.rm-head { display: flex; align-items: center; justify-content: space-between; margin: 0 0 10px; font-size: 17px; }
+.rm-x { border: 0; background: transparent; font-size: 26px; line-height: 1; cursor: pointer; padding: 0 6px; }
+.rm-list { margin-top: 10px; border-top: 1px solid var(--line); }
+.rm-list .rm-row { border-bottom: 1px solid var(--line); padding: 9px 2px; }
+.rm-body { flex: 1; min-width: 0; }
+.rm-body small { color: var(--ink-soft); }
+.rm-links { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
+.rm-link { border: 1px solid var(--line-strong); background: #fff; border-radius: 9999px; padding: 1px 10px; font: 500 12px var(--font-body); cursor: pointer; }
+.rm-link:hover { background: var(--surface-2); }
+.rm-more { font-size: 12px; color: var(--ink-soft); align-self: center; }

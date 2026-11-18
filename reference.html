@@ -216,6 +216,8 @@ var SS=[['AQ','AQUA','아쿠아','#7fc8c8'],['DR','DARK RED','다크레드','#7a
 var COLORS=[],CMAP={};
 BASE.forEach(function(c){COLORS.push({g:'base',code:c[0],en:c[1],kr:c[2],bg:c[3]})});
 SS.forEach(function(c){COLORS.push({g:'base',code:c[0],en:c[1],kr:c[2],bg:c[3],ss:1})});
+var APP=[['MT','MINT','민트','#a8d5c2'],['KH','KHAKI','카키','#8a8a5c'],['GN','GREEN','그린','#4f7a52']];
+APP.forEach(function(c){COLORS.push({g:'base',code:c[0],en:c[1],kr:c[2],bg:c[3],ss:1,tag:'SS27 의류'})});
 CARRY.forEach(function(c){COLORS.push({g:'carry',code:c[0],en:c[1],kr:c[2],bg:'linear-gradient(135deg,'+HAT[c[3]]+' 0 50%,'+c[4]+' 50% 100%)',ss:c[5]?1:0})});
 COLORS.forEach(function(c){CMAP[c.code]=c});
 var SZ={OS:'57.5cm',XS:'',SS:'',ME:'57.5cm',LA:'59.5cm',XL:''};
@@ -278,7 +280,7 @@ var grp='all';
 function renderCl(){
   var q=$('#clFind').value.trim().toLowerCase();
   var a=COLORS.filter(function(c){return (grp==='all'||c.g===grp)&&(!q||(c.code+' '+c.en+' '+c.kr).toLowerCase().indexOf(q)>=0)});
-  $('#clOut').innerHTML=a.map(function(c){return '<div class="cc"><span class="sw" style="background:'+c.bg+'"></span><div><div class="cd">'+esc(c.code)+(c.ss?'<span class="ssb">SS27</span>':'')+'</div><div class="kr">'+esc(c.kr)+'</div><div class="en">'+esc(c.en)+'</div></div></div>'}).join('')||'<p class="empty">검색 결과가 없습니다.</p>';
+  $('#clOut').innerHTML=a.map(function(c){return '<div class="cc"><span class="sw" style="background:'+c.bg+'"></span><div><div class="cd">'+esc(c.code)+(c.ss?'<span class="ssb">'+(c.tag||'SS27')+'</span>':'')+'</div><div class="kr">'+esc(c.kr)+'</div><div class="en">'+esc(c.en)+'</div></div></div>'}).join('')||'<p class="empty">검색 결과가 없습니다.</p>';
   $('#clRule').hidden=grp==='base';
 }
 $('#clTabs').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;grp=b.dataset.g;this.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',String(x===b))});renderCl()});

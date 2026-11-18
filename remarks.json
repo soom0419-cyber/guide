@@ -1,0 +1,527 @@
+[
+{
+"type": "확인 필요",
+"scope": "apparel",
+"text": "사진 폴더에 LYSRWD00120 사진이 있는데 엑셀에는 해당 품번이 없음",
+"items": [],
+"badge": false
+},
+{
+"type": "확인 필요",
+"scope": "apparel",
+"text": "혼용률에 '모'(7개 상품)와 '울'(1개 상품) 표기가 섞여 있음 — 통일 필요",
+"items": [
+"LYSRCD00010",
+"LYSRNP00010",
+"LYSRNT00010",
+"LYSRNT00020",
+"LYSRNT00040",
+"LYSRPC00010",
+"LYSRWD00010",
+"LYSRWP00010"
+],
+"badge": false
+},
+{
+"type": "확인 필요",
+"scope": "apparel",
+"text": "컬러별 설명이 다름 — 화면에는 첫 컬러(NV) 설명만 표시 중, 나머지 컬러 설명 확인 필요",
+"items": [
+"LYSRCD00040"
+],
+"badge": true
+},
+{
+"type": "확인 필요",
+"scope": "apparel",
+"text": "컬러별 설명이 다름 — 화면에는 첫 컬러(KH) 설명만 표시 중, 나머지 컬러 설명 확인 필요",
+"items": [
+"LYSRJK00050"
+],
+"badge": true
+},
+{
+"type": "확인 필요",
+"scope": "apparel",
+"text": "품명은 COTTON BLEND인데 소재 구분은 LINEN BLEND",
+"items": [
+"LYSRJK00060"
+],
+"badge": true
+},
+{
+"type": "확인 필요",
+"scope": "apparel",
+"text": "컬러별 소재 구분이 다름: MU RECYCLED POLYESTER / PK RECYCLED NYLON — 화면에는 첫 컬러 기준",
+"items": [
+"LYSRJK00070"
+],
+"badge": true
+},
+{
+"type": "확인 필요",
+"scope": "apparel",
+"text": "컬러별 설명이 다름 — 화면에는 첫 컬러(MU) 설명만 표시 중, 나머지 컬러 설명 확인 필요",
+"items": [
+"LYSRJK00070"
+],
+"badge": true
+},
+{
+"type": "확인 필요",
+"scope": "apparel",
+"text": "혼용률 입력 형식이 제각각인 상품 12개(예: 코튼52 폴리48, 코튼/폴리=86/14) — 화면에서는 자동으로 통일해 표시 중, 엑셀 표기 통일 권장",
+"items": [
+"LYSRJK00090",
+"LYSRSH00040",
+"LYSRWD00040",
+"LYSRWD00050",
+"LYSRWD00060",
+"LYSRWD00090",
+"LYSRWD00110",
+"LYSRWP00030",
+"LYSRWP00110",
+"LYSRWP00130",
+"LYSRWS00020",
+"LYSRWT00050"
+],
+"badge": false
+},
+{
+"type": "확인 필요",
+"scope": "apparel",
+"text": "컬러별 소재 구분이 다름: LP LINEN / GN LINEN BLEND — 화면에는 첫 컬러 기준",
+"items": [
+"LYSRJT00020"
+],
+"badge": true
+},
+{
+"type": "확인 필요",
+"scope": "apparel",
+"text": "소재 구분 빈칸 21개 상품은 혼용률로 추정해 표시 중(엑셀에 값이 있으면 그 값 사용)",
+"items": [
+"LYSRNP00010",
+"LYSRNT00010",
+"LYSRNT00020",
+"LYSRNT00040",
+"LYSRPC00010",
+"LYSRSH00010",
+"LYSRSH00020",
+"LYSRSH00040",
+"LYSRWD00010",
+"LYSRWD00020",
+"LYSRWD00040",
+"LYSRWD00060",
+"LYSRWD00090",
+"LYSRWP00010",
+"LYSRWP00020",
+"LYSRWP00060",
+"LYSRWP00090",
+"LYSRWP00110",
+"LYSRWP00130",
+"LYSRWS00010",
+"LYSRWT00050"
+],
+"badge": false
+},
+{
+"type": "확인 필요",
+"scope": "apparel",
+"text": "컬러별 설명이 다름 — 화면에는 첫 컬러(MT) 설명만 표시 중, 나머지 컬러 설명 확인 필요",
+"items": [
+"LYSRNT00010"
+],
+"badge": true
+},
+{
+"type": "확인 필요",
+"scope": "apparel",
+"text": "컬러별 설명이 다름 — 화면에는 첫 컬러(OM) 설명만 표시 중, 나머지 컬러 설명 확인 필요",
+"items": [
+"LYSRWD00050"
+],
+"badge": true
+},
+{
+"type": "확인 필요",
+"scope": "apparel",
+"text": "컬러별 엑셀 혼용률 원본이 달라(예: 한 컬러에만 '(안감)' 추가) 지정한 표기를 모든 컬러에 적용 중",
+"items": [
+"LYSRWD00060"
+],
+"badge": true
+},
+{
+"type": "확인 필요",
+"scope": "apparel",
+"text": "혼용률 겉감 합계 101% (IV 컬러) — 합계가 100%가 아님, 엑셀 확인",
+"items": [
+"LYSRWP00020"
+],
+"badge": true
+},
+{
+"type": "확인 필요",
+"scope": "apparel",
+"text": "품명은 COTTON BLEND인데 소재 구분은 LINEN BLEND",
+"items": [
+"LYSRWP00070"
+],
+"badge": true
+},
+{
+"type": "확인 필요",
+"scope": "apparel",
+"text": "컬러별 설명이 다름 — 화면에는 첫 컬러(NV) 설명만 표시 중, 나머지 컬러 설명 확인 필요",
+"items": [
+"LYSRWP00110"
+],
+"badge": true
+},
+{
+"type": "확인 필요",
+"scope": "apparel",
+"text": "안감 칸은 '없음'인데 혼용률에는 안감이 적혀 있음 (IV 컬러)",
+"items": [
+"LYSRWS00010"
+],
+"badge": true
+},
+{
+"type": "업데이트 필요",
+"scope": "apparel",
+"text": "관리 방법 미입력 74개 상품 — 화면에 '업데이트 예정'으로 표시 중",
+"items": [
+"LYSRCD00010",
+"LYSRCD00020",
+"LYSRCD00030",
+"LYSRCD00040",
+"LYSRCD00050",
+"LYSRCD00060",
+"LYSRJK00010",
+"LYSRJK00020",
+"LYSRJK00030",
+"LYSRJK00040",
+"LYSRJK00050",
+"LYSRJK00060",
+"LYSRJK00070",
+"LYSRJK00080",
+"LYSRJK00090",
+"LYSRJK00100",
+"LYSRJT00010",
+"LYSRJT00020",
+"LYSRJT00030",
+"LYSRND00010",
+"LYSRNP00010",
+"LYSRNP00020",
+"LYSRNT00010",
+"LYSRNT00020",
+"LYSRNT00030",
+"LYSRNT00040",
+"LYSRNT00050",
+"LYSRNT00060",
+"LYSRPC00010",
+"LYSRPC00020",
+"LYSRSH00010",
+"LYSRSH00020",
+"LYSRSH00030",
+"LYSRSH00040",
+"LYSRVT00010",
+"LYSRWD00010",
+"LYSRWD00020",
+"LYSRWD00030",
+"LYSRWD00040",
+"LYSRWD00050",
+"LYSRWD00060",
+"LYSRWD00070",
+"LYSRWD00080",
+"LYSRWD00090",
+"LYSRWD00100",
+"LYSRWD00110",
+"LYSRWP00010",
+"LYSRWP00020",
+"LYSRWP00030",
+"LYSRWP00040",
+"LYSRWP00050",
+"LYSRWP00060",
+"LYSRWP00070",
+"LYSRWP00080",
+"LYSRWP00090",
+"LYSRWP00100",
+"LYSRWP00110",
+"LYSRWP00120",
+"LYSRWP00130",
+"LYSRWP00140",
+"LYSRWS00010",
+"LYSRWS00020",
+"LYSRWS00030",
+"LYSRWS00040",
+"LYSRWT00010",
+"LYSRWT00020",
+"LYSRWT00030",
+"LYSRWT00040",
+"LYSRWT00050",
+"LYSRWT00060",
+"LYSRWT00070",
+"LYSRWT00080",
+"LYSRWT00090",
+"LYSRWT00100"
+],
+"badge": false
+},
+{
+"type": "업데이트 필요",
+"scope": "apparel",
+"text": "컬러가 2개 이상인데 사진이 대표 1컷뿐인 상품 43개 — 컬러별 사진 업데이트 필요",
+"items": [
+"LYSRCD00010",
+"LYSRCD00020",
+"LYSRCD00030",
+"LYSRCD00040",
+"LYSRCD00050",
+"LYSRJK00050",
+"LYSRJK00070",
+"LYSRJK00080",
+"LYSRJT00010",
+"LYSRJT00020",
+"LYSRJT00030",
+"LYSRNP00020",
+"LYSRNT00010",
+"LYSRNT00020",
+"LYSRNT00030",
+"LYSRNT00040",
+"LYSRNT00050",
+"LYSRNT00060",
+"LYSRPC00010",
+"LYSRPC00020",
+"LYSRSH00030",
+"LYSRWD00010",
+"LYSRWD00030",
+"LYSRWD00050",
+"LYSRWD00060",
+"LYSRWD00070",
+"LYSRWD00080",
+"LYSRWD00110",
+"LYSRWP00010",
+"LYSRWP00020",
+"LYSRWP00030",
+"LYSRWP00040",
+"LYSRWP00060",
+"LYSRWP00080",
+"LYSRWP00100",
+"LYSRWP00110",
+"LYSRWP00120",
+"LYSRWS00010",
+"LYSRWT00010",
+"LYSRWT00020",
+"LYSRWT00030",
+"LYSRWT00040",
+"LYSRWT00050"
+],
+"badge": false
+},
+{
+"type": "업데이트 필요",
+"scope": "apparel",
+"text": "안감 혼용률 미입력 (BE 컬러) — 화면에 '업데이트 예정'으로 표시 중",
+"items": [
+"LYSRJK00030"
+],
+"badge": true
+},
+{
+"type": "업데이트 필요",
+"scope": "apparel",
+"text": "안감 혼용률 미입력 (BK, WH 컬러) — 화면에 '업데이트 예정'으로 표시 중",
+"items": [
+"LYSRWD00080"
+],
+"badge": true
+},
+{
+"type": "업데이트 필요",
+"scope": "apparel",
+"text": "안감 혼용률 미입력 (CR 컬러) — 화면에 '업데이트 예정'으로 표시 중",
+"items": [
+"LYSRWP00110"
+],
+"badge": true
+},
+{
+"type": "업데이트 필요",
+"scope": "apparel",
+"text": "안감 혼용률 미입력 (NV, WH 컬러) — 화면에 '업데이트 예정'으로 표시 중",
+"items": [
+"LYSRWS00030"
+],
+"badge": true
+},
+{
+"type": "업데이트 필요",
+"scope": "apparel",
+"text": "안감 혼용률 미입력 (WH 컬러) — 화면에 '업데이트 예정'으로 표시 중",
+"items": [
+"LYSRWS00040"
+],
+"badge": true
+},
+{
+"type": "업데이트 필요",
+"scope": "apparel",
+"text": "안감 혼용률 미입력 (BK, WH 컬러) — 화면에 '업데이트 예정'으로 표시 중",
+"items": [
+"LYSRWT00040"
+],
+"badge": true
+},
+{
+"type": "업데이트 필요",
+"scope": "apparel",
+"text": "안감 혼용률 미입력 (NV, WH 컬러) — 화면에 '업데이트 예정'으로 표시 중",
+"items": [
+"LYSRWT00060"
+],
+"badge": true
+},
+{
+"type": "업데이트 필요",
+"scope": "general",
+"text": "복종 그룹 버튼(모자의 라피아/CMT식) — 의류 기준을 받는 대로 추가 (제안: 아우터·원피스·상의·하의)",
+"items": [],
+"badge": false
+},
+{
+"type": "업데이트 필요",
+"scope": "general",
+"text": "채널 필터 '오프라인 단독' — 모자·가방 단독 아이템 데이터 업데이트 예정(자료 출처 미정). 지금은 해당 상품 0개",
+"items": [],
+"badge": false
+},
+{
+"type": "오류 수정",
+"scope": "apparel",
+"text": "설명 오탈자 후보: '훌지는' — 오타 의심",
+"items": [
+"LYSRJK00020"
+],
+"badge": true
+},
+{
+"type": "오류 수정",
+"scope": "apparel",
+"text": "설명 오탈자 후보: '네추럴/네츄럴' → '내추럴'",
+"items": [
+"LYSRJK00090"
+],
+"badge": true
+},
+{
+"type": "오류 수정",
+"scope": "apparel",
+"text": "설명에 띄어쓰기가 거의 없는 줄 2개 — 엑셀에서 띄어쓰기 정리 필요",
+"items": [
+"LYSRJK00100"
+],
+"badge": true
+},
+{
+"type": "오류 수정",
+"scope": "apparel",
+"text": "설명에 띄어쓰기가 거의 없는 줄 1개 — 엑셀에서 띄어쓰기 정리 필요",
+"items": [
+"LYSRJT00010"
+],
+"badge": true
+},
+{
+"type": "오류 수정",
+"scope": "apparel",
+"text": "설명 오탈자 후보: '얖 옆' — '양 옆' 오타 의심",
+"items": [
+"LYSRJT00020"
+],
+"badge": true
+},
+{
+"type": "오류 수정",
+"scope": "apparel",
+"text": "설명 오탈자 후보: '씨어써커' — 품명 표기('시어서커')와 다름",
+"items": [
+"LYSRWD00070"
+],
+"badge": true
+},
+{
+"type": "오류 수정",
+"scope": "apparel",
+"text": "설명 오탈자 후보: '씨어써커' — 품명 표기('시어서커')와 다름",
+"items": [
+"LYSRWP00100"
+],
+"badge": true
+},
+{
+"type": "오류 수정",
+"scope": "apparel",
+"text": "태그 'HOLYDAY' → 사이트에는 'HOLIDAY'로 보정해 표시 중 (엑셀 수정 필요)",
+"items": [
+"LYSRWP00130"
+],
+"badge": true
+},
+{
+"type": "오류 수정",
+"scope": "apparel",
+"text": "설명 오탈자 후보: '씨어써커' — 품명 표기('시어서커')와 다름",
+"items": [
+"LYSRWP00140"
+],
+"badge": true
+},
+{
+"type": "오류 수정",
+"scope": "apparel",
+"text": "설명 오탈자 후보: '네추럴/네츄럴' → '내추럴'",
+"items": [
+"LYSRWT00010"
+],
+"badge": true
+},
+{
+"type": "오류 수정",
+"scope": "apparel",
+"text": "설명 오탈자 후보: '씨어써커' — 품명 표기('시어서커')와 다름",
+"items": [
+"LYSRWT00030"
+],
+"badge": true
+},
+{
+"type": "오류 수정",
+"scope": "apparel",
+"text": "설명 오탈자 후보: '여유로은' → '여유로운'",
+"items": [
+"LYSRWT00080"
+],
+"badge": true
+},
+{
+"type": "오류 수정",
+"scope": "apparel",
+"text": "설명 오탈자 후보: '씨어써커' — 품명 표기('시어서커')와 다름",
+"items": [
+"LYSRWT00090"
+],
+"badge": true
+},
+{
+"type": "오류 수정",
+"scope": "apparel",
+"text": "설명에 띄어쓰기가 거의 없는 줄 2개 — 엑셀에서 띄어쓰기 정리 필요",
+"items": [
+"LYSRWT00100"
+],
+"badge": true
+}
+]
