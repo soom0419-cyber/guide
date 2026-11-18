@@ -26,9 +26,13 @@
     // SS27 의류 소재 구분
     // 혼방은 같은 소재 그룹으로(린넨 혼방→린넨, 실크 혼방→실크, 울 혼방→울), 리싸이클 나일론→나일론, 시퀸·비스코스→기타
     'COTTON': '코튼', 'LINEN': '린넨', 'LINEN BLEND': '린넨', 'SILK': '실크', 'SILK BLEND': '실크', 'WOOL': '울', 'WOOL BLEND': '울',
-    'RECYCLED NYLON': '나일론', 'RECYCLED POLYESTER': '리싸이클 폴리에스터', 'SEQUIN': '기타', 'VISCOSE': '기타',
+    'RECYCLED NYLON': '나일론', 'RECYCLED POLYESTER': '기타', 'SEQUIN': '기타', 'VISCOSE': '기타',
   };
   const bodyGroup = s => BODY_GROUP[s.body] || s.body;
+  // 의류 복종 그룹(겹침 허용: 가디건은 아우터·니트 양쪽)
+  const APPAREL_BODY_GROUPS = { '아우터': ['아우터자켓', '재킷', '가디건', '판초', '베스트'],
+    '우븐': ['우븐드레스', '우븐팬츠', '우븐스커트', '우븐탑', '셔츠'], '니트': ['니트탑', '니트드레스', '니트팬츠', '가디건'] };
+  const bodyOk = s => state.body === 'ALL' || bodyGroup(s) === state.body || (APPAREL_BODY_GROUPS[state.body] || []).includes(bodyGroup(s));
   const attrLabel = s => ATTR_LABEL[s.attr] || s.attr || '';
   // 기준 = 혼용률(material_main/material_full)에 '라피아', 또는 품명에 RAFFIA/PANAMA(파나마 햇 포함)가 들어가면 라피아, 그 외 전부 CMT (혼용률 비어 있어도 품명으로 판정)
   const SS27_GROUPS = ['라피아', 'CMT'];
@@ -51,7 +55,7 @@
   };
   // 검색어가 있으면(사이트에서 window.CATALOG_GLOBAL_SEARCH 켠 경우) 탭·필터와 상관없이 전체 시즌/기획을 대상으로 검색
   const globalSearch = () => !!window.CATALOG_GLOBAL_SEARCH && !!state.search.trim();
-  const matches = s => globalSearch() ? searchOk(s) : (state.plan === 'ALL' || s.plan === state.plan) && (state.body === 'ALL' || bodyGroup(s) === state.body)
+  const matches = s => globalSearch() ? searchOk(s) : (state.plan === 'ALL' || s.plan === state.plan) && bodyOk(s)
     && attrOk(s) && monthOk(s) && grpOk(s) && chOk(s) && searchOk(s);
 
   function eachStyle(material, fn) {
@@ -66,6 +70,15 @@
     return out;
   }
 
+  // 출고월(구분) 줄은 줄바꿈 없이 한 줄 — 그 폭(과 기획명 줄 폭 중 큰 쪽)을 왼쪽 블록 폭으로 맞춰, 채널 칩·복종 칩이 같은 시작점에서 이어지게 한다
+  function syncLeftWidth() {
+    const f = document.querySelector('.filters'), a = document.getElementById('catPlanRow'), b = document.querySelector('.fpair .fl');
+    if (!f || !a) return;
+    f.style.removeProperty('--lw');
+    f.style.setProperty('--lw', Math.ceil(Math.max(a.scrollWidth, b ? b.scrollWidth : 0)) + 'px');
+  }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => syncLeftWidth());
+
   function renderFilters() {
     const pc = {}, bc = {};
     eachStyle(state.material, s => {
@@ -79,25 +92,26 @@
     const rest = (s, skip) => (skip === 'month' || state.month === 'ALL' || String(monthOf(s)) === state.month) && (skip === 'grp' || grpOk(s));
     if (state.material === 'ICONIC') {
       const gcnt = { '코어': 0, 'NEW': 0 }, gall = [];
-      eachStyle(state.material, s => { if (!((state.plan === 'ALL' || s.plan === state.plan) && (state.body === 'ALL' || bodyGroup(s) === state.body))) return; gall.push(s);
+      eachStyle(state.material, s => { if (!((state.plan === 'ALL' || s.plan === state.plan) && bodyOk(s))) return; gall.push(s);
         ['코어', 'NEW'].forEach(k => { if (s.colors.some(c => c.cgroup === CG_OF[k])) gcnt[k]++; }); });
       topRow = `<span class="flabel">구분</span>${chip('grp', 'ALL', '전체', gall.length, state.grp === 'ALL')}${['코어', 'NEW'].map(k => chip('grp', k, k, gcnt[k], state.grp === k)).join('')}`;
     } else {
       const mc = {}; let mt = 0;
-      eachStyle(state.material, s => { if (!((state.plan === 'ALL' || s.plan === state.plan) && (state.body === 'ALL' || bodyGroup(s) === state.body))) return; mc[monthOf(s)] = (mc[monthOf(s)] || 0) + 1; mt++; });
+      eachStyle(state.material, s => { if (!((state.plan === 'ALL' || s.plan === state.plan) && bodyOk(s))) return; mc[monthOf(s)] = (mc[monthOf(s)] || 0) + 1; mt++; });
       const months = Object.keys(TREE[state.material] || {}).filter(m => m !== '99').sort((a, b) => monthRank(a) - monthRank(b));
       topRow = `<span class="flabel">출고월</span>${chip('month', 'ALL', '전체', mt, state.month === 'ALL')}${months.map(m => chip('month', m, m + '월', mc[m] || 0, state.month === m)).join('')}`;
     }
-    let bodyRow = '';   // 복종 칩은 기획명과 같은 줄 오른쪽(채널 칩과 같은 시작점)
+    let bodyRow = '';   // 복종 칩은 기획명 줄 아래(의류는 아우터·우븐·니트 그룹 칩 포함)
     if (state.plan !== 'ALL') {
       const known = FILTER_ORDER[state.plan] || [];
       const list = known.concat(Object.keys(bc).filter(g => !known.includes(g)));
-      bodyRow = `<span class="flabel">복종</span>${chip('body', 'ALL', '전체', pc[state.plan] || 0, state.body === 'ALL')}${list.map(g => chip('body', g, g, bc[g] || 0, state.body === g)).join('')}`;
+      const bgrp = state.plan === '의류' ? Object.keys(APPAREL_BODY_GROUPS).map(g => { const n = Object.keys(bc).filter(b => APPAREL_BODY_GROUPS[g].includes(b)).reduce((a, b) => a + bc[b], 0); return `<button class="fchip group${state.body === g ? ' active' : ''}${n ? '' : ' zero'}" data-k="body" data-v="${g}">${g}</button>`; }).join('') : '';
+      bodyRow = `<span class="flabel">복종</span>${chip('body', 'ALL', '전체', pc[state.plan] || 0, state.body === 'ALL')}${bgrp}${list.map(g => chip('body', g, g, bc[g] || 0, state.body === g)).join('')}`;
     }
-    html += `<div class="fpair"><div class="fl fchips">${planRow}</div>${bodyRow ? `<div class="fr fchips">${bodyRow}</div>` : ''}</div>`;
+    html += `<div class="fpair"><div class="fl fchips">${planRow}</div></div>${bodyRow ? `<div class="fchips">${bodyRow}</div>` : ''}`;
     const ac = {}, gc = {};
     eachStyle(state.material, s => {
-      if (!((state.plan === 'ALL' || s.plan === state.plan) && (state.body === 'ALL' || bodyGroup(s) === state.body))) return;
+      if (!((state.plan === 'ALL' || s.plan === state.plan) && bodyOk(s))) return;
       const label = attrLabel(s);
       if (label) ac[label] = (ac[label] || 0) + 1;
       gc[ssGroupOf(s)] = (gc[ssGroupOf(s)] || 0) + 1;
@@ -116,6 +130,7 @@
     document.getElementById('catPlanRow').innerHTML = topRow;
     document.getElementById('catChRow').innerHTML = chRow;  // 검색창은 이 행의 오른쪽에 고정 배치(입력 중 다시 그려지지 않도록 별도 요소)
     document.getElementById('catFilters').innerHTML = html;
+    syncLeftWidth();
     document.querySelectorAll('#catPlanRow button, #catChRow button, #catFilters button').forEach(b => b.onclick = () => {
       if (b.dataset.k === 'month') { state.month = b.dataset.v; }
       else if (b.dataset.k === 'grp') { state.grp = b.dataset.v; }
