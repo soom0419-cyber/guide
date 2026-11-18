@@ -24,8 +24,9 @@
     'FINE WOOL FELT': '울펠트', 'FUR': '퍼', 'LEATHER': '레더', 'PANAMA': '파나마', 'WOOL FELT': '울펠트',
     'CROCHET&FABRIC': '크로셰&패브릭',
     // SS27 의류 소재 구분
-    'COTTON': '코튼', 'LINEN': '린넨', 'LINEN BLEND': '린넨 혼방', 'SILK': '실크', 'SILK BLEND': '실크 혼방', 'WOOL': '울', 'WOOL BLEND': '울 혼방',
-    'RECYCLED NYLON': '리싸이클 나일론', 'RECYCLED POLYESTER': '리싸이클 폴리에스터', 'SEQUIN': '시퀸', 'VISCOSE': '비스코스',
+    // 혼방은 같은 소재 그룹으로(린넨 혼방→린넨, 실크 혼방→실크, 울 혼방→울), 리싸이클 나일론→나일론, 시퀸·비스코스→기타
+    'COTTON': '코튼', 'LINEN': '린넨', 'LINEN BLEND': '린넨', 'SILK': '실크', 'SILK BLEND': '실크', 'WOOL': '울', 'WOOL BLEND': '울',
+    'RECYCLED NYLON': '나일론', 'RECYCLED POLYESTER': '리싸이클 폴리에스터', 'SEQUIN': '기타', 'VISCOSE': '기타',
   };
   const bodyGroup = s => BODY_GROUP[s.body] || s.body;
   const attrLabel = s => ATTR_LABEL[s.attr] || s.attr || '';
@@ -87,12 +88,13 @@
       const months = Object.keys(TREE[state.material] || {}).filter(m => m !== '99').sort((a, b) => monthRank(a) - monthRank(b));
       topRow = `<span class="flabel">출고월</span>${chip('month', 'ALL', '전체', mt, state.month === 'ALL')}${months.map(m => chip('month', m, m + '월', mc[m] || 0, state.month === m)).join('')}`;
     }
-    html += `<div class="fchips">${planRow}</div>`;  // 출고월(구분) 행이 맨 위(검색창과 같은 줄), 기획명은 그 아래
+    let bodyRow = '';   // 복종 칩은 기획명과 같은 줄 오른쪽(채널 칩과 같은 시작점)
     if (state.plan !== 'ALL') {
       const known = FILTER_ORDER[state.plan] || [];
       const list = known.concat(Object.keys(bc).filter(g => !known.includes(g)));
-      html += `<div class="fchips"><span class="flabel">복종</span>${chip('body', 'ALL', '전체', pc[state.plan] || 0, state.body === 'ALL')}${list.map(g => chip('body', g, g, bc[g] || 0, state.body === g)).join('')}</div>`;
+      bodyRow = `<span class="flabel">복종</span>${chip('body', 'ALL', '전체', pc[state.plan] || 0, state.body === 'ALL')}${list.map(g => chip('body', g, g, bc[g] || 0, state.body === g)).join('')}`;
     }
+    html += `<div class="fpair"><div class="fl fchips">${planRow}</div>${bodyRow ? `<div class="fr fchips">${bodyRow}</div>` : ''}</div>`;
     const ac = {}, gc = {};
     eachStyle(state.material, s => {
       if (!((state.plan === 'ALL' || s.plan === state.plan) && (state.body === 'ALL' || bodyGroup(s) === state.body))) return;
