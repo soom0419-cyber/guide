@@ -410,7 +410,9 @@
     renderSubTabs(g); renderGuidePages(g);
     renderFilters(); renderStories();
     document.getElementById('catStories').hidden = !onProducts;
-    const fl = document.querySelector('.filters'); if (fl && window.CATALOG_GLOBAL_SEARCH) fl.hidden = globalSearch() || !onProducts;
+    const fl = document.querySelector('.filters'); if (fl && window.CATALOG_GLOBAL_SEARCH) fl.hidden = !onProducts;
+    // 전체 검색 중에는 필터 칩만 숨기고 검색창은 그대로 둔다(검색창이 .filters 안에 있어 통째로 숨기면 사라짐)
+    ['catPlanRow', 'catChRow', 'catFilters'].forEach(id => { const e = document.getElementById(id); if (e) e.hidden = !!window.CATALOG_GLOBAL_SEARCH && globalSearch(); });
     const cnt = document.getElementById('catSearchCount');
     if (cnt) cnt.textContent = '';
   }

@@ -233,9 +233,12 @@ html = """<!doctype html>
   <header class="page cat-head"><h1>상품 설명집</h1><button type="button" id="catRemarkBtn" class="rm-btn" hidden></button></header>
   <div class="page-view active" id="catalogView">
     <nav class="materials" id="catMaterialTabs"></nav>
-    <nav class="materials subtabs" id="catSubTabs" hidden></nav>
+    <div class="sub-row">
+      <nav class="materials subtabs" id="catSubTabs" hidden></nav>
+      <div class="map-search"><input type="search" id="catSearch" placeholder="전체 검색: 품명(영문·한글)/품번" autocomplete="off"><span class="map-search-count" id="catSearchCount"></span></div>
+    </div>
     <div class="filters">
-      <div class="cat-top"><div class="fchips" id="catPlanRow"></div><div class="fchips" id="catChRow"></div><div class="map-search"><input type="search" id="catSearch" placeholder="전체 검색: 품명(영문·한글)/품번" autocomplete="off"><span class="map-search-count" id="catSearchCount"></span></div></div>
+      <div class="cat-top"><div class="fchips" id="catPlanRow"></div><div class="fchips" id="catChRow"></div></div>
       <div class="filters-rest" id="catFilters"></div>
     </div>
     <div id="catStories"></div>

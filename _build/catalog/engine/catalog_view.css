@@ -84,9 +84,6 @@ body.lb-open { overflow: hidden; }
 
 .cursor-berry { position: fixed; left: 0; top: 0; width: 58px; height: auto; pointer-events: none; z-index: 3500; opacity: 0; transition: opacity .15s; will-change: transform; }
 
-.cat-top .map-search { margin-left: auto; flex: 0 1 320px; min-width: 200px; }
-.cat-top .map-search input { width: 100%; }
-@media (max-width: 700px) { .cat-top .map-search { flex: 1 1 100%; } }
 
 .gallery-list-item img, .product-gallery .cell img { cursor: zoom-in; }
 .cat-lb .lb-cap { position: absolute; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); padding: 6px 14px; border-radius: 9999px; background: rgba(0,0,0,.6); color: #fff; font-size: 14px; font-weight: 500; white-space: pre; }
@@ -139,3 +136,10 @@ body.lb-open { overflow: hidden; }
 .fpair { display: flex; flex-wrap: wrap; align-items: flex-start; column-gap: 16px; }
 .fpair .fr { flex: 1 1 0; min-width: 240px; margin-left: 18px; padding-left: 18px; border-left: 1px solid var(--line); }
 @media (max-width: 700px) { #catPlanRow, .fpair .fl { flex: 1 1 100%; flex-wrap: wrap; white-space: normal; } .fpair .fr { margin-left: 0; padding-left: 0; border-left: 0; flex: 1 1 100%; } }
+
+/* 검색창: 시즌 테마/상품/룩북 탭과 같은 줄 오른쪽 */
+.sub-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin: 2px 0 16px; }
+.sub-row nav.materials.subtabs { margin: 0; }
+.sub-row .map-search { margin-left: auto; flex: 0 1 320px; min-width: 200px; }
+.sub-row .map-search input { width: 100%; }
+@media (max-width: 700px) { .sub-row .map-search { flex: 1 1 100%; } }
