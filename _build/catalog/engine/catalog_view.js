@@ -106,13 +106,15 @@
       const groupChips = state.material === 'COLLECTION_SS27' && (gc['라피아'] || gc['CMT']) ? SS27_GROUPS.map(g => `<button class="fchip group${state.attr === g ? ' active' : ''}${gc[g] ? '' : ' zero'}" data-k="attr" data-v="${g}">${g}</button>`).join('') : '';
       html += `<div class="fchips"><span class="flabel">소재</span>${chip('attr', 'ALL', '전체', attrTotal, state.attr === 'ALL')}${groupChips}${attrLabels.map(l => chip('attr', l, l, ac[l], state.attr === l)).join('')}</div>`;
     }
+    let chRow = '';
     if (state.material === 'COLLECTION_SS27') {   // 채널: 오프라인 단독 / 온라인 단독 / 아울렛 전용(해당 상품이 없는 칩은 흐리게)
       const cc = {}; eachStyle(state.material, s => { if (s.channel) cc[s.channel] = (cc[s.channel] || 0) + 1; });
-      html += `<div class="fchips"><span class="flabel">채널</span>${chip('ch', 'ALL', '전체', 1, state.ch === 'ALL')}${CHANNELS.map(c => chip('ch', c, c, cc[c] || 0, state.ch === c)).join('')}</div>`;
+      chRow = `<span class="flabel">채널</span>${chip('ch', 'ALL', '전체', 1, state.ch === 'ALL')}${CHANNELS.map(c => chip('ch', c, c, cc[c] || 0, state.ch === c)).join('')}`;
     }
-    document.getElementById('catPlanRow').innerHTML = topRow;  // 검색창은 이 행의 오른쪽에 고정 배치(입력 중 다시 그려지지 않도록 별도 요소)
+    document.getElementById('catPlanRow').innerHTML = topRow;
+    document.getElementById('catChRow').innerHTML = chRow;  // 검색창은 이 행의 오른쪽에 고정 배치(입력 중 다시 그려지지 않도록 별도 요소)
     document.getElementById('catFilters').innerHTML = html;
-    document.querySelectorAll('#catPlanRow button, #catFilters button').forEach(b => b.onclick = () => {
+    document.querySelectorAll('#catPlanRow button, #catChRow button, #catFilters button').forEach(b => b.onclick = () => {
       if (b.dataset.k === 'month') { state.month = b.dataset.v; }
       else if (b.dataset.k === 'grp') { state.grp = b.dataset.v; }
       else if (b.dataset.k === 'ch') { state.ch = b.dataset.v; }

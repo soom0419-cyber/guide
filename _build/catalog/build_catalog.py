@@ -235,7 +235,7 @@ html = """<!doctype html>
     <nav class="materials" id="catMaterialTabs"></nav>
     <nav class="materials subtabs" id="catSubTabs" hidden></nav>
     <div class="filters">
-      <div class="cat-top"><div class="fchips" id="catPlanRow"></div><div class="map-search"><input type="search" id="catSearch" placeholder="전체 검색: 품명(영문·한글)/품번" autocomplete="off"><span class="map-search-count" id="catSearchCount"></span></div></div>
+      <div class="cat-top"><div class="fchips" id="catPlanRow"></div><div class="fchips" id="catChRow"></div><div class="map-search"><input type="search" id="catSearch" placeholder="전체 검색: 품명(영문·한글)/품번" autocomplete="off"><span class="map-search-count" id="catSearchCount"></span></div></div>
       <div class="filters-rest" id="catFilters"></div>
     </div>
     <div id="catStories"></div>
