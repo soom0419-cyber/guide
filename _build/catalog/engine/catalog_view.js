@@ -252,9 +252,7 @@
     const hero = s.plan === '의류' ? s.image : ((s.colors.find(c => c.image) || {}).image);
     const dots = s.colors.filter(c => c.image && s.plan !== '의류');
     const dh = dots.slice(0, 7).map(c => `<button type="button" class="map-dot" data-img="${attr(c.image)}" title="${attr(c.color_kr || c.color_code)}" aria-label="${attr(c.color_kr || c.color_code)}" style="background:${c.swatch || '#ddd'}"></button>`).join('') + (dots.length > 7 ? `<span class="map-more">+${dots.length - 7}</span>` : '');
-    const nm = groupName(g.story);
     return `<div class="map-tile t${tone}${first ? ' first' : ''}" data-story="${attr(g.story)}" data-code="${s.item_code}">
-      <div class="map-glabel" title="${attr(nm)}">${first ? `<span class="map-gname">${esc(nm)}</span>${isAdmin() ? `<button type="button" class="map-gedit" data-gedit="${attr(g.story)}" aria-label="그룹명 수정">✎</button>` : ''}` : ''}</div>
       <div class="map-open"><div class="map-img">${hero ? `<img src="${attr(hero)}" alt="${attr(s.name_sjg)}" loading="lazy">` : '<div class="noimg"></div>'}${dh ? `<span class="map-dots">${dh}</span>` : ''}</div>
       <div class="map-name">${esc(s.name_sjg)}</div></div></div>`;
   }
@@ -269,7 +267,7 @@
       groups.forEach(g => { g.styles = sortStyleCodes(g.styles); });
       const ap = g => STYLES[g.styles[0]].plan === '의류' ? 1 : 0;   // 월 안: 모자·가방·액세서리 그룹 → 의류 그룹 순, 각각 큰 그룹부터(한 줄에 여러 그룹이 빈칸 없이 들어가게)
       groups.sort((x, y) => ap(x) - ap(y) || y.styles.length - x.styles.length);
-      return `<section class="map-month"><h3 class="map-mo">${moLabel(mo)}</h3><div class="map-grid">${groups.map((g, gi) => `<div class="map-group" style="--n:${g.styles.length}">${g.styles.map((c, i) => mapTile(STYLES[c], g, i === 0, gi % 2)).join('')}</div>`).join('')}</div></section>`;
+      return `<section class="map-month"><h3 class="map-mo">${moLabel(mo)}</h3><div class="map-grid">${groups.map((g, gi) => `<div class="map-group" style="--n:${g.styles.length}"><div class="map-ghead" title="${attr(groupName(g.story))}"><span class="map-gname">${esc(groupName(g.story))}</span>${isAdmin() ? `<button type="button" class="map-gedit" data-gedit="${attr(g.story)}" aria-label="그룹명 수정">✎</button>` : ''}</div>${g.styles.map((c, i) => mapTile(STYLES[c], g, i === 0, gi % 2)).join('')}</div>`).join('')}</div></section>`;
     }).join('');
   }
   function renderStories() {
