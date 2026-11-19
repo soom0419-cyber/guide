@@ -9,6 +9,15 @@
 {
 "type": "확인 필요",
 "scope": "apparel",
+"text": "컬러별 설명이 다름 — 화면에는 첫 컬러(BK) 설명만 표시 중, 나머지 컬러 설명 확인 필요",
+"items": [
+"HYSRAC00040"
+],
+"badge": true
+},
+{
+"type": "확인 필요",
+"scope": "apparel",
 "text": "컬러별 설명이 다름 — 화면에는 첫 컬러(NV) 설명만 표시 중, 나머지 컬러 설명 확인 필요",
 "items": [
 "LYSRCD00040"
@@ -162,8 +171,11 @@
 {
 "type": "업데이트 필요",
 "scope": "apparel",
-"text": "컬러가 2개 이상인데 사진이 대표 1컷뿐인 상품 43개 — 컬러별 사진 업데이트 필요",
+"text": "컬러가 2개 이상인데 사진이 대표 1컷뿐인 상품 46개 — 컬러별 사진 업데이트 필요",
 "items": [
+"HYRAW101250",
+"HYSRAC00040",
+"HYSRKT00010",
 "LYSRCD00010",
 "LYSRCD00020",
 "LYSRCD00030",
@@ -209,6 +221,24 @@
 "LYSRWT00050"
 ],
 "badge": false
+},
+{
+"type": "업데이트 필요",
+"scope": "apparel",
+"text": "사진이 없는 상품 10개",
+"items": [
+"HYRAW101250",
+"HYSRAC00010",
+"HYSRAC00020",
+"HYSRAC00030",
+"HYSRAC00040",
+"HYSRAC00050",
+"HYSRJT00010",
+"HYSRKT00010",
+"HYSRSH00010",
+"HYSRWP00010"
+],
+"badge": true
 },
 {
 "type": "업데이트 필요",

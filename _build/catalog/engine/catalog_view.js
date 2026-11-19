@@ -160,7 +160,7 @@
     const hero = (state.grp !== 'ALL' && s.colors.find(c => c.image && c.cgroup === CG_OF[state.grp])) || s.colors.find(c => c.image);
     const chipOf = c => `
       <span class="swatch-chip${c.image ? ' has-img' : ' off'}"${c.image ? ` data-img="${attr(c.image)}" role="button" tabindex="0"` : ' aria-disabled="true" title="이미지 준비 중"'} onclick="event.stopPropagation();catChip(this)">${(() => { const core = s.material === 'ICONIC' && c.cgroup === '코어';   // 아이코닉 코어 컬러: 품번·컬러코드 메뉴의 칩 색 + 컬러코드만 표기(상세 화면은 그대로)
-        const bg = core ? ((window.REF_COLORS || {})[c.color_code] || c.swatch) : c.swatch;
+        const bg = s.material === 'ICONIC' ? ((window.REF_COLORS || {})[c.color_code] || c.swatch) : c.swatch;   // 아이코닉은 코어/NEW/구 시즌 모두 품번·컬러코드 메뉴 칩 색
         return (bg ? `<span class="swatch-dot" style="background:${bg}"></span>` : '') + c.color_code + (!core && c.color_kr ? ' · ' + c.color_kr : ''); })()}</span>`;
     const cgs = cgGroups(s.colors);   // ICONIC: 코어 / NEW 시즌 / 구 시즌(기본 접힘). 구분 필터를 고르면 그 그룹을 맨 위로
     if (cgs && state.grp !== 'ALL') cgs.sort((a, b) => (b.label === CG_OF[state.grp]) - (a.label === CG_OF[state.grp]));
@@ -274,7 +274,7 @@
       <div class="map-name">${esc(s.name_sjg)}</div></div></div>`;
   }
   // 아이코닉 컬러칩(컬러가 많음): 대표 4개 + '+N' → 누르면 코어 / NEW 시즌 / 구 시즌으로 묶인 전체 컬러 팝업. 사진 있는 컬러만 누르면 썸네일 교체
-  const colorBg = (s, c) => (s.material === 'ICONIC' && c.cgroup === '코어' ? ((window.REF_COLORS || {})[c.color_code] || c.swatch) : c.swatch) || '#ddd';
+  const colorBg = (s, c) => (s.material === 'ICONIC' ? ((window.REF_COLORS || {})[c.color_code] || c.swatch) : c.swatch) || '#ddd';
   function iconicDots(s) {
     const cgs = cgGroups(s.colors) || [{ label: '', colors: s.colors }];
     const flat = cgs.flatMap(g => g.colors);
