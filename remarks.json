@@ -99,35 +99,6 @@
 {
 "type": "확인 필요",
 "scope": "apparel",
-"text": "소재 구분 빈칸 21개 상품은 혼용률로 추정해 표시 중(엑셀에 값이 있으면 그 값 사용)",
-"items": [
-"LYSRNP00010",
-"LYSRNT00010",
-"LYSRNT00020",
-"LYSRNT00040",
-"LYSRPC00010",
-"LYSRSH00010",
-"LYSRSH00020",
-"LYSRSH00040",
-"LYSRWD00010",
-"LYSRWD00020",
-"LYSRWD00040",
-"LYSRWD00060",
-"LYSRWD00090",
-"LYSRWP00010",
-"LYSRWP00020",
-"LYSRWP00060",
-"LYSRWP00090",
-"LYSRWP00110",
-"LYSRWP00130",
-"LYSRWS00010",
-"LYSRWT00050"
-],
-"badge": false
-},
-{
-"type": "확인 필요",
-"scope": "apparel",
 "text": "컬러별 설명이 다름 — 화면에는 첫 컬러(MT) 설명만 표시 중, 나머지 컬러 설명 확인 필요",
 "items": [
 "LYSRNT00010"
@@ -158,6 +129,15 @@
 "text": "혼용률 겉감 합계 101% (IV 컬러) — 합계가 100%가 아님, 엑셀 확인",
 "items": [
 "LYSRWP00020"
+],
+"badge": true
+},
+{
+"type": "확인 필요",
+"scope": "apparel",
+"text": "컬러별 소재 구분이 다름: OM LINEN BLEND / BL COTTON BLEND — 화면에는 첫 컬러 기준",
+"items": [
+"LYSRWP00030"
 ],
 "badge": true
 },

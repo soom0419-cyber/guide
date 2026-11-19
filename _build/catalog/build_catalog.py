@@ -117,6 +117,22 @@ if ss_styles:
 import build_remarks
 build_remarks.write(os.path.join(OUT, "remarks.json"), build_remarks.build(styles, ss_facts if ss_styles else {}))
 
+# ---- 시즌 컬러칩(시즌 테마 탭) + 맵 그룹명 오버라이드(group_names.json) ----
+import season_colors
+for _k, _v in season_colors.build().items():
+    if _k in guide:
+        guide[_k]['colors'] = _v
+_gn = os.path.join(HERE, 'group_names.json')
+group_names = json.load(open(_gn, encoding='utf-8')) if os.path.exists(_gn) else {}
+
+# ---- 속성명(소재) 임시 오버라이드: 시트는 바뀌었는데 전산(입판재) 자료가 아직 옛값일 때 — 전산 갱신 후 파일에서 지워도 됨 ----
+_ao = os.path.join(HERE, 'attr_override.json')
+if os.path.exists(_ao):
+    _ov = json.load(open(_ao, encoding='utf-8'))
+    for _s in styles.values():
+        if _s.get('name_sjg') in _ov:
+            _s['attr'] = _ov[_s['name_sjg']]
+
 n_img = len(os.listdir(IMG_DIR))
 size = sum(os.path.getsize(os.path.join(IMG_DIR, f)) for f in os.listdir(IMG_DIR))
 
@@ -256,6 +272,7 @@ html = """<!doctype html>
 <script>
 window.CATALOG_GLOBAL_SEARCH = true;
 window.SEASON_GUIDE = __GUIDE__;
+window.GROUP_NAMES = __GROUPNAMES__;
 const TREE = __TREE__;
 const STYLES = __STYLES__;
 const STORIES = __STORIES__;
@@ -272,7 +289,7 @@ window.catalogShow();
 """
 dumps = lambda o: json.dumps(o, ensure_ascii=False, separators=(",", ":"))
 html = (html.replace("__CSS__", css).replace("__TREE__", dumps(tree)).replace("__STYLES__", dumps(styles))
-        .replace("__STORIES__", dumps(stories)).replace("__GUIDE__", dumps(guide)).replace("__HELPERS__", js_helpers)
+        .replace("__STORIES__", dumps(stories)).replace("__GUIDE__", dumps(guide)).replace("__GROUPNAMES__", dumps(group_names)).replace("__HELPERS__", js_helpers)
         .replace("__DETAIL_JS__", rd("catalog_detail.js")).replace("__VIEW_JS__", rd("catalog_view.js")))
 assert "data:image" not in html
 open(os.path.join(OUT, "catalog.html"), "w", encoding="utf-8").write(html)

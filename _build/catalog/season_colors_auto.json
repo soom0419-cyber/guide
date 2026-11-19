@@ -1,0 +1,119 @@
+{
+ "AW26": [
+  {
+   "name": "Oak",
+   "hex": "#a88e73",
+   "codes": [
+    "OK"
+   ]
+  },
+  {
+   "name": "Washed Lapis",
+   "hex": "#85a2ba",
+   "codes": [
+    "BL"
+   ]
+  },
+  {
+   "name": "Quartz Rose",
+   "hex": "#ac7371",
+   "codes": [
+    "RO"
+   ]
+  },
+  {
+   "name": "Light Grey Melange",
+   "hex": "#818285",
+   "codes": [
+    "GY"
+   ]
+  },
+  {
+   "name": "Dark Choc",
+   "hex": "#3e211c",
+   "codes": [
+    "CC"
+   ]
+  },
+  {
+   "name": "Grape",
+   "hex": "#524055",
+   "codes": [
+    "PU"
+   ]
+  },
+  {
+   "name": "Nutshell",
+   "hex": "#80350e",
+   "codes": [
+    "BR"
+   ]
+  }
+ ],
+ "SS27": [
+  {
+   "name": "Sage",
+   "hex": "#969f72",
+   "codes": [
+    "SG"
+   ]
+  },
+  {
+   "name": "Quartz Rose",
+   "hex": "#ac7371",
+   "codes": [
+    "RO"
+   ]
+  },
+  {
+   "name": "Duckegg",
+   "hex": "#a6bbc5",
+   "codes": [
+    "DE"
+   ]
+  },
+  {
+   "name": "Aqua",
+   "hex": "#86b0a4",
+   "codes": [
+    "AQ"
+   ]
+  },
+  {
+   "name": "Rust",
+   "hex": "#ab4528",
+   "codes": [
+    "DR",
+    "RD"
+   ]
+  },
+  {
+   "name": "Flax",
+   "hex": "#b4a8a0",
+   "codes": [
+    "BE"
+   ]
+  },
+  {
+   "name": "Navy",
+   "hex": "#0e1134",
+   "codes": [
+    "NV"
+   ]
+  },
+  {
+   "name": "Nutshell",
+   "hex": "#80350e",
+   "codes": [
+    "BR"
+   ]
+  },
+  {
+   "name": "Chocolate",
+   "hex": "#3e211c",
+   "codes": [
+    "CC"
+   ]
+  }
+ ]
+}
