@@ -37,7 +37,7 @@
   // 기준 = 혼용률(material_main/material_full)에 '라피아', 또는 품명에 RAFFIA/PANAMA(파나마 햇 포함)가 들어가면 라피아, 그 외 전부 CMT (혼용률 비어 있어도 품명으로 판정)
   const SS27_GROUPS = ['라피아', 'CMT'];
   const ssGroupOf = s => s.plan === '의류' ? null : (/라피아/.test((s.material_full || '') + ' ' + (s.material_main || '') + ' ' + (s.name_kr || '')) || /RAFFIA|PANAMA/i.test(s.name_sjg || '') || s.attr === 'PANAMA') ? '라피아' : 'CMT';
-  const attrOk = s => state.attr === 'ALL' || (SS27_GROUPS.includes(state.attr) ? (s.season_tab === 'SS27' && ssGroupOf(s) === state.attr) : attrLabel(s) === state.attr);
+  const attrOk = s => state.attr === 'ALL' || (ICONIC_NEW.includes(state.attr) ? newKind(s) === state.attr : SS27_GROUPS.includes(state.attr) ? (s.season_tab === 'SS27' && ssGroupOf(s) === state.attr) : attrLabel(s) === state.attr);
   // 출고월(컬렉션) / 코어·NEW(아이코닉) 필터
   const MONTH_OF = {};
   Object.entries(TREE).forEach(([mat, months]) => { if (mat !== 'ICONIC') Object.entries(months).forEach(([mo, weeks]) => Object.values(weeks).forEach(w => w.stories.forEach(g => g.styles.forEach(c => { MONTH_OF[c] = mo; })))); });
@@ -47,7 +47,16 @@
   const colorOk = s => !state.color || s.colors.some(c => state.color.codes.includes(c.color_code));   // 시즌 컬러칩 필터(시즌 테마 탭에서 선택)
   const chOk = s => state.ch === 'ALL' || s.channel === state.ch;
   const CG_OF = { '코어': '코어', 'NEW': 'NEW 시즌' };
-  const grpOk = s => state.grp === 'ALL' || s.material !== 'ICONIC' || (s.colors.some(c => c.cgroup === CG_OF[state.grp]));
+  const grpOk = s => state.grp === 'ALL' || s.material !== 'ICONIC' || (state.grp === '단종' ? DISC_MAP.has(s.name_sjg) : s.colors.some(c => c.cgroup === CG_OF[state.grp]));
+  // 아이코닉: 단종 예정 12개(AW27 중단 / ERIN만 AW28 중단) — '단종 예정' 구분 버튼에서만 보이고 딱지가 붙는다
+  const DISC = [['BIANCA 8', 'AW27'], ['BESA 6', 'AW27'], ['BESA 9', 'AW27'], ['NEWPORT', 'AW27'], ['VILLA 6', 'AW27'], ['VILLA 9', 'AW27'], ['PROVENCE LOGO 10', 'AW27'],
+    ['ROSALIE LINEN', 'AW27'], ['NISIDA BUCKET', 'AW27'], ['NALIN RAFFIA CROCHET CROSSBODY', 'AW27'], ['AMPARA RAFFIA CROCHET CHARM', 'AW27'], ['ERIN', 'AW28']];
+  const DISC_MAP = new Map(DISC);
+  // 아이코닉 소재 그룹 버튼: NEW ICONIC = 'R27·SS27 신상' 그룹 / NEW COLOR = 그 외 상품 중 NEW 시즌 컬러가 있는 것
+  const ICONIC_NEW = ['NEW ICONIC', 'NEW COLOR'], NEW_ICONIC_STORY = 'R27·SS27 신상';
+  const ICONIC_STORY = {};
+  Object.values(TREE.ICONIC || {}).forEach(w => Object.values(w).forEach(x => x.stories.forEach(g => g.styles.forEach(c => { if (STYLES[c]) ICONIC_STORY[STYLES[c].name_sjg] = g.story; }))));
+  const newKind = s => s.material !== 'ICONIC' ? null : ICONIC_STORY[s.name_sjg] === NEW_ICONIC_STORY ? 'NEW ICONIC' : s.colors.some(c => c.cgroup === 'NEW 시즌') ? 'NEW COLOR' : null;
   const monthRank = mo => { const n = parseInt(mo, 10); return n === 12 ? -1 : n; };
   const norm = t => String(t || '').toLowerCase().replace(/\s+/g, '');
   const searchOk = s => {
@@ -92,10 +101,10 @@
     let html = '', topRow = '';
     const rest = (s, skip) => (skip === 'month' || state.month === 'ALL' || String(monthOf(s)) === state.month) && (skip === 'grp' || grpOk(s));
     if (state.material === 'ICONIC') {
-      const gcnt = { '코어': 0, 'NEW': 0 }, gall = [];
+      const gcnt = { '코어': 0, 'NEW': 0 }, gall = [], dn = new Set();
       eachStyle(state.material, s => { if (!((state.plan === 'ALL' || s.plan === state.plan) && bodyOk(s))) return; gall.push(s);
-        ['코어', 'NEW'].forEach(k => { if (s.colors.some(c => c.cgroup === CG_OF[k])) gcnt[k]++; }); });
-      topRow = `<span class="flabel">구분</span>${chip('grp', 'ALL', '전체', gall.length, state.grp === 'ALL')}${['코어', 'NEW'].map(k => chip('grp', k, k, gcnt[k], state.grp === k)).join('')}`;
+        ['코어', 'NEW'].forEach(k => { if (s.colors.some(c => c.cgroup === CG_OF[k])) gcnt[k]++; }); if (DISC_MAP.has(s.name_sjg)) dn.add(s.name_sjg); });
+      topRow = `<span class="flabel">구분</span>${chip('grp', 'ALL', '전체', gall.length, state.grp === 'ALL')}${['코어', 'NEW'].map(k => chip('grp', k, k, gcnt[k], state.grp === k)).join('')}${chip('grp', '단종', '단종 예정', dn.size, state.grp === '단종')}`;
     } else {
       const mc = {}; let mt = 0;
       eachStyle(state.material, s => { if (!((state.plan === 'ALL' || s.plan === state.plan) && bodyOk(s))) return; mc[monthOf(s)] = (mc[monthOf(s)] || 0) + 1; mt++; });
@@ -116,11 +125,13 @@
       const label = attrLabel(s);
       if (label) ac[label] = (ac[label] || 0) + 1;
       gc[ssGroupOf(s)] = (gc[ssGroupOf(s)] || 0) + 1;
+      if (newKind(s)) gc[newKind(s)] = (gc[newKind(s)] || 0) + 1;
     });
     const attrLabels = Object.keys(ac).sort((a, b) => ac[b] - ac[a]);
     const attrTotal = Object.values(ac).reduce((a, b) => a + b, 0);
     if (attrLabels.length) {
-      const groupChips = state.material === 'COLLECTION_SS27' && (gc['라피아'] || gc['CMT']) ? SS27_GROUPS.map(g => `<button class="fchip group${state.attr === g ? ' active' : ''}${gc[g] ? '' : ' zero'}" data-k="attr" data-v="${g}">${g}</button>`).join('') : '';
+      const gchip = g => `<button class="fchip group${state.attr === g ? ' active' : ''}${gc[g] ? '' : ' zero'}" data-k="attr" data-v="${g}">${g}</button>`;
+      const groupChips = state.material === 'COLLECTION_SS27' && (gc['라피아'] || gc['CMT']) ? SS27_GROUPS.map(gchip).join('') : state.material === 'ICONIC' ? ICONIC_NEW.map(gchip).join('') : '';
       html += `<div class="fchips"><span class="flabel">소재</span>${chip('attr', 'ALL', '전체', attrTotal, state.attr === 'ALL')}${groupChips}${attrLabels.map(l => chip('attr', l, l, ac[l], state.attr === l)).join('')}</div>`;
     }
     let chRow = '';
@@ -148,7 +159,9 @@
   function renderCard(s) {
     const hero = (state.grp !== 'ALL' && s.colors.find(c => c.image && c.cgroup === CG_OF[state.grp])) || s.colors.find(c => c.image);
     const chipOf = c => `
-      <span class="swatch-chip${c.image ? ' has-img' : ' off'}"${c.image ? ` data-img="${attr(c.image)}" role="button" tabindex="0"` : ' aria-disabled="true" title="이미지 준비 중"'} onclick="event.stopPropagation();catChip(this)">${c.swatch ? `<span class="swatch-dot" style="background:${c.swatch}"></span>` : ''}${c.color_code}${c.color_kr ? ' · ' + c.color_kr : ''}</span>`;
+      <span class="swatch-chip${c.image ? ' has-img' : ' off'}"${c.image ? ` data-img="${attr(c.image)}" role="button" tabindex="0"` : ' aria-disabled="true" title="이미지 준비 중"'} onclick="event.stopPropagation();catChip(this)">${(() => { const core = s.material === 'ICONIC' && c.cgroup === '코어';   // 아이코닉 코어 컬러: 품번·컬러코드 메뉴의 칩 색 + 컬러코드만 표기(상세 화면은 그대로)
+        const bg = core ? ((window.REF_COLORS || {})[c.color_code] || c.swatch) : c.swatch;
+        return (bg ? `<span class="swatch-dot" style="background:${bg}"></span>` : '') + c.color_code + (!core && c.color_kr ? ' · ' + c.color_kr : ''); })()}</span>`;
     const cgs = cgGroups(s.colors);   // ICONIC: 코어 / NEW 시즌 / 구 시즌(기본 접힘). 구분 필터를 고르면 그 그룹을 맨 위로
     if (cgs && state.grp !== 'ALL') cgs.sort((a, b) => (b.label === CG_OF[state.grp]) - (a.label === CG_OF[state.grp]));
     const chips = cgs ? cgs.map(g => g.label === '구 시즌'
@@ -192,7 +205,9 @@
     const info = STORIES[g.story];
     const tags = [...new Set(cards.flatMap(c => c.seasons || []))];
     const eyebrow = info && info.eyebrow ? info.eyebrow : (isIconic ? 'ICONIC · ' + [...new Set(cards.map(c => c.plan))].join(' · ') : (tags.length > 1 ? tags.join(' · ') + ' COLLECTION' : seasonLabel(first)));
-    const points = info && info.bullets && info.bullets.length
+    const points = info && info.plain && info.bullets && info.bullets.length
+      ? `<div class="story-plain">${info.bullets.map(b => `<p>${b}</p>`).join('')}</div>`
+      : info && info.bullets && info.bullets.length
       ? `<ul class="story-points">${info.bullets.map(b => `<li>${b}</li>`).join('')}</ul>`
       : (isIconic ? '<div class="story-plain">시즌에 관계없이 상시 판매되는 아이코닉 상품입니다.</div>' : '');
     return `
@@ -241,20 +256,51 @@
     return boxes;
   }
   // ---------------- 출고월 '전체' = 월별 맵판(이미지+상품명만, 그룹 단위로 이어서 나열) ----------------
-  const mapOn = () => state.sub === 'products' && state.month === 'ALL' && !state.story && !globalSearch() && state.material !== 'ICONIC';
+  const mapOn = () => state.sub === 'products' && !state.story && !globalSearch() && (state.material === 'ICONIC' ? (state.plan === 'ALL' || state.grp === '단종') : state.month === 'ALL');
   const moLabel = mo => mo === '99' ? '출고월 미정' : parseInt(mo, 10) + '월 출고';
   // 그룹명: 기본은 스토리명. group_names.json(빌드 시 반영) < admin이 이 브라우저에서 고친 값
   const GN_KEY = 'dg_group_names';
   const gnLocal = () => { try { return JSON.parse(localStorage.getItem(GN_KEY) || '{}'); } catch (e) { return {}; } };
   const groupName = st => { const l = gnLocal(); return l[st] || (window.GROUP_NAMES || {})[st] || st; };
   const isAdmin = () => rmViewer() === 'ALL';
-  function mapTile(s, g, first, tone) {
+  function mapTile(s, g, first, tone, badge) {
     const hero = s.plan === '의류' ? s.image : ((s.colors.find(c => c.image) || {}).image);
-    const dots = s.colors.filter(c => c.image && s.plan !== '의류');
+    const ic = s.material === 'ICONIC';
+    const dots = ic ? [] : s.colors.filter(c => c.image && s.plan !== '의류');
     const dh = dots.slice(0, 7).map(c => `<button type="button" class="map-dot" data-img="${attr(c.image)}" title="${attr(c.color_kr || c.color_code)}" aria-label="${attr(c.color_kr || c.color_code)}" style="background:${c.swatch || '#ddd'}"></button>`).join('') + (dots.length > 7 ? `<span class="map-more">+${dots.length - 7}</span>` : '');
-    return `<div class="map-tile t${tone}${first ? ' first' : ''}" data-story="${attr(g.story)}" data-code="${s.item_code}">
-      <div class="map-open"><div class="map-img">${hero ? `<img src="${attr(hero)}" alt="${attr(s.name_sjg)}" loading="lazy">` : '<div class="noimg"></div>'}${dh ? `<span class="map-dots">${dh}</span>` : ''}</div>
+    const dd = ic ? iconicDots(s) : (dh ? { dots: dh, pop: '' } : null);
+    return `<div class="map-tile t${tone}${first ? ' first' : ''}" data-story="${attr(g ? g.story : '')}" data-code="${s.item_code}">
+      <div class="map-open"><div class="map-imgbox"><div class="map-img">${hero ? `<img src="${attr(hero)}" alt="${attr(s.name_sjg)}" loading="lazy">` : '<div class="noimg"></div>'}${badge ? `<span class="map-badge">${badge} 중단 예정</span>` : ''}${dd ? `<span class="map-dots">${dd.dots}</span>` : ''}</div>${dd && dd.pop ? dd.pop : ''}</div>
       <div class="map-name">${esc(s.name_sjg)}</div></div></div>`;
+  }
+  // 아이코닉 컬러칩(컬러가 많음): 대표 4개 + '+N' → 누르면 코어 / NEW 시즌 / 구 시즌으로 묶인 전체 컬러 팝업. 사진 있는 컬러만 누르면 썸네일 교체
+  const colorBg = (s, c) => (s.material === 'ICONIC' && c.cgroup === '코어' ? ((window.REF_COLORS || {})[c.color_code] || c.swatch) : c.swatch) || '#ddd';
+  function iconicDots(s) {
+    const cgs = cgGroups(s.colors) || [{ label: '', colors: s.colors }];
+    const flat = cgs.flatMap(g => g.colors);
+    if (!flat.length) return null;
+    const one = c => `<button type="button" class="map-dot${c.image ? '' : ' off'}"${c.image ? ` data-img="${attr(c.image)}"` : ''} title="${attr(c.color_code)}" aria-label="${attr(c.color_code)}" style="background:${colorBg(s, c)}"></button>`;
+    const dots = flat.slice(0, 4).map(one).join('') + (flat.length > 4 ? `<button type="button" class="map-morebtn" aria-label="컬러 전체 보기">+${flat.length - 4}</button>` : '');
+    const pop = flat.length > 4 ? `<div class="map-pop" hidden>${cgs.map(g => `<div class="map-pgrp">${g.label ? `<span class="map-plabel">${g.label === 'NEW 시즌' ? 'NEW' : g.label}</span>` : ''}${g.colors.map(c => `<span class="map-pchip${c.image ? ' has-img' : ' off'}"${c.image ? ` data-img="${attr(c.image)}"` : ''}><i style="background:${colorBg(s, c)}"></i>${esc(c.color_code)}</span>`).join('')}</div>`).join('')}</div>` : '';
+    return { dots, pop };
+  }
+  function renderIconicMap() {
+    const groups = [], by = {};
+    Object.keys(TREE.ICONIC || {}).forEach(cat => { const data = filterMonth(TREE.ICONIC[cat]); Object.keys(data).forEach(wk => data[wk].stories.forEach(g => {
+      if (by[g.story]) by[g.story].styles = by[g.story].styles.concat(g.styles); else { by[g.story] = { story: g.story, styles: g.styles.slice() }; groups.push(by[g.story]); }
+    })); });
+    groups.sort((a, b) => (a.story === '중단 스타일') - (b.story === '중단 스타일'));
+    groups.forEach(g => { const seen = new Set(); g.styles = g.styles.filter(c => { const n = STYLES[c].name_sjg; if (seen.has(n)) return false; seen.add(n); return true; }); });
+    if (!groups.length) return '';
+    return `<section class="map-month"><div class="map-grid">${groups.map((g, gi) => `<div class="map-group" style="--n:${g.styles.length}"><div class="map-ghead" title="${attr(groupName(g.story))}"><span class="map-gname">${esc(groupName(g.story))}</span></div>${g.styles.map((c, i) => mapTile(STYLES[c], g, i === 0, gi % 2)).join('')}</div>`).join('')}</div></section>`;
+  }
+  // 단종 예정 구분: 그룹명·설명 없이 한 상자에 썸네일+품명만, AW27/AW28 중단 예정 딱지(이 화면에서만)
+  function renderDisc() {
+    const byName = {};
+    Object.values(STYLES).forEach(s => { if (s.material === 'ICONIC' && DISC_MAP.has(s.name_sjg) && matches(s) && !byName[s.name_sjg]) byName[s.name_sjg] = s; });
+    const list = DISC.map(d => byName[d[0]]).filter(Boolean);
+    if (!list.length) return '';
+    return `<section class="map-month map-disc"><div class="map-grid"><div class="map-group" style="--n:${list.length}"><div class="map-ghead"><span class="map-gname">AW27-SS28 중단 예정 스타일</span></div>${list.map(s => mapTile(s, null, false, 0, DISC_MAP.get(s.name_sjg))).join('')}</div></div></section>`;
   }
   function renderMap() {
     const obj = TREE[state.material] || {};
@@ -271,17 +317,29 @@
     }).join('');
   }
   function renderStories() {
-    const bar = (state.story || state.color) ? `<div class="map-bar">${state.story ? `<button type="button" class="map-back" data-mapback="1">← 월별 전체 보기</button><span class="map-cur">그룹 · ${esc(groupName(state.story))}</span>` : ''}${state.color ? `<button type="button" class="map-colorbar" data-colorclear="1"><span class="tc-dot" style="background:${state.color.hex}"></span>${esc(state.color.name)} ✕</button>` : ''}</div>` : '';
+    const bar = (state.story || state.color) ? `<div class="map-bar">${state.story ? `<button type="button" class="map-back" data-mapback="1">${state.material === 'ICONIC' ? '← 전체 보기' : '← 월별 전체 보기'}</button><span class="map-cur">그룹 · ${esc(groupName(state.story))}</span>` : ''}${state.color ? `<button type="button" class="map-colorbar" data-colorclear="1"><span class="tc-dot" style="background:${state.color.hex}"></span>${esc(state.color.name)} ✕</button>` : ''}</div>` : '';
     let body;
-    if (mapOn()) body = renderMap() || '<div class="empty">해당 조건의 상품이 없습니다.</div>';
+    if (mapOn()) body = (state.material === 'ICONIC' ? (state.grp === '단종' ? renderDisc() : renderIconicMap()) : renderMap()) || '<div class="empty">해당 조건의 상품이 없습니다.</div>';
     else { const boxes = collectStories(); body = boxes.length ? boxes.map(storyBox).join('') : '<div class="empty">해당 조건의 상품이 없습니다.</div>'; }
     const nloc = Object.keys(gnLocal()).length;
     const exp = mapOn() && isAdmin() ? `<div class="map-bar"><button type="button" class="map-back" data-gexport="1">그룹명 JSON 복사${nloc ? ' · 이 브라우저에서 바꾼 ' + nloc + '건' : ''}</button><span class="map-cur">✎로 그룹명을 고친 뒤 복사해서 전달하면 전체 매장에 반영됩니다</span></div>` : '';
     document.getElementById('catStories').innerHTML = exp + bar + body;
   }
+  document.addEventListener('click', e => { if (!e.target.closest('.map-pop, .map-morebtn')) document.querySelectorAll('.map-pop').forEach(x => { x.hidden = true; }); });
   // 맵판 상호작용: 컬러 점 = 그 컬러 사진으로 교체 / 그림·이름 = 해당 그룹 열기 / (admin) ✎ = 그룹명 수정
   document.getElementById('catStories').addEventListener('click', e => {
+    const pchip = e.target.closest('.map-pchip');
+    if (pchip) { if (pchip.dataset.img) { const t = pchip.closest('.map-tile'); t.querySelector('.map-img img').src = pchip.dataset.img; t.querySelectorAll('.map-pchip').forEach(d => d.classList.toggle('on', d === pchip)); } return; }
+    const more = e.target.closest('.map-morebtn');
+    if (more) {
+      const pop = more.closest('.map-tile').querySelector('.map-pop'), was = pop.hidden;
+      document.querySelectorAll('.map-pop').forEach(x => { x.hidden = true; });
+      if (was) { pop.hidden = false; pop.style.left = '0'; pop.style.right = 'auto'; const r = pop.getBoundingClientRect(); if (r.right > innerWidth - 8) { pop.style.left = 'auto'; pop.style.right = '0'; } }
+      return;
+    }
+    if (e.target.closest('.map-pop')) return;
     const dot = e.target.closest('.map-dot');
+    if (dot && !dot.dataset.img) return;
     if (dot) { const t = dot.closest('.map-tile'); t.querySelector('.map-img img').src = dot.dataset.img; t.querySelectorAll('.map-dot').forEach(d => d.classList.toggle('on', d === dot)); return; }
     const ed = e.target.closest('[data-gedit]');
     if (ed) {
@@ -299,6 +357,7 @@
     if (e.target.closest('[data-mapback]')) { state.story = null; renderAll(); return; }
     if (e.target.closest('[data-colorclear]')) { state.color = null; renderAll(); return; }
     const tile = e.target.closest('.map-open');
+    if (tile && tile.closest('.map-disc')) { openDetailProduct(tile.closest('.map-tile').dataset.code); return; }
     if (tile) { state.story = tile.closest('.map-tile').dataset.story; renderAll(); window.scrollTo(0, 0); }
   });
 

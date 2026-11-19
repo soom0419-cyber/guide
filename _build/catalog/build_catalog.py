@@ -113,6 +113,21 @@ if ss_styles:
         _box["styles"].append(_code)
     stories.update(ss_stories)
 
+# ---- ICONIC 수정(iconic_edit.json: 아이코닉_그룹_수정양식.xlsx에서 변환): 그룹명 변경 / 그룹 설명(점 없는 글) / 비어 있던 한글 품명 ----
+_ie = os.path.join(HERE, 'iconic_edit.json')
+if os.path.exists(_ie):
+    _e = json.load(open(_ie, encoding='utf-8'))
+    for _wks in tree.get('ICONIC', {}).values():
+        for _w in _wks.values():
+            for _g in _w['stories']:
+                _old = _g['story']
+                _g['story'] = _e['rename'].get(_old, _old)
+                if _old in _e['desc'] or _old in _e['rename']:
+                    stories[_g['story']] = dict(stories.get(_old) or {}, bullets=_e['desc'].get(_old) or (stories.get(_old) or {}).get('bullets') or [])
+    for _s in styles.values():
+        if _s.get('material') == 'ICONIC' and not _s.get('name_kr') and _s.get('name_sjg') in _e['name_kr']:
+            _s['name_kr'] = _e['name_kr'][_s['name_sjg']]
+
 # ---- 내부 리마크(remarks.json): 자동 점검 + remarks_manual.json. 화면 노출은 admin 전체 / 김수용 의류만(catalog_view.js) ----
 import build_remarks
 build_remarks.write(os.path.join(OUT, "remarks.json"), build_remarks.build(styles, ss_facts if ss_styles else {}))
@@ -122,6 +137,8 @@ import season_colors
 for _k, _v in season_colors.build().items():
     if _k in guide:
         guide[_k]['colors'] = _v
+import ref_colors
+ref_color_bg = ref_colors.build()
 _gn = os.path.join(HERE, 'group_names.json')
 group_names = json.load(open(_gn, encoding='utf-8')) if os.path.exists(_gn) else {}
 
@@ -273,6 +290,7 @@ html = """<!doctype html>
 window.CATALOG_GLOBAL_SEARCH = true;
 window.SEASON_GUIDE = __GUIDE__;
 window.GROUP_NAMES = __GROUPNAMES__;
+window.REF_COLORS = __REFCOLORS__;
 const TREE = __TREE__;
 const STYLES = __STYLES__;
 const STORIES = __STORIES__;
@@ -289,7 +307,7 @@ window.catalogShow();
 """
 dumps = lambda o: json.dumps(o, ensure_ascii=False, separators=(",", ":"))
 html = (html.replace("__CSS__", css).replace("__TREE__", dumps(tree)).replace("__STYLES__", dumps(styles))
-        .replace("__STORIES__", dumps(stories)).replace("__GUIDE__", dumps(guide)).replace("__GROUPNAMES__", dumps(group_names)).replace("__HELPERS__", js_helpers)
+        .replace("__STORIES__", dumps(stories)).replace("__GUIDE__", dumps(guide)).replace("__GROUPNAMES__", dumps(group_names)).replace("__REFCOLORS__", dumps(ref_color_bg)).replace("__HELPERS__", js_helpers)
         .replace("__DETAIL_JS__", rd("catalog_detail.js")).replace("__VIEW_JS__", rd("catalog_view.js")))
 assert "data:image" not in html
 open(os.path.join(OUT, "catalog.html"), "w", encoding="utf-8").write(html)
