@@ -26,6 +26,7 @@
     // SS27 의류 소재 구분
     // 혼방은 같은 소재 그룹으로(린넨 혼방→린넨, 실크 혼방→실크, 울 혼방→울), 리싸이클 나일론→나일론, 시퀸·비스코스→기타
     'COTTON': '코튼', 'LINEN': '린넨', 'LINEN BLEND': '린넨', 'SILK': '실크', 'SILK BLEND': '실크', 'WOOL': '울', 'WOOL BLEND': '울',
+    'COTTON BLEND': '코튼', 'DENIM': '데님', 'MIXED FABRIC': '기타', 'COOL-TOUCH': '기타',
     'RECYCLED NYLON': '나일론', 'RECYCLED POLYESTER': '기타', 'SEQUIN': '기타', 'VISCOSE': '기타',
   };
   const bodyGroup = s => BODY_GROUP[s.body] || s.body;
@@ -34,10 +35,12 @@
     '우븐': ['우븐드레스', '우븐팬츠', '우븐스커트', '우븐탑', '셔츠'], '니트': ['니트탑', '니트드레스', '니트팬츠', '가디건'] };
   const bodyOk = s => state.body === 'ALL' || bodyGroup(s) === state.body || (APPAREL_BODY_GROUPS[state.body] || []).includes(bodyGroup(s));
   const attrLabel = s => ATTR_LABEL[s.attr] || s.attr || '';
+  const ATTR_MULTI = { 'COTTON LINEN BLEND': ['코튼', '린넨'] };   // 두 소재에 중복으로 들어가는 혼방
+  const attrLabelsOf = s => ATTR_MULTI[s.attr] || [attrLabel(s)].filter(Boolean);
   // 기준 = 혼용률(material_main/material_full)에 '라피아', 또는 품명에 RAFFIA/PANAMA(파나마 햇 포함)가 들어가면 라피아, 그 외 전부 CMT (혼용률 비어 있어도 품명으로 판정)
   const SS27_GROUPS = ['라피아', 'CMT'];
   const ssGroupOf = s => s.plan === '의류' ? null : (/라피아/.test((s.material_full || '') + ' ' + (s.material_main || '') + ' ' + (s.name_kr || '')) || /RAFFIA|PANAMA/i.test(s.name_sjg || '') || s.attr === 'PANAMA') ? '라피아' : 'CMT';
-  const attrOk = s => state.attr === 'ALL' || (ICONIC_NEW.includes(state.attr) ? newKind(s) === state.attr : SS27_GROUPS.includes(state.attr) ? (s.season_tab === 'SS27' && ssGroupOf(s) === state.attr) : attrLabel(s) === state.attr);
+  const attrOk = s => state.attr === 'ALL' || (ICONIC_NEW.includes(state.attr) ? newKind(s) === state.attr : SS27_GROUPS.includes(state.attr) ? (s.season_tab === 'SS27' && ssGroupOf(s) === state.attr) : attrLabelsOf(s).includes(state.attr));
   // 출고월(컬렉션) / 코어·NEW(아이코닉) 필터
   const MONTH_OF = {};
   Object.entries(TREE).forEach(([mat, months]) => { if (mat !== 'ICONIC') Object.entries(months).forEach(([mo, weeks]) => Object.values(weeks).forEach(w => w.stories.forEach(g => g.styles.forEach(c => { MONTH_OF[c] = mo; })))); });
@@ -122,8 +125,7 @@
     const ac = {}, gc = {};
     eachStyle(state.material, s => {
       if (!((state.plan === 'ALL' || s.plan === state.plan) && bodyOk(s))) return;
-      const label = attrLabel(s);
-      if (label) ac[label] = (ac[label] || 0) + 1;
+      attrLabelsOf(s).forEach(label => { ac[label] = (ac[label] || 0) + 1; });
       gc[ssGroupOf(s)] = (gc[ssGroupOf(s)] || 0) + 1;
       if (newKind(s)) gc[newKind(s)] = (gc[newKind(s)] || 0) + 1;
     });
