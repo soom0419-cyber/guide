@@ -263,7 +263,7 @@ html = """<!doctype html>
 </head>
 <body>
 <div class="wrap">
-  <header class="page cat-head"><h1>상품 설명집</h1><button type="button" id="catRemarkBtn" class="rm-btn" hidden></button></header>
+  <header class="page cat-head"><h1>상품 설명집</h1><span class="cat-head-r"><button type="button" id="catRemarkBtn" class="rm-btn" hidden></button><a id="catPdf" class="pdf-btn" href="#" hidden>PDF 다운</a></span></header>
   <div class="page-view active" id="catalogView">
     <nav class="materials" id="catMaterialTabs"></nav>
     <div class="sub-row">

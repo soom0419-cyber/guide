@@ -53,6 +53,30 @@
           "full": "guide-img/ss27/theme-ref7-full.jpg",
           "w": 4368,
           "h": 5824
+        },
+        {
+          "thumb": "guide-img/ss27/theme-ref8.jpg",
+          "full": "guide-img/ss27/theme-ref8-full.jpg",
+          "w": 2732,
+          "h": 4096
+        },
+        {
+          "thumb": "guide-img/ss27/theme-ref9.jpg",
+          "full": "guide-img/ss27/theme-ref9-full.jpg",
+          "w": 2732,
+          "h": 4096
+        },
+        {
+          "thumb": "guide-img/ss27/theme-ref10.jpg",
+          "full": "guide-img/ss27/theme-ref10-full.jpg",
+          "w": 2732,
+          "h": 4096
+        },
+        {
+          "thumb": "guide-img/ss27/theme-ref11.jpg",
+          "full": "guide-img/ss27/theme-ref11-full.jpg",
+          "w": 2732,
+          "h": 4096
         }
       ]
     },

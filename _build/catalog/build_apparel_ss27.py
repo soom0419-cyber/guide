@@ -61,6 +61,13 @@ def _comps(text):
     return out
 
 
+def _qty(v):
+    try:
+        return int(float(str(v).replace(',', '').strip()))
+    except Exception:
+        return 0
+
+
 def _fmt(comps):
     return " ".join(f"{n}% {m}{memo}" for n, m, memo in comps)
 
@@ -211,7 +218,7 @@ def build(img_dir):
     ix = {h: i for i, h in enumerate(head)}
     col = lambda name: next((i for h, i in ix.items() if h.startswith(name)), None)
     C = dict(code=col("품번"), season=col("시즌"), plan=col("기획명"), body=col("복종"), story=col("스토리"), en=col("품명(영문)"), kr=col("품명(한글)"),
-             attr=col("소재 구분"), price=col("판매가"), ship=col("출고일"), cc=col("컬러코드"), cn=col("컬러명"), size=col("사이즈"),
+             attr=col("소재 구분"), price=col("판매가"), ship=col("출고일"), cc=col("컬러코드"), cn=col("컬러명"), size=col("사이즈"), qty=col("발주수량"),
              desc=col("상품 설명"), mix=col("소재 전체"), care=col("관리 방법"), origin=col("원산지"), tags=col("태그"), fit=col("핏"), lining=col("안감"))
     get = lambda r, k: (r[C[k]] if C[k] is not None and C[k] < len(r) else None)
 
@@ -289,7 +296,8 @@ def build(img_dir):
         if cc in COLOR_NAME and COLOR_NAME[cc] != str(get(r, "cn") or "").strip():
             pass
         styles[code]["colors"].append({"color_code": cc, "color_kr": nm, "image": None, "swatch": COLOR_HEX.get(cc), "cgroup": None,
-                                       "gallery": None, "order": 0})
+                                       "gallery": None, "order": _qty(get(r, "qty"))})
+        styles[code]["total"]["order"] += _qty(get(r, "qty"))
         if cc not in COLOR_HEX:
             warn.append(f"{code} 컬러 {cc}({nm}): 근사색 없음")
 

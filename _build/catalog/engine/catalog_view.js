@@ -544,6 +544,8 @@
     const g = guideOf(), onProducts = !g || state.sub === 'products';
     renderSubTabs(g); renderGuidePages(g);
     renderFilters(); renderStories();
+    const pb = document.getElementById('catPdf');   // PDF 다운: 켜 둔 탭(시즌)의 미리 만든 PDF
+    if (pb) { const k = { COLLECTION: 'AW26', COLLECTION_SS27: 'SS27', ICONIC: 'ICONIC' }[state.material]; pb.hidden = !k; if (k) { pb.href = 'pdf/' + k + '.pdf'; pb.setAttribute('download', '상품설명집_' + k + '.pdf'); } }
     document.getElementById('catStories').hidden = !onProducts;
     const fl = document.querySelector('.filters'); if (fl && window.CATALOG_GLOBAL_SEARCH) fl.hidden = !onProducts;
     // 전체 검색 중에는 필터 칩만 숨기고 검색창은 그대로 둔다(검색창이 .filters 안에 있어 통째로 숨기면 사라짐)
@@ -553,12 +555,86 @@
   }
   document.getElementById('catSearch').oninput = e => { state.search = e.target.value; renderAll(); };
 
+  // ---------------- PDF용 인쇄 화면(?print=AW26|SS27|ICONIC): A4 가로, 그룹 단위 줄넘김, 한 줄 3장 ----------------
+  const PRINT = new URLSearchParams(location.search).get('print');
+  const PRINT_MAT = { AW26: 'COLLECTION', SS27: 'COLLECTION_SS27', ICONIC: 'ICONIC' };
+  function printHero(s) { return s.plan === '의류' ? s.image : ((s.colors.find(c => c.image) || {}).image); }
+  function printDesc(s) {
+    const d = Array.isArray(s.desc) ? s.desc : String(s.desc || '').split('\n');
+    return d.map(x => String(x).trim()).filter(x => x && x.toUpperCase() !== 'TBD');
+  }
+  function printCard(s, iconic) {
+    const img = printHero(s);
+    const kv = (k, v) => `<tr><th>${k}</th><td>${v}</td></tr>`;
+    let colorBlock = '';
+    if (iconic) {
+      const cgs = cgGroups(s.colors) || [{ label: '', colors: s.colors }];
+      colorBlock = `<div class="pc-cg">${cgs.map(g => `<div class="pc-cgl${g.label === '구 시즌' ? ' old' : ''}">${g.label ? `<span class="pc-cgn">${g.label === 'NEW 시즌' ? 'NEW' : g.label}</span>` : ''}${g.colors.map(c => `<span class="pc-chip"><i style="background:${colorBg(s, c)}"></i>${esc(c.color_code)}</span>`).join('')}</div>`).join('')}</div>`;
+    } else {
+      const qs = s.colors.map(c => Number(c.order) || 0), tot = qs.reduce((a, b) => a + b, 0);
+      colorBlock = `<table class="pc-qty"><tr><th>컬러</th>${s.colors.map(c => `<td><i style="background:${c.swatch || '#ddd'}"></i>${esc(c.color_code)}</td>`).join('')}<th>TOTAL</th></tr>` +
+        `<tr><th>수량</th>${qs.map(q => `<td>${q ? fmtNum(q) : '-'}</td>`).join('')}<td class="tot">${tot ? fmtNum(tot) : '-'}</td></tr></table>`;
+    }
+    const mix = s.material_full || s.material_main || '';
+    const desc = printDesc(s);
+    return `<div class="pc${iconic ? ' ic' : ''}">
+      <div class="pc-h"><b>${esc(s.name_sjg)}</b><span>${esc(s.name_kr || '')}</span></div>
+      <div class="pc-b"><div class="pc-img">${img ? `<img src="${attr(img)}" alt="">` : ''}</div>
+        <table class="pc-kv">${kv('품번', esc(s.display_code && s.display_code !== 'None' ? s.display_code : s.item_code))}${kv('사이즈', esc((s.sizes || []).join('/')))}${iconic ? '' : kv('출고일', s.ship_date ? mmdd(s.ship_date) : '-')}<tr class="pr-price"><th>가격</th><td>${rrpDisplay(s)}</td></tr></table></div>
+      ${colorBlock}
+      ${iconic ? '' : `<div class="pc-mix"><b>혼용</b>${esc(mix)}</div><ul class="pc-desc">${desc.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`}
+    </div>`;
+  }
+  function printRows(cards) {
+    const rows = [];
+    for (let i = 0; i < cards.length; i += 3) rows.push(`<div class="pr">${cards.slice(i, i + 3).join('')}</div>`);
+    return rows;
+  }
+  function printGroup(label, tag, cards) {
+    const rows = printRows(cards);
+    return `<section class="pg"><div class="pgwrap"><div class="pg-h"><b>${esc(label)}</b>${tag ? `<span>${esc(tag)}</span>` : ''}</div>${rows[0] || ''}</div>${rows.slice(1).join('')}</section>`;
+  }
+  function renderPrint() {
+    const mat = PRINT_MAT[PRINT];
+    if (!mat) return;
+    state.material = mat;
+    const iconic = mat === 'ICONIC';
+    let html = '';
+    if (iconic) {
+      const groups = [], by = {};
+      Object.keys(TREE.ICONIC || {}).forEach(cat => { const data = filterMonth(TREE.ICONIC[cat]); Object.keys(data).forEach(wk => data[wk].stories.forEach(g => {
+        if (by[g.story]) by[g.story].styles = by[g.story].styles.concat(g.styles); else { by[g.story] = { story: g.story, styles: g.styles.slice() }; groups.push(by[g.story]); }
+      })); });
+      groups.sort((a, b) => (a.story === '중단 스타일') - (b.story === '중단 스타일'));
+      groups.forEach(g => { const seen = new Set(); g.styles = g.styles.filter(c => { const n = STYLES[c].name_sjg; if (seen.has(n)) return false; seen.add(n); return true; }); });
+      html = groups.map(g => printGroup(groupName(g.story), '', g.styles.map(c => printCard(STYLES[c], true)))).join('');
+    } else {
+      const obj = TREE[mat] || {};
+      html = monthKeys(mat).map(mo => {
+        const data = filterMonth(obj[mo]), groups = [], by = {};
+        Object.keys(data).sort((a, b) => a - b).forEach(wk => data[wk].stories.forEach(g => {
+          if (by[g.story]) by[g.story].styles = by[g.story].styles.concat(g.styles); else { by[g.story] = { story: g.story, styles: g.styles.slice() }; groups.push(by[g.story]); }
+        }));
+        const ap = g => STYLES[g.styles[0]].plan === '의류' ? 1 : 0;
+        groups.sort((a, b) => ap(a) - ap(b));
+        return groups.map(g => { g.styles = sortStyleCodes(g.styles); return printGroup(groupName(g.story), moLabel(mo), g.styles.map(c => printCard(STYLES[c], false))); }).join('');
+      }).join('');
+    }
+    document.body.classList.add('print-mode');
+    const doc = document.createElement('div');
+    doc.id = 'printDoc';
+    doc.innerHTML = `<div class="pd-title">${esc(MATERIAL_LABELS[mat] || mat)} 상품 설명집</div>` + html;
+    document.body.appendChild(doc);
+    // 설명이 칸을 넘으면 마지막 줄부터 통째로 덜어낸다(반쯤 잘린 줄이 안 생기게)
+    doc.querySelectorAll('.pc-desc').forEach(ul => { let cut = false; while (ul.scrollHeight > ul.clientHeight + 1 && ul.children.length > 1) { ul.lastElementChild.remove(); cut = true; } if (cut) ul.lastElementChild.textContent += ' …'; });
+  }
+
   // ---------------- 바깥에서 호출 ----------------
   function materialOfStyle(s) { return s.material === 'APPAREL' ? 'APPAREL' : s.material === 'ICONIC' ? 'ICONIC' : (s.season_tab === 'SS27' ? 'COLLECTION_SS27' : 'COLLECTION'); }
   function materialOfStory(name) {
     return Object.keys(TREE).find(m => Object.values(TREE[m]).some(weeks => Object.values(weeks).some(w => w.stories.some(g => g.story === name))));
   }
-  window.catalogShow = () => { if (!ready) renderAll(); };
+  window.catalogShow = () => { if (PRINT) { renderPrint(); return; } if (!ready) renderAll(); };
   // MAP에서 스토리/상품을 눌렀을 때: 설명집 탭이 보이는 상태에서 호출 — 스토리는 해당 박스로 스크롤, 상품은 상세 화면 열기
   window.catalogLand = (kind, value) => {
     if (kind === 'product' && STYLES[value]) {
