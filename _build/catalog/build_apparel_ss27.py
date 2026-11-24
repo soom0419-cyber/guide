@@ -27,7 +27,6 @@ COLOR_HEX = {"BK": "#1c1c1c", "WH": "#fafafa", "IV": "#f5efe0", "CR": "#f1e8d2",
 
 # ---- 혼용률: 사용자가 의미를 알려준 3건은 직접 지정 ----
 MIX_OVERRIDE = {
-    "LYSRWD00060": "겉감: 86% 면 14% 폴리에스터, 안감: 81% 면 19% 나일론",
     "LYSRWT00050": "겉감: 71% 면 29% 나일론, 배색: 100% 면",
     "LYSRWD00090": "겉감: 52% 면 48% 폴리에스터, 안감(슬립): 100% 폴리에스터",
 }
@@ -50,10 +49,10 @@ def _comps(text):
         mats, nums = m.group(1).split("/"), m.group(2).split("/")
         return [(n, _mat(x), "") for n, x in zip(nums, mats)]
     out = []
-    for mt in re.finditer(r"([^\d%()]+?)\s*(\d+(?:\.\d+)?)\s*%?\s*(\([^)]*\))?", t):
+    for mt in re.finditer(r"([^\d%()]+?)\s*(\([^)]*\))?\s*(\d+(?:\.\d+)?)\s*%?\s*(\([^)]*\))?", t):   # '폴리에스터(리사이클) 100%'처럼 이름 뒤 괄호도 허용
         name = _mat(mt.group(1))
         if name:
-            out.append((mt.group(2), name, mt.group(3) or ""))
+            out.append((mt.group(3), name, mt.group(2) or mt.group(4) or ""))
     # 앞쪽 괄호 메모만 있는 경우('면 100% (오가닉)'): 마지막 소재에 붙인다
     tail = re.search(r"\(([^)]*)\)\s*$", t)
     if tail and out and not out[-1][2]:
@@ -95,14 +94,15 @@ def convert_mix(code, raw):
             if cs and abs(tot - 100) > 0.5:
                 warn.append(f"{m.group(2)} 합계 {tot:g}%")
         return ", ".join(parts), main, warn
-    labeled = [l for l in lines if re.match(r"^(겉감?|안감|배색)\s*:", l)]
+    lines = [re.sub(r"^겉감?\s*:\s*(?=배색)", "", l) for l in lines]   # "겉감: 배색 1: ..." -> "배색 1: ..."
+    labeled = [l for l in lines if re.match(r"^(겉감?|안감|배색\s*\d*)\s*:", l)]
     if labeled and len(labeled) == len(lines):
         parts, main = [], []
         for l in lines:
             lab, body = re.split(r"\s*:\s*", l, 1)
             lab = {"겉": "겉감"}.get(lab, lab)
             cs = _comps(body)
-            if lab == "겉감":
+            if lab == "겉감" or (lab.startswith("배색") and not main):   # 겉감 표기가 없으면 첫 배색을 대표 소재로
                 main = cs
             parts.append(f"{lab}: {_fmt(cs)}")
         txt = ", ".join(parts)
@@ -270,7 +270,7 @@ def build(img_dir):
                 "plan": "의류", "body": str(get(r, "body") or "").strip(), "attr": attr, "name_sjg": en_c, "name_kr": kr_c,
                 "rrp": str(int(float(get(r, "price") or 0))), "price_increase": None, "brim": None, "dustbag": None,
                 "origin": str(get(r, "origin") or "").strip(), "desc": clean_desc(get(r, "desc")),
-                "material_main": (re.sub(r"^겉감:\s*", "", mix_txt.split(", ")[0]) if mix_txt else ""), "material_full": mix_txt,
+                "material_main": (re.sub(r"^(겉감|배색\s*\d*):\s*", "", mix_txt.split(", ")[0]) if mix_txt else ""), "material_full": mix_txt,
                 "care": care_lines or ["업데이트 예정"], "tags": _tags(get(r, "tags")), "ship_date": ship,
                 "sizes": [x.strip() for x in str(get(r, "size") or "").split("/") if x.strip()], "has_hq_gallery": False, "image": None,
                 "length_cm": "", "fit": (lambda v: "" if v in ("", "None") else v)(str(get(r, "fit") or "").strip()), "lining": _lining(get(r, "lining")),
