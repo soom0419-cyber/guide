@@ -254,3 +254,6 @@ body.print-mode .wrap, body.print-mode .detail-overlay, body.print-mode .cursor-
 .pc-cgl.old { color: #666; }
 .pc-cgn { font-size: 6pt; font-weight: 700; background: #eee; border-radius: 1mm; padding: 0 1.2mm; }
 .pc-chip { white-space: nowrap; }
+.view-tog { display: inline-flex; border: 1px solid var(--line, #d8d8d8); border-radius: 8px; overflow: hidden; }
+.view-tog button { border: 0; background: transparent; color: inherit; font: inherit; font-size: 13px; padding: 6px 14px; cursor: pointer; }
+.view-tog button.on { background: #222; color: #fff; }

@@ -1,7 +1,7 @@
 // 상품 설명집 탭: 시즌 탭 > 기획명/복종 필터 > 스토리 박스(소개 문구 + 아이템 카드, 출고 순).
 // generate_html.py가 바잉 마스터파일 스크립트에 끼워 넣는다(TREE/STYLES/STORIES와 fmtNum·rrpDisplay·mmdd·korMmdd 등 공용 함수를 사용).
 (function () {
-  const state = { sub: 'products', material: null, ch: 'ALL', plan: 'ALL', body: 'ALL', attr: 'ALL', month: 'ALL', grp: 'ALL', search: '', color: null, story: null };
+  const state = { view: (() => { try { return localStorage.getItem('dg_view') === 'list' ? 'list' : 'map'; } catch (e) { return 'map'; } })(), sub: 'products', material: null, ch: 'ALL', plan: 'ALL', body: 'ALL', attr: 'ALL', month: 'ALL', grp: 'ALL', search: '', color: null, story: null };
   let ready = false;
   const attr = t => String(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
   const esc = t => String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -258,7 +258,8 @@
     return boxes;
   }
   // ---------------- 출고월 '전체' = 월별 맵판(이미지+상품명만, 그룹 단위로 이어서 나열) ----------------
-  const mapOn = () => state.sub === 'products' && !state.story && !globalSearch() && (state.material === 'ICONIC' ? (state.plan === 'ALL' || state.grp === '단종') : state.month === 'ALL');
+  const mapOn = () => state.sub === 'products' && !state.story && !globalSearch() && (state.material === 'ICONIC' ? (state.plan === 'ALL' || state.grp === '단종') : state.month === 'ALL' && state.view === 'map');
+  const viewTog = () => state.sub === 'products' && !state.story && !globalSearch() && state.material !== 'ICONIC' && state.month === 'ALL';
   const moLabel = mo => mo === '99' ? '출고월 미정' : parseInt(mo, 10) + '월 출고';
   // 그룹명: 기본은 스토리명. group_names.json(빌드 시 반영) < admin이 이 브라우저에서 고친 값
   const GN_KEY = 'dg_group_names';
@@ -325,11 +326,14 @@
     else { const boxes = collectStories(); body = boxes.length ? boxes.map(storyBox).join('') : '<div class="empty">해당 조건의 상품이 없습니다.</div>'; }
     const nloc = Object.keys(gnLocal()).length;
     const exp = mapOn() && isAdmin() ? `<div class="map-bar"><button type="button" class="map-back" data-gexport="1">그룹명 JSON 복사${nloc ? ' · 이 브라우저에서 바꾼 ' + nloc + '건' : ''}</button><span class="map-cur">✎로 그룹명을 고친 뒤 복사해서 전달하면 전체 매장에 반영됩니다</span></div>` : '';
-    document.getElementById('catStories').innerHTML = exp + bar + body;
+    const tog = viewTog() ? `<div class="map-bar"><span class="view-tog" role="group" aria-label="보기 방식"><button type="button" data-view="map" class="${state.view === 'map' ? 'on' : ''}">미니맵</button><button type="button" data-view="list" class="${state.view === 'list' ? 'on' : ''}">그룹별 목록</button></span></div>` : '';
+    document.getElementById('catStories').innerHTML = tog + exp + bar + body;
   }
   document.addEventListener('click', e => { if (!e.target.closest('.map-pop, .map-morebtn')) document.querySelectorAll('.map-pop').forEach(x => { x.hidden = true; }); });
   // 맵판 상호작용: 컬러 점 = 그 컬러 사진으로 교체 / 그림·이름 = 해당 그룹 열기 / (admin) ✎ = 그룹명 수정
   document.getElementById('catStories').addEventListener('click', e => {
+    const vb = e.target.closest('[data-view]');
+    if (vb) { state.view = vb.dataset.view; try { localStorage.setItem('dg_view', state.view); } catch (x) {} renderAll(); return; }
     const pchip = e.target.closest('.map-pchip');
     if (pchip) { if (pchip.dataset.img) { const t = pchip.closest('.map-tile'); t.querySelector('.map-img img').src = pchip.dataset.img; t.querySelectorAll('.map-pchip').forEach(d => d.classList.toggle('on', d === pchip)); } return; }
     const more = e.target.closest('.map-morebtn');
