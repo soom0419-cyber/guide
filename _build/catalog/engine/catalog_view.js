@@ -609,16 +609,15 @@
       groups.forEach(g => { const seen = new Set(); g.styles = g.styles.filter(c => { const n = STYLES[c].name_sjg; if (seen.has(n)) return false; seen.add(n); return true; }); });
       html = groups.map(g => printGroup(groupName(g.story), '', g.styles.map(c => printCard(STYLES[c], true)))).join('');
     } else {
-      const obj = TREE[mat] || {};
-      html = monthKeys(mat).map(mo => {
+      const obj = TREE[mat] || {}, plain = [], apparel = [];   // 모자·가방·액세서리 전체(출고 순) → 의류 전체(출고 순)
+      monthKeys(mat).forEach(mo => {
         const data = filterMonth(obj[mo]), groups = [], by = {};
         Object.keys(data).sort((a, b) => a - b).forEach(wk => data[wk].stories.forEach(g => {
           if (by[g.story]) by[g.story].styles = by[g.story].styles.concat(g.styles); else { by[g.story] = { story: g.story, styles: g.styles.slice() }; groups.push(by[g.story]); }
         }));
-        const ap = g => STYLES[g.styles[0]].plan === '의류' ? 1 : 0;
-        groups.sort((a, b) => ap(a) - ap(b));
-        return groups.map(g => { g.styles = sortStyleCodes(g.styles); return printGroup(groupName(g.story), moLabel(mo), g.styles.map(c => printCard(STYLES[c], false))); }).join('');
-      }).join('');
+        groups.forEach(g => { g.styles = sortStyleCodes(g.styles); g.mo = mo; (STYLES[g.styles[0]].plan === '의류' ? apparel : plain).push(g); });
+      });
+      html = plain.concat(apparel).map(g => printGroup(groupName(g.story), moLabel(g.mo), g.styles.map(c => printCard(STYLES[c], false)))).join('');
     }
     document.body.classList.add('print-mode');
     const doc = document.createElement('div');
