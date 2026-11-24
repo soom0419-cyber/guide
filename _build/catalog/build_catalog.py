@@ -142,6 +142,17 @@ ref_color_bg = ref_colors.build()
 _gn = os.path.join(HERE, 'group_names.json')
 group_names = json.load(open(_gn, encoding='utf-8')) if os.path.exists(_gn) else {}
 
+# ---- 의류 세트 넘버(apparel_sets.json: 같은 세트는 그룹 안에서 옆으로 나열) — 품명 기준, '[STUDIO] ' 접두어는 무시 ----
+_sp = os.path.join(HERE, 'apparel_sets.json')
+if os.path.exists(_sp):
+    _norm = lambda t: re.sub(r'\s+', ' ', re.sub(r'^\[STUDIO\]\s*', '', str(t).strip(), flags=re.I)).upper()
+    _sets = {_norm(x['name']): (x['set'], i) for i, x in enumerate(json.load(open(_sp, encoding='utf-8')))}
+    for _s in styles.values():
+        if _s.get('plan') == '의류' and _norm(_s.get('name_sjg')) in _sets:
+            _s['set_no'], _s['set_ix'] = _sets[_norm(_s['name_sjg'])]
+    _miss = [k for k in _sets if not any(_norm(v.get('name_sjg')) == k for v in styles.values() if v.get('plan') == '의류')]
+    if _miss: print('[세트] 상품 못 찾음:', _miss)
+
 # ---- 속성명(소재) 임시 오버라이드: 시트는 바뀌었는데 전산(입판재) 자료가 아직 옛값일 때 — 전산 갱신 후 파일에서 지워도 됨 ----
 _ao = os.path.join(HERE, 'attr_override.json')
 if os.path.exists(_ao):
@@ -241,7 +252,16 @@ function sortStyleCodes(codes) {
   if (codes.some(c => STYLES[c] && STYLES[c].material === 'ICONIC')) return codes;
   if (codes.length && codes.every(c => STYLES[c] && STYLES[c].plan === '의류')) {   // 의류: 아울렛·온라인 단독은 그룹 맨 끝, 그다음 아우터 > 원피스 > 상의 > 하의 > 악세사리, 같은 분류는 품번순
     const k = c => [STYLES[c].channel ? 1 : 0, APPAREL_CAT[STYLES[c].body] !== undefined ? APPAREL_CAT[STYLES[c].body] : 4, c];
-    return codes.slice().sort((x, y) => { const a = k(x), b = k(y); return a[0] - b[0] || a[1] - b[1] || (a[2] < b[2] ? -1 : a[2] > b[2] ? 1 : 0); });
+    const base = codes.slice().sort((x, y) => { const a = k(x), b = k(y); return a[0] - b[0] || a[1] - b[1] || (a[2] < b[2] ? -1 : a[2] > b[2] ? 1 : 0); });
+    // 세트 넘버: 기존 순서로 나열하다가 세트 상품이 나오면 같은 세트 상품을 바로 뒤로 끌어와 옆에 붙인다(같은 그룹 안에서)
+    const out = [], used = new Set();
+    base.forEach(c => {
+      if (used.has(c)) return;
+      out.push(c); used.add(c);
+      const n = STYLES[c].set_no;
+      if (n !== undefined) base.forEach(d => { if (!used.has(d) && STYLES[d].set_no === n) { out.push(d); used.add(d); } });
+    });
+    return out;
   }
   const key = c => styleOrderKey(STYLES[c] || {}, (STYLES[c] && STYLES[c].total && STYLES[c].total.order) || 0);
   return codes.slice().sort((x, y) => cmpOrderKey(key(x), key(y)));
