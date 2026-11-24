@@ -654,3 +654,13 @@
     }
   };
 })();
+
+// 맨 위로 버튼(우측 하단): 조금 내려가면 나타남
+(function () {
+  const b = document.createElement('button');
+  b.type = 'button'; b.id = 'toTop'; b.setAttribute('aria-label', '맨 위로'); b.hidden = true; b.textContent = '↑';
+  b.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.body.appendChild(b);
+  const upd = () => { b.hidden = window.scrollY < 400; };
+  window.addEventListener('scroll', upd, { passive: true }); upd();
+})();
