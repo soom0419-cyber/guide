@@ -146,10 +146,13 @@ group_names = json.load(open(_gn, encoding='utf-8')) if os.path.exists(_gn) else
 _sp = os.path.join(HERE, 'apparel_sets.json')
 if os.path.exists(_sp):
     _norm = lambda t: re.sub(r'\s+', ' ', re.sub(r'^\[STUDIO\]\s*', '', str(t).strip(), flags=re.I)).upper()
-    _sets = {_norm(x['name']): (x['set'], i) for i, x in enumerate(json.load(open(_sp, encoding='utf-8')))}
+    _rows = json.load(open(_sp, encoding='utf-8'))
+    _sets = {_norm(x['name']): (x['set'], i) for i, x in enumerate(_rows)}
+    _fixed = {x['set'] for x in _rows if x.get('fixed')}   # 'fixed': 같은 세트를 목록에 적은 순서대로 나열
     for _s in styles.values():
         if _s.get('plan') == '의류' and _norm(_s.get('name_sjg')) in _sets:
             _s['set_no'], _s['set_ix'] = _sets[_norm(_s['name_sjg'])]
+            if _s['set_no'] in _fixed: _s['set_fix'] = True
     _miss = [k for k in _sets if not any(_norm(v.get('name_sjg')) == k for v in styles.values() if v.get('plan') == '의류')]
     if _miss: print('[세트] 상품 못 찾음:', _miss)
 
@@ -259,7 +262,11 @@ function sortStyleCodes(codes) {
       if (used.has(c)) return;
       out.push(c); used.add(c);
       const n = STYLES[c].set_no;
-      if (n !== undefined) base.forEach(d => { if (!used.has(d) && STYLES[d].set_no === n) { out.push(d); used.add(d); } });
+      if (n !== undefined) {
+        const mem = base.filter(d => !used.has(d) && STYLES[d].set_no === n);
+        if (STYLES[c].set_fix) mem.sort((x, y) => STYLES[x].set_ix - STYLES[y].set_ix);
+        mem.forEach(d => { out.push(d); used.add(d); });
+      }
     });
     return out;
   }

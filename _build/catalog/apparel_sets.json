@@ -53,15 +53,18 @@
  },
  {
   "set": 8,
-  "name": "MARCHE LIGHT DENIM BOMBER JACKET"
+  "name": "MARCHE LIGHT DENIM BOMBER JACKET",
+  "fixed": true
  },
  {
   "set": 8,
-  "name": "MARCHE LIGHT DENIM PANTS"
+  "name": "MARCHE LIGHT DENIM PANTS",
+  "fixed": true
  },
  {
   "set": 8,
-  "name": "MARCHE LIGHT COTTON DRESS"
+  "name": "MARCHE LIGHT DENIM DRESS",
+  "fixed": true
  },
  {
   "set": 9,
